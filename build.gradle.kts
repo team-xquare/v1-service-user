@@ -22,20 +22,48 @@ repositories {
 }
 
 dependencies {
+    // R2DBC
     implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
+
+    // MySQL driver
+    implementation("com.github.jasync-sql:jasync-mysql:2.0.6")
+
+    // redis
     implementation("org.springframework.boot:spring-boot-starter-data-redis-reactive")
+
+    // security
     implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation("org.springframework.boot:spring-boot-starter-webflux")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+
+    // reactor
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
+
+    // webflux
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
+
+    // validation
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+
+    // kotlin jackson
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+
+    // AWS Messaging
+    implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging")
+
+    // base
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
+
+    // configuration processor
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+
+    // test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("io.projectreactor:reactor-test")
     testImplementation("org.springframework.security:spring-security-test")
+    testImplementation("io.projectreactor:reactor-test")
+
+    // test h2
+    testRuntimeOnly("io.r2dbc:r2dbc-h2")
 }
 
 tasks.withType<KotlinCompile> {
