@@ -104,7 +104,7 @@ val installGitHook by tasks.creating(Copy::class) {
         suffix = "windows"
     }
 
-    val sourceDir = File(rootProject.rootDir, "pre-build/scripts/pre-push-$suffix")
+	val sourceDir = File(rootProject.rootDir, "pre-build/scripts/ktlint/pre-push-on-$suffix")
     val targetDir = File(rootProject.rootDir, ".git/hooks")
 
     from(sourceDir)
