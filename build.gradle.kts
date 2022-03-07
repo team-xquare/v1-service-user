@@ -117,3 +117,6 @@ val installGitHook by tasks.creating(Copy::class) {
 project.tasks
     .getByName("build")
     .dependsOn(":installGitHook")
+
+tasks.getByName<Jar>("jar") {
+    enabled = false
