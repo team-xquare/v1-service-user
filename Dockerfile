@@ -1,4 +1,4 @@
-FROM openjdk:15-jdk-alpine
+FROM eclipse-temurin:17-jre-focal
 
 EXPOSE 8080
 
