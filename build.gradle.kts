@@ -1,10 +1,26 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") version "2.6.4"
-    id("io.spring.dependency-management") version "1.0.11.RELEASE"
-    kotlin("jvm") version "1.6.10"
-    kotlin("plugin.spring") version "1.6.10"
+    id("org.springframework.boot") version PluginVersions.SPRING_BOOT_VERSION
+    id("io.spring.dependency-management") version PluginVersions.DEPENDENCY_MANAGER_VERSION
+    kotlin("jvm") version PluginVersions.JVM_VERSION
+    kotlin("plugin.spring") version PluginVersions.SPRING_PLUGIN_VERSION
+}
+
+val ktlint: Configuration by configurations.creating
+
+dependencies {
+    ktlint(Dependencies.KTLINT) {
+        attributes {
+            attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling.EXTERNAL))
+        }
+    }
+}
+
+dependencyManagement {
+    imports {
+        mavenBom(Dependencies.SPRING_CLOUD)
+    }
 }
 
 group = "com.xquare"
@@ -22,48 +38,23 @@ repositories {
 }
 
 dependencies {
-    // R2DBC
-    implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
-
-    // MySQL driver
-    implementation("com.github.jasync-sql:jasync-mysql:2.0.6")
-
-    // redis
-    implementation("org.springframework.boot:spring-boot-starter-data-redis-reactive")
-
-    // security
-    implementation("org.springframework.boot:spring-boot-starter-security")
-
-    // reactor
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
-    implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
-
-    // webflux
-    implementation("org.springframework.boot:spring-boot-starter-webflux")
-
-    // validation
-    implementation("org.springframework.boot:spring-boot-starter-validation")
-
-    // kotlin jackson
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-
-    // AWS Messaging
-    implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging")
-
-    // base
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-
-    // configuration processor
-    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-
-    // test
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.springframework.security:spring-security-test")
-    testImplementation("io.projectreactor:reactor-test")
-
-    // test h2
-    testRuntimeOnly("io.r2dbc:r2dbc-h2")
+    implementation(Dependencies.R2DBC)
+    implementation(Dependencies.REACTIVE_MYSQL)
+    implementation(Dependencies.REACTIVE_DATA_Redis)
+    implementation(Dependencies.SPRING_SECURITY)
+    implementation(Dependencies.COROUTINE_REACTOR)
+    implementation(Dependencies.REACTOR_COROUTINE_EXTENSION)
+    implementation(Dependencies.WEBFLUX)
+    implementation(Dependencies.VALIDATION)
+    implementation(Dependencies.JACKSON)
+    implementation(Dependencies.AWS_MESSAGING)
+    implementation(Dependencies.KOTLIN_STDLIB)
+    implementation(Dependencies.KOTLIN_REFLECT)
+    annotationProcessor(Dependencies.CONFIGURATION_PROCESSOR)
+    testImplementation(Dependencies.SPRING_TEST)
+    testImplementation(Dependencies.SECURITY_TEST)
+    testImplementation(Dependencies.REACTOR_TEST)
+    testRuntimeOnly(Dependencies.H2_DRIVER)
 }
 
 tasks.withType<KotlinCompile> {
