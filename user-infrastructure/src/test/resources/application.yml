@@ -1,0 +1,28 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Seoul
+    show-sql: false
+    format-sql: false
+    highlight-sql: false
+    ddl-auto: create
+    pool-size: 5
+
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+    date-format: yyyy-MM-dd'T'HH:mm:ss
+    time-zone: Asia/Seoul
+
+  redis:
+    host: localhost
+    password: password
+    port: 6379
+
+cloud:
+  aws:
+    credentials:
+      access-key: adfsafd
+      secret-key: adfsadf
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
