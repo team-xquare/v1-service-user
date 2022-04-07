@@ -33,3 +33,15 @@ dependencies {
     testImplementation(Dependencies.COROUTINE_TEST)
     testRuntimeOnly(Dependencies.EMBEDDED_MYSQL)
 }
+
+allOpen {
+    annotation("javax.persistence.Entity")
+    annotation("javax.persistence.MappedSuperclass")
+    annotation("javax.persistence.Embeddable")
+}
+
+noArg {
+    annotation("javax.persistence.Entity")
+    annotation("javax.persistence.MappedSuperclass")
+    annotation("javax.persistence.Embeddable")
+}
