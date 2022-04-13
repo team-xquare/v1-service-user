@@ -18,7 +18,7 @@ dependencies {
     implementation(Dependencies.REACTIVE_MYSQL)
     implementation(Dependencies.REACTIVE_DATA_REDIS)
     implementation(Dependencies.MUTINY_KOTLIN)
-    implementation(Dependencies.SPRING_SECURITY)
+    implementation(Dependencies.MUTINY_REACTOR)
     implementation(Dependencies.COROUTINE_REACTOR)
     implementation(Dependencies.COROUTINE_JDK)
     implementation(Dependencies.REACTOR_COROUTINE_EXTENSION)
@@ -28,8 +28,19 @@ dependencies {
     implementation(Dependencies.AWS_MESSAGING)
     annotationProcessor(Dependencies.CONFIGURATION_PROCESSOR)
     testImplementation(Dependencies.SPRING_TEST)
-    testImplementation(Dependencies.SECURITY_TEST)
     testImplementation(Dependencies.REACTOR_TEST)
     testImplementation(Dependencies.COROUTINE_TEST)
-    testRuntimeOnly(Dependencies.EMBEDDED_MYSQL)
+    testImplementation(Dependencies.EMBEDDED_MYSQL)
+}
+
+allOpen {
+    annotation("javax.persistence.Entity")
+    annotation("javax.persistence.MappedSuperclass")
+    annotation("javax.persistence.Embeddable")
+}
+
+noArg {
+    annotation("javax.persistence.Entity")
+    annotation("javax.persistence.MappedSuperclass")
+    annotation("javax.persistence.Embeddable")
 }
