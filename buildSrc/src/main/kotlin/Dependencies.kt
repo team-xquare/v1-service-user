@@ -1,25 +1,30 @@
 object Dependencies {
-    val KTLINT by lazy { "com.pinterest:ktlint:${DependencyVersions.KTLINT_VERSION}" }
-    val SPRING_CLOUD by lazy { "org.springframework.cloud:spring-cloud-dependencies:${DependencyVersions.SPRING_CLOUD_VERSION}" }
-    val REACTIVE_JDSL by lazy { "com.linecorp.kotlin-jdsl:spring-data-kotlin-jdsl-hibernate-reactive:${DependencyVersions.JDSL_VERSION}" }
-    val REACTIVE_MYSQL by lazy { "io.vertx:vertx-mysql-client:${DependencyVersions.REACTIVE_MYSQL_VERSION}" }
-    val REACTIVE_HIBERNATE by lazy { "org.hibernate.reactive:hibernate-reactive-core:${DependencyVersions.HIBERNATE_REACTIVE_VERSION}" }
-    val SPRING_DATA_COMMON by lazy { "org.springframework.data:spring-data-commons" }
-    val MUTINY_KOTLIN by lazy { "io.smallrye.reactive:mutiny-kotlin:${DependencyVersions.MUTINY_VERSION}" }
-    val MUTINY_REACTOR by lazy { "io.smallrye.reactive:mutiny-reactor:${DependencyVersions.MUTINY_VERSION}" }
-    val REACTIVE_DATA_REDIS by lazy { "org.springframework.boot:spring-boot-starter-data-redis-reactive" }
-    val COROUTINE_REACTOR by lazy { "org.jetbrains.kotlinx:kotlinx-coroutines-reactor:${DependencyVersions.COROUTINE_VERSION}" }
-    val COROUTINE_JDK by lazy { "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:${DependencyVersions.COROUTINE_VERSION}" }
-    val REACTOR_COROUTINE_EXTENSION by lazy { "io.projectreactor.kotlin:reactor-kotlin-extensions" }
-    val WEBFLUX by lazy { "org.springframework.boot:spring-boot-starter-webflux" }
-    val VALIDATION by lazy { "org.springframework.boot:spring-boot-starter-validation" }
-    val JACKSON by lazy { "com.fasterxml.jackson.module:jackson-module-kotlin" }
-    val AWS_MESSAGING by lazy { "org.springframework.cloud:spring-cloud-starter-aws-messaging" }
-    val KOTLIN_REFLECT by lazy { "org.jetbrains.kotlin:kotlin-reflect" }
-    val KOTLIN_STDLIB by lazy { "org.jetbrains.kotlin:kotlin-stdlib-jdk8" }
-    val CONFIGURATION_PROCESSOR by lazy { "org.springframework.boot:spring-boot-configuration-processor" }
-    val EMBEDDED_MYSQL by lazy { "com.wix:wix-embedded-mysql:${DependencyVersions.EMBEDDED_MYSQL_VERSION}" }
-    val SPRING_TEST by lazy { "org.springframework.boot:spring-boot-starter-test" }
-    val REACTOR_TEST by lazy { "io.projectreactor:reactor-test" }
-    val COROUTINE_TEST by lazy { "org.jetbrains.kotlinx:kotlinx-coroutines-test:${DependencyVersions.COROUTINE_VERSION}" }
+    const val KTLINT = "com.pinterest:ktlint:${DependencyVersions.KTLINT_VERSION}"
+    const val SPRING_CLOUD = "org.springframework.cloud:spring-cloud-dependencies:${DependencyVersions.SPRING_CLOUD_VERSION}"
+    const val REACTIVE_JDSL = "com.linecorp.kotlin-jdsl:spring-data-kotlin-jdsl-hibernate-reactive:${DependencyVersions.JDSL_VERSION}"
+    const val REACTIVE_MYSQL = "io.vertx:vertx-mysql-client:${DependencyVersions.REACTIVE_MYSQL_VERSION}"
+    const val REACTIVE_HIBERNATE = "org.hibernate.reactive:hibernate-reactive-core:${DependencyVersions.HIBERNATE_REACTIVE_VERSION}"
+    const val SPRING_DATA_COMMON = "org.springframework.data:spring-data-commons"
+    const val MUTINY_KOTLIN = "io.smallrye.reactive:mutiny-kotlin:${DependencyVersions.MUTINY_VERSION}"
+    const val MUTINY_REACTOR = "io.smallrye.reactive:mutiny-reactor:${DependencyVersions.MUTINY_VERSION}"
+    const val REACTIVE_DATA_REDIS = "org.springframework.boot:spring-boot-starter-data-redis-reactive"
+    const val COROUTINE_REACTOR = "org.jetbrains.kotlinx:kotlinx-coroutines-reactor:${DependencyVersions.COROUTINE_VERSION}"
+    const val COROUTINE_JDK = "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:${DependencyVersions.COROUTINE_VERSION}"
+    const val REACTOR_COROUTINE_EXTENSION = "io.projectreactor.kotlin:reactor-kotlin-extensions"
+    const val WEBFLUX = "org.springframework.boot:spring-boot-starter-webflux"
+    const val VALIDATION = "org.springframework.boot:spring-boot-starter-validation"
+    const val JACKSON = "com.fasterxml.jackson.module:jackson-module-kotlin"
+    const val AWS_MESSAGING = "org.springframework.cloud:spring-cloud-starter-aws-messaging:${DependencyVersions.AWS_MESSAGING_VERSION}"
+    const val KOTLIN_REFLECT = "org.jetbrains.kotlin:kotlin-reflect"
+    const val KOTLIN_STDLIB = "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    const val CONFIGURATION_PROCESSOR = "org.springframework.boot:spring-boot-configuration-processor"
+    const val EMBEDDED_MYSQL = "com.wix:wix-embedded-mysql:${DependencyVersions.EMBEDDED_MYSQL_VERSION}"
+    const val SPRING_TEST = "org.springframework.boot:spring-boot-starter-test"
+    const val REACTOR_TEST = "io.projectreactor:reactor-test"
+    const val COROUTINE_TEST = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${DependencyVersions.COROUTINE_VERSION}"
+    const val ACTUATOR = "org.springframework.boot:spring-boot-starter-actuator"
+    const val MICROMETER = "io.micrometer:micrometer-registry-prometheus"
+    const val ZIPKIN = "org.springframework.cloud:spring-cloud-sleuth-zipkin"
+    const val STARTER_SLEUTH = "org.springframework.cloud:spring-cloud-starter-sleuth"
+    const val SPRING_RABBIT = "org.springframework.amqp:spring-rabbit:${DependencyVersions.RABBIT_VERSION}"
 }

@@ -17,6 +17,13 @@ spring:
     password: ${REDIS_PASSWORD}
     port: ${REDIS_PORT}
     username: ${REDIS_USERNAME}
+  application:
+    name: user-service-v1
+  sleuth:
+    sampler:
+      probability: 1
+  zipkin:
+    base-url: ${ZIPKIN_URL}
 
 server:
   port: ${SERVER_PORT}
@@ -33,6 +40,15 @@ cloud:
     # So I turn of this setting
     stack:
       auto: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus
+  endpoint:
+    health:
+      show-details: when_authorized
 
 ---
 
