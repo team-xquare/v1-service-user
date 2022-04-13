@@ -14,7 +14,7 @@ object Dependencies {
     const val WEBFLUX = "org.springframework.boot:spring-boot-starter-webflux"
     const val VALIDATION = "org.springframework.boot:spring-boot-starter-validation"
     const val JACKSON = "com.fasterxml.jackson.module:jackson-module-kotlin"
-    const val AWS_MESSAGING = "org.springframework.cloud:spring-cloud-starter-aws-messaging"
+    const val AWS_MESSAGING = "org.springframework.cloud:spring-cloud-starter-aws-messaging:${DependencyVersions.AWS_MESSAGING_VERSION}"
     const val KOTLIN_REFLECT = "org.jetbrains.kotlin:kotlin-reflect"
     const val KOTLIN_STDLIB = "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     const val CONFIGURATION_PROCESSOR = "org.springframework.boot:spring-boot-configuration-processor"
