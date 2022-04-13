@@ -7,4 +7,5 @@ object DependencyVersions {
     const val MUTINY_VERSION = "1.4.0"
     const val JDSL_VERSION = "2.0.1.RELEASE"
     const val COROUTINE_VERSION = "1.6.0"
+    const val RABBIT_VERSION = "2.4.3"
 }
