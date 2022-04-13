@@ -20,7 +20,7 @@ class QueryBuilderConfig {
         private const val DB_USERNAME_PROPERTY = "javax.persistence.jdbc.user"
         private const val DB_PASSWORD_PROPERTY = "javax.persistence.jdbc.password"
         private const val DB_POOL_SIZE_PROPERTY = "hibernate.connection.pool_size"
-        private const val DDL_AUTO_MODE_PROPERTY = "hibernate.hbm2ddl.auto"
+        private const val DDL_AUTO_MODE_PROPERTY = "javax.persistence.schema-generation.database.action"
         private const val SHOW_SQL_PROPERTY = "hibernate.show_sql"
         private const val FORMAT_SQL_PROPERTY = "hibernate.format_sql"
         private const val HIGHLIGHT_SQL_PROPERTY = "hibernate.highlight_sql"
