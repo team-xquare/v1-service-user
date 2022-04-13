@@ -30,4 +30,6 @@ object Dependencies {
     const val MAPSTRUCT = "org.mapstruct:mapstruct:${DependencyVersions.MAPSTRUCT_VERSION}"
     const val MAPSTRUCT_APT = "org.mapstruct:mapstruct-processor:${DependencyVersions.MAPSTRUCT_VERSION}"
     const val SPRING_SECURITY = "org.springframework.boot:spring-boot-starter-security"
+    const val MOCKITO_KOTLIN = "com.nhaarman.mockitokotlin2:mockito-kotlin:${DependencyVersions.MOCKITO_KOTLIN_VERSION}"
+    const val MOCKITO_INLINE = "org.mockito:mockito-inline:${DependencyVersions.MOCKITO_INLINE_VERSION}"
 }

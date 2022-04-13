@@ -39,6 +39,8 @@ dependencies {
     implementation(Dependencies.MAPSTRUCT)
     implementation(Dependencies.SPRING_SECURITY)
     kapt(Dependencies.MAPSTRUCT_APT)
+    testImplementation(Dependencies.MOCKITO_KOTLIN)
+    testImplementation(Dependencies.MOCKITO_INLINE)
 
     implementation(project(":user-domain"))
 }
