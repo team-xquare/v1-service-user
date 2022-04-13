@@ -11,7 +11,7 @@ import javax.validation.constraints.Size
 
 @Entity
 @Table(name = "tbl_user")
-class User(
+class UserEntity(
     @field:Size(max = 5)
     val name: String,
 
