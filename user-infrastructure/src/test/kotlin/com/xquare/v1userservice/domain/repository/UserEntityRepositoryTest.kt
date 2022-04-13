@@ -6,7 +6,7 @@ import com.linecorp.kotlinjdsl.singleQuery
 import com.xquare.v1userservice.EmbeddedMySQLConfiguration
 import com.xquare.v1userservice.EqualsTestUtil
 import com.xquare.v1userservice.configuration.datasource.QueryBuilderConfig
-import com.xquare.v1userservice.user.User
+import com.xquare.v1userservice.user.UserEntity
 import com.xquare.v1userservice.user.repository.UserRepository
 import com.xquare.v1userservice.user.repository.UserRepositoryImpl
 import io.smallrye.mutiny.coroutines.awaitSuspending
@@ -23,7 +23,7 @@ import java.util.*
 @ExperimentalCoroutinesApi
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 @SpringBootTest(classes = [EmbeddedMySQLConfiguration::class, QueryBuilderConfig::class, UserRepositoryImpl::class])
-internal class UserRepositoryTest(
+internal class UserEntityRepositoryTest(
     private val queryFactory: HibernateMutinyReactiveQueryFactory,
     private val userRepository: UserRepository
 ) {
@@ -33,15 +33,15 @@ internal class UserRepositoryTest(
     fun saveEntity() = runTest {
         val user = saveUser()
 
-        val userFromDb = queryFactory.transactionWithFactory { _, queryFactory ->
-            queryFactory.singleQuery<User> {
-                select(entity(User::class))
-                from(entity(User::class))
-                where(col(User::id).equal(user.id))
+        val userEntityFromDb = queryFactory.transactionWithFactory { _, queryFactory ->
+            queryFactory.singleQuery<UserEntity> {
+                select(entity(UserEntity::class))
+                from(entity(UserEntity::class))
+                where(col(UserEntity::id).equal(user.id))
             }
         }
 
-        EqualsTestUtil.isEqualTo(userFromDb, user)
+        EqualsTestUtil.isEqualTo(userEntityFromDb, user)
     }
 
     @Test
@@ -57,7 +57,7 @@ internal class UserRepositoryTest(
         assertThat(userFromDB).isNull()
     }
 
-    private suspend fun saveUser(): User {
+    private suspend fun saveUser(): UserEntity {
         val user = buildUser()
 
         queryFactory.transactionWithFactory { session, _ ->
@@ -67,8 +67,8 @@ internal class UserRepositoryTest(
         return user
     }
 
-    private fun buildUser(): User {
-        return User(
+    private fun buildUser(): UserEntity {
+        return UserEntity(
             name = "test",
             password = "testPassword",
             accountId = "accountId",
