@@ -36,7 +36,20 @@ dependencies {
     testImplementation(Dependencies.REACTOR_TEST)
     testImplementation(Dependencies.COROUTINE_TEST)
     testImplementation(Dependencies.EMBEDDED_MYSQL)
+    implementation(Dependencies.MAPSTRUCT)
+    implementation(Dependencies.SPRING_SECURITY)
+    kapt(Dependencies.MAPSTRUCT_APT)
+
+    implementation(project(":user-domain"))
 }
+
+kapt {
+    arguments {
+        arg("mapstruct.defaultComponentModel", "spring")
+        arg("mapstruct.unmappedTargetPolicy", "error")
+    }
+}
+
 
 allOpen {
     annotation("javax.persistence.Entity")

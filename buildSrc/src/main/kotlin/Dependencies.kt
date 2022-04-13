@@ -27,4 +27,7 @@ object Dependencies {
     const val ZIPKIN = "org.springframework.cloud:spring-cloud-sleuth-zipkin"
     const val STARTER_SLEUTH = "org.springframework.cloud:spring-cloud-starter-sleuth"
     const val SPRING_RABBIT = "org.springframework.amqp:spring-rabbit:${DependencyVersions.RABBIT_VERSION}"
+    const val MAPSTRUCT = "org.mapstruct:mapstruct:${DependencyVersions.MAPSTRUCT_VERSION}"
+    const val MAPSTRUCT_APT = "org.mapstruct:mapstruct-processor:${DependencyVersions.MAPSTRUCT_VERSION}"
+    const val SPRING_SECURITY = "org.springframework.boot:spring-boot-starter-security"
 }
