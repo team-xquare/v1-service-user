@@ -3,6 +3,7 @@ package com.xquare.v1userservice.user
 import java.time.LocalDate
 import java.time.Year
 import java.util.*
+import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Id
 import javax.persistence.Table
@@ -34,6 +35,7 @@ class User(
     deviceToken: String,
 ) {
     @Id
+    @Column(columnDefinition = "BINARY(16)")
     val id: UUID = UUID.randomUUID()
 
     var classNum = classNum
