@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:${DBMS}://${DB_HOST}:${DB_PORT}?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Seoul
+    url: jdbc:${DBMS}://${DB_HOST}:${DB_PORT}/${DB_NAME}?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Seoul
     password: ${DB_PASSWORD}
     username: ${DB_USERNAME}
     show-sql: false
