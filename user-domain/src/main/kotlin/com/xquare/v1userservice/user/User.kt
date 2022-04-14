@@ -1,18 +1,13 @@
 package com.xquare.v1userservice.user
 
+import com.xquare.v1userservice.annotations.Aggregate
 import java.time.LocalDate
 import java.time.Year
 import java.util.*
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.Id
-import javax.persistence.Table
-import javax.validation.constraints.Size
 
-@Entity
-@Table(name = "tbl_user")
+// TODO NEED TO USE STATE MACHINE
+@Aggregate
 class User(
-    @field:Size(max = 5)
     val name: String,
 
     val entranceYear: Year,
@@ -21,7 +16,6 @@ class User(
 
     val grade: Int,
 
-    @field:Size(max = 255)
     val profileFileName: String,
 
     val password: String,
@@ -32,18 +26,17 @@ class User(
 
     num: Int,
 
-    deviceToken: String,
-) {
-    @Id
-    @Column(columnDefinition = "BINARY(16)")
+    deviceToken: String? = null,
+
     val id: UUID = UUID.randomUUID()
+) {
 
     var classNum = classNum
-        protected set
+        private set
 
     var num = num
-        protected set
+        private set
 
     var deviceToken = deviceToken
-        protected set
+        private set
 }

@@ -4,7 +4,7 @@
              version="2.2">
     <persistence-unit name="user-service-mysql">
         <provider>org.hibernate.reactive.provider.ReactivePersistenceProvider</provider>
-        <class>com.xquare.v1userservice.user.User</class>
+        <class>com.xquare.v1userservice.user.UserEntity</class>
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
     </persistence-unit>
 </persistence>

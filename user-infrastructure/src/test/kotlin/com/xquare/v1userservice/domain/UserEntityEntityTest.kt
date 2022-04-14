@@ -1,28 +1,29 @@
 package com.xquare.v1userservice.domain
 
-import com.xquare.v1userservice.user.User
+import com.xquare.v1userservice.user.UserEntity
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.Year
+import java.util.*
 
-internal class UserEntityTest {
+internal class UserEntityEntityTest {
 
-    private var user: User? = null
+    private var userEntity: UserEntity? = null
 
     @BeforeEach
     fun createEntity() {
-        user = buildCompletedUser()
+        userEntity = buildCompletedUser()
     }
 
     @Test
     fun validateUserIdNotNull() {
-        assertThat(user?.id).isNotNull
+        assertThat(userEntity?.id).isNotNull
     }
 
     private fun buildCompletedUser() =
-        User(
+        UserEntity(
             name = "name",
             password = "testPassword",
             accountId = "accountId",
@@ -32,7 +33,8 @@ internal class UserEntityTest {
             entranceYear = Year.now(),
             grade = 1,
             num = 2,
-            profileFileName = "sdaf"
+            profileFileName = "sdaf",
+            id = UUID.randomUUID()
         )
 
 }

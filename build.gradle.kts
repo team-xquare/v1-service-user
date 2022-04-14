@@ -10,6 +10,11 @@ subprojects {
         version = PluginVersions.JVM_VERSION
     }
 
+    apply {
+        plugin("org.jetbrains.kotlin.kapt")
+        version = PluginVersions.KAPT_VERSION
+    }
+
     dependencies {
         implementation(Dependencies.KOTLIN_REFLECT)
         implementation(Dependencies.KOTLIN_STDLIB)
