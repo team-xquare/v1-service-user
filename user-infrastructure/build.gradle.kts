@@ -12,6 +12,8 @@ dependencyManagement {
 }
 
 dependencies {
+    implementation(platform(Dependencies.EVENTUATE_PLATFORM))
+
     implementation(Dependencies.REACTIVE_HIBERNATE)
     implementation(Dependencies.REACTIVE_JDSL)
     implementation(Dependencies.SPRING_DATA_COMMON)
@@ -31,7 +33,9 @@ dependencies {
     implementation(Dependencies.STARTER_SLEUTH)
     implementation(Dependencies.ACTUATOR)
     implementation(Dependencies.MICROMETER)
+    implementation(Dependencies.EVENTUATE_TRAM_SAGA)
     annotationProcessor(Dependencies.CONFIGURATION_PROCESSOR)
+    testImplementation(Dependencies.EVENTUATE_TRAM_SAGA_TEST)
     testImplementation(Dependencies.SPRING_TEST)
     testImplementation(Dependencies.REACTOR_TEST)
     testImplementation(Dependencies.COROUTINE_TEST)
@@ -39,8 +43,6 @@ dependencies {
     implementation(Dependencies.MAPSTRUCT)
     implementation(Dependencies.SPRING_SECURITY)
     kapt(Dependencies.MAPSTRUCT_APT)
-    testImplementation(Dependencies.MOCKITO_KOTLIN)
-    testImplementation(Dependencies.MOCKITO_INLINE)
 
     implementation(project(":user-domain"))
 }
