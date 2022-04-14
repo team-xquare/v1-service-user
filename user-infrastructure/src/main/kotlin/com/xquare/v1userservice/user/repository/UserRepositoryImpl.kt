@@ -1,13 +1,13 @@
 package com.xquare.v1userservice.user.repository
 
 import com.linecorp.kotlinjdsl.query.HibernateMutinyReactiveQueryFactory
+import com.linecorp.kotlinjdsl.querydsl.expression.col
+import com.linecorp.kotlinjdsl.singleQueryOrNull
 import com.xquare.v1userservice.user.User
 import com.xquare.v1userservice.user.UserEntity
 import com.xquare.v1userservice.user.mapper.UserDomainMapper
 import com.xquare.v1userservice.user.spi.UserRepositorySpi
-import io.smallrye.mutiny.converters.uni.UniReactorConverters
 import io.smallrye.mutiny.coroutines.awaitSuspending
-import kotlinx.coroutines.reactor.awaitSingleOrNull
 import org.springframework.stereotype.Repository
 import java.util.*
 
@@ -26,10 +26,12 @@ class UserRepositoryImpl(
     }
 
     override suspend fun findByIdOrNull(id: UUID): User? {
-        val userEntity = reactiveQueryFactory.withFactory { session, reactiveQueryFactory ->
-            session.find(UserEntity::class.java, id)
-                .convert().with(UniReactorConverters.toMono())
-                .awaitSingleOrNull()
+        val userEntity = reactiveQueryFactory.withFactory { _, reactiveQueryFactory ->
+            reactiveQueryFactory.singleQueryOrNull<UserEntity> {
+                select(entity(UserEntity::class))
+                from(entity(UserEntity::class))
+                where(col(UserEntity::id).equal(id))
+            }
         }
 
         return userEntity?.let { userDomainMapper.userEntityToDomain(it) }
