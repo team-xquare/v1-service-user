@@ -12,6 +12,10 @@ import javax.validation.constraints.Size
 @Entity
 @Table(name = "tbl_user")
 class UserEntity(
+    @Id
+    @Column(columnDefinition = "BINARY(16)")
+    val id: UUID,
+
     @field:Size(max = 5)
     val name: String,
 
@@ -34,9 +38,6 @@ class UserEntity(
 
     deviceToken: String,
 ) {
-    @Id
-    @Column(columnDefinition = "BINARY(16)")
-    val id: UUID = UUID.randomUUID()
 
     var classNum = classNum
         protected set
