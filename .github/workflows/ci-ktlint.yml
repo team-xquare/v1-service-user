@@ -1,0 +1,28 @@
+name: Lint CI
+
+on:
+  push:
+    branches-ignore:
+      - main
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ ubuntu-latest ]
+        java-version: [ 17 ]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: ${{ matrix.java-version }}
+          distribution: 'zulu'
+
+      - name: Gradle Test
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: |
+            ktLintCheck
