@@ -11,5 +11,4 @@ class CreateSaveUserService(
     override suspend fun createNewUserAndStartSagaOrchestration(user: User) {
         userRepositorySpi.save(user)
     }
-
 }

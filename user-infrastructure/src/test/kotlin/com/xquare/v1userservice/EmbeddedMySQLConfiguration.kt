@@ -33,5 +33,4 @@ class EmbeddedMySQLConfiguration(
     fun stopServer() {
         mysqlServer.stop()
     }
-
 }

@@ -3,7 +3,7 @@ package com.xquare.v1userservice.user
 import com.xquare.v1userservice.annotations.Aggregate
 import java.time.LocalDate
 import java.time.Year
-import java.util.*
+import java.util.UUID
 
 // TODO NEED TO USE STATE MACHINE
 @Aggregate

@@ -2,7 +2,7 @@ package com.xquare.v1userservice.user
 
 import java.time.LocalDate
 import java.time.Year
-import java.util.*
+import java.util.UUID
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Id

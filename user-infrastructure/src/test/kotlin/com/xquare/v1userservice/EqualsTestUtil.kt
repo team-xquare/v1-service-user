@@ -20,5 +20,4 @@ object EqualsTestUtil {
 
     private fun getValueOfProperty(obj: Any, property: KProperty<*>) =
         property.getter.call(obj)
-
 }

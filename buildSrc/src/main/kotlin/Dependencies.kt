@@ -36,7 +36,7 @@ object Dependencies {
 
     // RABBIT
     const val SPRING_RABBIT = "org.springframework.amqp:spring-rabbit:${DependencyVersions.RABBIT_VERSION}"
-    
+
     // mapstruct
     const val MAPSTRUCT = "org.mapstruct:mapstruct:${DependencyVersions.MAPSTRUCT_VERSION}"
     const val MAPSTRUCT_APT = "org.mapstruct:mapstruct-processor:${DependencyVersions.MAPSTRUCT_VERSION}"
@@ -66,5 +66,4 @@ object Dependencies {
     // cloud
     const val SPRING_CLOUD = "org.springframework.cloud:spring-cloud-dependencies:${DependencyVersions.SPRING_CLOUD_VERSION}"
     const val AWS_MESSAGING = "org.springframework.cloud:spring-cloud-starter-aws-messaging:${DependencyVersions.AWS_MESSAGING_VERSION}"
-
 }

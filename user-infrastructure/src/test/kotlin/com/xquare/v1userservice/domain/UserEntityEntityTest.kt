@@ -6,7 +6,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.Year
-import java.util.*
+import java.util.UUID
 
 internal class UserEntityEntityTest {
 
@@ -36,5 +36,4 @@ internal class UserEntityEntityTest {
             profileFileName = "sdaf",
             id = UUID.randomUUID()
         )
-
 }

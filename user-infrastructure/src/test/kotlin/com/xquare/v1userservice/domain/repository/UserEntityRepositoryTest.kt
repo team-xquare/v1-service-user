@@ -1,6 +1,5 @@
 package com.xquare.v1userservice.domain.repository
 
-import com.linecorp.kotlinjdsl.query.HibernateMutinyReactiveQueryFactory
 import com.xquare.v1userservice.EmbeddedMySQLConfiguration
 import com.xquare.v1userservice.EqualsTestUtil
 import com.xquare.v1userservice.configuration.datasource.QueryBuilderConfig
@@ -17,7 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.TestConstructor
 import java.time.LocalDate
 import java.time.Year
-import java.util.*
+import java.util.UUID
 
 @ExperimentalCoroutinesApi
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
@@ -31,7 +30,6 @@ import java.util.*
 )
 internal class UserEntityRepositoryTest(
     private val userRepository: UserRepositorySpi,
-    private val queryFactory: HibernateMutinyReactiveQueryFactory
 ) {
 
     @Test
@@ -71,5 +69,4 @@ internal class UserEntityRepositoryTest(
             profileFileName = "sdaf"
         )
     }
-
 }

@@ -9,7 +9,7 @@ import com.xquare.v1userservice.user.mapper.UserDomainMapper
 import com.xquare.v1userservice.user.spi.UserRepositorySpi
 import io.smallrye.mutiny.coroutines.awaitSuspending
 import org.springframework.stereotype.Repository
-import java.util.*
+import java.util.UUID
 
 @Repository
 class UserRepositoryImpl(
