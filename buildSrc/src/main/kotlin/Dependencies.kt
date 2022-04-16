@@ -44,13 +44,6 @@ object Dependencies {
     // security
     const val SPRING_SECURITY = "org.springframework.boot:spring-boot-starter-security"
 
-    // eventuate platform
-    const val EVENTUATE_PLATFORM = "io.eventuate.platform:eventuate-platform-dependencies:${DependencyVersions.EVENTUATE_VERSION}"
-
-    // Eventuate Tram Saga
-    const val EVENTUATE_TRAM_SAGA = "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-orchestration-simple-dsl-starter"
-    const val EVENTUATE_TRAM_SAGA_TEST = "io.eventuate.tram.sagas:eventuate-tram-sagas-spring-testing-support"
-
     // test
     const val EMBEDDED_MYSQL = "com.wix:wix-embedded-mysql:${DependencyVersions.EMBEDDED_MYSQL_VERSION}"
     const val SPRING_TEST = "org.springframework.boot:spring-boot-starter-test"

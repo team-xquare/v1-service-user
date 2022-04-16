@@ -10,5 +10,4 @@ object DependencyVersions {
     const val COROUTINE_VERSION = "1.6.0"
     const val RABBIT_VERSION = "2.4.3"
     const val MAPSTRUCT_VERSION = "1.4.2.Final"
-    const val EVENTUATE_VERSION = "2021.3.RELEASE"
 }
