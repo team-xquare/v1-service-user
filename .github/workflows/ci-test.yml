@@ -22,8 +22,8 @@ jobs:
           java-version: ${{ matrix.java-version }}
           distribution: 'zulu'
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-
-      - name: Test with Gradle
-        run: ./gradlew --info test
+      - name: Gradle Test
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: |
+            test
