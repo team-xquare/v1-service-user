@@ -2,9 +2,6 @@ object Dependencies {
     // ktlint
     const val KTLINT = "com.pinterest:ktlint:${DependencyVersions.KTLINT_VERSION}"
 
-    // redis
-    const val REACTIVE_DATA_REDIS = "org.springframework.boot:spring-boot-starter-data-redis-reactive"
-
     // webflux
     const val WEBFLUX = "org.springframework.boot:spring-boot-starter-webflux"
 
@@ -24,6 +21,7 @@ object Dependencies {
     const val REACTOR_COROUTINE_EXTENSION = "io.projectreactor.kotlin:reactor-kotlin-extensions"
     const val COROUTINE_REACTOR = "org.jetbrains.kotlinx:kotlinx-coroutines-reactor:${DependencyVersions.COROUTINE_VERSION}"
     const val COROUTINE_JDK = "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:${DependencyVersions.COROUTINE_VERSION}"
+    const val KOTLINX_COROUTINE = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${DependencyVersions.COROUTINE_VERSION}"
     const val REACTOR_TEST = "io.projectreactor:reactor-test"
 
     // Actuator
@@ -34,8 +32,9 @@ object Dependencies {
     const val ZIPKIN = "org.springframework.cloud:spring-cloud-sleuth-zipkin"
     const val STARTER_SLEUTH = "org.springframework.cloud:spring-cloud-starter-sleuth"
 
-    // RABBIT
+    // Queue
     const val SPRING_RABBIT = "org.springframework.amqp:spring-rabbit:${DependencyVersions.RABBIT_VERSION}"
+    const val SPRING_KAFKA = "org.springframework.kafka:spring-kafka"
 
     // mapstruct
     const val MAPSTRUCT = "org.mapstruct:mapstruct:${DependencyVersions.MAPSTRUCT_VERSION}"
@@ -46,7 +45,9 @@ object Dependencies {
 
     // test
     const val EMBEDDED_MYSQL = "com.wix:wix-embedded-mysql:${DependencyVersions.EMBEDDED_MYSQL_VERSION}"
-    const val SPRING_TEST = "org.springframework.boot:spring-boot-starter-test"
+    const val SPRING_TEST = "org.springframework.boot:spring-boot-starter-test:${PluginVersions.SPRING_BOOT_VERSION}"
+    const val MOCKK = "io.mockk:mockk:${DependencyVersions.MOCKK_VERSION}"
+    const val SPRING_MOCKK = "com.ninja-squad:springmockk:${DependencyVersions.SPRING_MOCKK_VERSION}"
 
     // jdsl
     const val MUTINY_KOTLIN = "io.smallrye.reactive:mutiny-kotlin:${DependencyVersions.MUTINY_VERSION}"
