@@ -2,15 +2,13 @@ package com.xquare.v1userservice.user
 
 import com.xquare.v1userservice.annotations.Aggregate
 import java.time.LocalDate
-import java.time.Year
 import java.util.UUID
 
-// TODO NEED TO USE STATE MACHINE
 @Aggregate
 class User(
     val name: String,
 
-    val entranceYear: Year,
+    val entranceYear: Int,
 
     val birthDay: LocalDate,
 
@@ -31,6 +29,9 @@ class User(
     val id: UUID = UUID.randomUUID()
 ) {
 
+    var state = UserState.CREATE_PENDING
+        private set
+
     var classNum = classNum
         private set
 
@@ -39,4 +40,8 @@ class User(
 
     var deviceToken = deviceToken
         private set
+
+    fun setUserStateToCreated() {
+        this.state = UserState.CREATED
+    }
 }

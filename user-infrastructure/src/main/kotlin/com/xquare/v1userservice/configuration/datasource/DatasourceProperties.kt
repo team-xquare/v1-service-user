@@ -6,7 +6,10 @@ import org.springframework.boot.context.properties.ConstructorBinding
 @ConstructorBinding
 @ConfigurationProperties(prefix = "spring.datasource")
 data class DatasourceProperties(
-    val url: String,
+    val dbms: String,
+    val host: String,
+    val port: String,
+    val database: String,
     val username: String,
     val password: String,
     val showSql: Boolean,

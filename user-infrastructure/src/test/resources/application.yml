@@ -1,6 +1,24 @@
 spring:
+  main:
+    web-application-type: reactive
+  kafka:
+    consumer:
+      group-id: user-service
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      auto-offset-reset: latest
+      bootstrap-servers: localhost:9092
+    producer:
+      retries: 2
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      bootstrap-servers: localhost:9092
+    bootstrap-servers: localhost:9092
   datasource:
-    url: jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Seoul
+    dbms: mysql
+    host: localhost
+    port: 3306
+    database: test
     password: test
     username: test
     show-sql: false
@@ -13,11 +31,6 @@ spring:
     property-naming-strategy: SNAKE_CASE
     date-format: yyyy-MM-dd'T'HH:mm:ss
     time-zone: Asia/Seoul
-
-  redis:
-    host: localhost
-    password: password
-    port: 6379
 
 cloud:
   aws:
