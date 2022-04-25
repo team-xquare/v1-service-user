@@ -1,6 +1,7 @@
 package com.xquare.v1userservice.domain
 
 import com.xquare.v1userservice.user.UserEntity
+import com.xquare.v1userservice.user.UserState
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -8,7 +9,7 @@ import java.time.LocalDate
 import java.time.Year
 import java.util.UUID
 
-internal class UserEntityEntityTest {
+internal class UserEntityTest {
 
     private var userEntity: UserEntity? = null
 
@@ -30,10 +31,11 @@ internal class UserEntityEntityTest {
             birthDay = LocalDate.now(),
             classNum = 2,
             deviceToken = "sdaf",
-            entranceYear = Year.now(),
+            entranceYear = Year.now().value,
             grade = 1,
             num = 2,
             profileFileName = "sdaf",
-            id = UUID.randomUUID()
+            id = UUID.randomUUID(),
+            state = UserState.CREATE_PENDING
         )
 }
