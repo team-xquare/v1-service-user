@@ -25,5 +25,4 @@ class RequestBodyValidator(
             .joinToString { "${it.field}은(는) ${it.defaultMessage}" }
         throw BadRequestException(errorMessage)
     }
-
 }
