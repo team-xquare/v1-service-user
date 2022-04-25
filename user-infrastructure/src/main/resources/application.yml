@@ -1,6 +1,24 @@
 spring:
+  main:
+    web-application-type: reactive
+  kafka:
+    consumer:
+      group-id: user-service
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      auto-offset-reset: latest
+      bootstrap-servers: ${KAFKA_URLS}
+    producer:
+      retries: 2
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      bootstrap-servers: ${KAFKA_URLS}
+    bootstrap-servers: ${KAFKA_URLS}
   datasource:
-    url: jdbc:${DBMS}://${DB_HOST}:${DB_PORT}/${DB_NAME}?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Seoul
+    dbms: ${DBMS}
+    host: ${DB_HOST}
+    port: ${DB_PORT}
+    database: ${DB_NAME}
     password: ${DB_PASSWORD}
     username: ${DB_USERNAME}
     show-sql: false
@@ -12,11 +30,6 @@ spring:
     property-naming-strategy: SNAKE_CASE
     date-format: yyyy-MM-dd'T'HH:mm:ss
     time-zone: Asia/Seoul
-  redis:
-    host: ${REDIS_HOST}
-    password: ${REDIS_PASSWORD}
-    port: ${REDIS_PORT}
-    username: ${REDIS_USERNAME}
   application:
     name: user-service-v1
   sleuth:
