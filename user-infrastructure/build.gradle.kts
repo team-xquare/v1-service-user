@@ -16,12 +16,12 @@ dependencies {
     implementation(Dependencies.REACTIVE_JDSL)
     implementation(Dependencies.SPRING_DATA_COMMON)
     implementation(Dependencies.REACTIVE_MYSQL)
-    implementation(Dependencies.REACTIVE_DATA_REDIS)
     implementation(Dependencies.MUTINY_KOTLIN)
     implementation(Dependencies.MUTINY_REACTOR)
     implementation(Dependencies.COROUTINE_REACTOR)
     implementation(Dependencies.COROUTINE_JDK)
     implementation(Dependencies.REACTOR_COROUTINE_EXTENSION)
+    implementation(Dependencies.KOTLINX_COROUTINE)
     implementation(Dependencies.WEBFLUX)
     implementation(Dependencies.VALIDATION)
     implementation(Dependencies.JACKSON)
@@ -31,14 +31,14 @@ dependencies {
     implementation(Dependencies.STARTER_SLEUTH)
     implementation(Dependencies.ACTUATOR)
     implementation(Dependencies.MICROMETER)
-    annotationProcessor(Dependencies.CONFIGURATION_PROCESSOR)
-    testImplementation(Dependencies.SPRING_TEST)
-    testImplementation(Dependencies.REACTOR_TEST)
-    testImplementation(Dependencies.COROUTINE_TEST)
-    testImplementation(Dependencies.EMBEDDED_MYSQL)
     implementation(Dependencies.MAPSTRUCT)
     implementation(Dependencies.SPRING_SECURITY)
+    implementation(Dependencies.SPRING_KAFKA)
+    testImplementation(Dependencies.EMBEDDED_MYSQL)
+    testImplementation(Dependencies.MOCKK)
+    testImplementation(Dependencies.SPRING_MOCKK)
     kapt(Dependencies.MAPSTRUCT_APT)
+    kapt(Dependencies.CONFIGURATION_PROCESSOR)
 
     implementation(project(":user-domain"))
 }
@@ -50,7 +50,6 @@ kapt {
     }
 }
 
-
 allOpen {
     annotation("javax.persistence.Entity")
     annotation("javax.persistence.MappedSuperclass")
@@ -61,4 +60,8 @@ noArg {
     annotation("javax.persistence.Entity")
     annotation("javax.persistence.MappedSuperclass")
     annotation("javax.persistence.Embeddable")
+}
+
+tasks.getByName<Jar>("jar") {
+    enabled = false
 }
