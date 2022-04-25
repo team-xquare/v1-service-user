@@ -13,7 +13,7 @@ class UserRouter {
     fun userBaseRouter(userHandler: UserHandler) = coRouter {
         "/users".nest {
             contentType(MediaType.APPLICATION_JSON)
-            POST("/", userHandler::saveUserHandler)
+            POST("", userHandler::saveUserHandler)
         }
     }
 }
