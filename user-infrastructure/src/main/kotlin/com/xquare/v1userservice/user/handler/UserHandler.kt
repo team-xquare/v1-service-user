@@ -30,8 +30,8 @@ class UserHandler(
         this.bodyToMono<CreateUserRequest>().awaitSingle()
 
     private suspend fun processSagaStep(createUserRequest: CreateUserRequest) {
-        val domainRequest = createUserRequest.toDomainUser()
         requestBodyValidator.validate(createUserRequest)
+        val domainRequest = createUserRequest.toDomainUser()
         createUserInPendingState.processStep(domainRequest)
     }
 
