@@ -22,15 +22,18 @@ class UserHandler(
 ) {
     suspend fun saveUserHandler(serverRequest: ServerRequest): ServerResponse {
         val requestBody: CreateUserRequest = serverRequest.getCreateUserRequestBody()
-        requestBodyValidator.validate(requestBody)
-        val domainRequest = requestBody.toDomainUser()
-
-        createUserInPendingState.processStep(domainRequest)
+        processSagaStep(requestBody)
         return ServerResponse.created(URI("/users")).buildAndAwait()
     }
 
     private suspend fun ServerRequest.getCreateUserRequestBody() =
         this.bodyToMono<CreateUserRequest>().awaitSingle()
+
+    private suspend fun processSagaStep(createUserRequest: CreateUserRequest) {
+        val domainRequest = createUserRequest.toDomainUser()
+        requestBodyValidator.validate(createUserRequest)
+        createUserInPendingState.processStep(domainRequest)
+    }
 
     private suspend fun CreateUserRequest.toDomainUser() =
         User(

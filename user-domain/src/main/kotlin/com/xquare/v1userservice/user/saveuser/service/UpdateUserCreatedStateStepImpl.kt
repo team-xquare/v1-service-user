@@ -12,9 +12,12 @@ class UpdateUserCreatedStateStepImpl(
     private val userRepositorySpi: UserRepositorySpi
 ) : UpdateUserCreatedStateStepProcessor {
     override suspend fun processStep(userId: UUID) {
-        val user = userRepositorySpi.findByIdAndStateOrNull(userId, UserState.CREATE_PENDING)
-            ?: throw UserNotFoundException(UserNotFoundException.USER_ON_UPDATE_NOT_FOUND)
+        val user = getUserOrThrowUserNotFoundException(userId)
         user.setUserStateToCreated()
         userRepositorySpi.applyChanges(user)
     }
+
+    private suspend fun getUserOrThrowUserNotFoundException(userId: UUID) =
+        userRepositorySpi.findByIdAndStateOrNull(userId, UserState.CREATE_PENDING)
+            ?: throw UserNotFoundException(UserNotFoundException.USER_ON_UPDATE_NOT_FOUND)
 }
