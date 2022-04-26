@@ -1,10 +1,10 @@
 package com.xquare.v1userservice
 
-import org.assertj.core.api.Assertions.assertThat
 import kotlin.reflect.KProperty
 import kotlin.reflect.full.memberProperties
+import org.assertj.core.api.Assertions.assertThat
 
-object EqualsTestUtil {
+object EqualsTestUtils {
     fun isEqualTo(baseObject: Any, targetObject: Any) {
         val baseObjectFieldMap = baseObject::class.memberProperties
             .associateBy { it.name }
