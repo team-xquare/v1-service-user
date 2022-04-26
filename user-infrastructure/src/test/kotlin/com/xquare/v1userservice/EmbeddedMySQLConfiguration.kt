@@ -1,36 +1,36 @@
-//package com.xquare.v1userservice
+// package com.xquare.v1userservice
 //
-//import com.wix.mysql.EmbeddedMysql
-//import com.wix.mysql.config.Charset
-//import com.wix.mysql.config.MysqldConfig
-//import com.wix.mysql.distribution.Version
-//import com.xquare.v1userservice.configuration.datasource.DatasourceProperties
-//import javax.annotation.PreDestroy
-//import org.springframework.boot.context.properties.EnableConfigurationProperties
-//import org.springframework.boot.test.context.TestConfiguration
+// import com.wix.mysql.EmbeddedMysql
+// import com.wix.mysql.config.Charset
+// import com.wix.mysql.config.MysqldConfig
+// import com.wix.mysql.distribution.Version
+// import com.xquare.v1userservice.configuration.datasource.DatasourceProperties
+// import javax.annotation.PreDestroy
+// import org.springframework.boot.context.properties.EnableConfigurationProperties
+// import org.springframework.boot.test.context.TestConfiguration
 //
-//@EnableConfigurationProperties(DatasourceProperties::class)
-//@TestConfiguration
-//class EmbeddedMySQLConfiguration(
-//    datasourceProperties: DatasourceProperties
-//) {
+// @EnableConfigurationProperties(DatasourceProperties::class)
+// @TestConfiguration
+// class EmbeddedMySQLConfiguration(
+//     datasourceProperties: DatasourceProperties
+// ) {
 //
-//    private final val mysqlServer: EmbeddedMysql
+//     private final val mysqlServer: EmbeddedMysql
 //
-//    init {
-//        val config = MysqldConfig.aMysqldConfig(Version.v8_latest)
-//            .withCharset(Charset.UTF8)
-//            .withPort(3306)
-//            .withUser(datasourceProperties.username, datasourceProperties.password)
-//            .build()
+//     init {
+//         val config = MysqldConfig.aMysqldConfig(Version.v8_latest)
+//             .withCharset(Charset.UTF8)
+//             .withPort(3306)
+//             .withUser(datasourceProperties.username, datasourceProperties.password)
+//             .build()
 //
-//        mysqlServer = EmbeddedMysql.anEmbeddedMysql(config)
-//            .addSchema(datasourceProperties.database)
-//            .start()
-//    }
+//         mysqlServer = EmbeddedMysql.anEmbeddedMysql(config)
+//             .addSchema(datasourceProperties.database)
+//             .start()
+//     }
 //
-//    @PreDestroy
-//    fun stopServer() {
-//        mysqlServer.stop()
-//    }
-//}
+//     @PreDestroy
+//     fun stopServer() {
+//         mysqlServer.stop()
+//     }
+// }

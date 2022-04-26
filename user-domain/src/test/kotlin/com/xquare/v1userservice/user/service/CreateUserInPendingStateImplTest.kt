@@ -4,9 +4,11 @@ import com.xquare.v1userservice.stubs.InMemoryUserRepository
 import com.xquare.v1userservice.user.UserState
 import com.xquare.v1userservice.user.UserUtils
 import com.xquare.v1userservice.user.saveuser.service.CreateUserInPendingStateImpl
+import java.util.UUID
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 @ExperimentalCoroutinesApi
@@ -19,7 +21,7 @@ internal class CreateUserInPendingStateImplTest {
     fun processStepSuccessTest() = runTest {
         val user = UserUtils.buildUserWithCreatePendingState()
         createUserInPendingState.processStep(user)
-        assertThat(userRepositorySpi.findByIdAndStateOrNull(user.id, UserState.CREATE_PENDING)).isNotNull
+        assertTrue(isUserExists(user.id))
     }
 
     @Test
@@ -27,6 +29,9 @@ internal class CreateUserInPendingStateImplTest {
         val user = UserUtils.buildUserWithCreatePendingState()
         createUserInPendingState.processStep(user)
         createUserInPendingState.revertStep(user.id)
-        assertThat(userRepositorySpi.findByIdAndStateOrNull(user.id, UserState.CREATE_PENDING)).isNull()
+        assertFalse(isUserExists(user.id))
     }
+
+    private suspend fun isUserExists(userId: UUID) =
+        userRepositorySpi.findByIdAndStateOrNull(userId, UserState.CREATE_PENDING) != null
 }

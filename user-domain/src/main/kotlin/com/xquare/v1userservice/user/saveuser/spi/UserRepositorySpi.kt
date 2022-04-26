@@ -10,5 +10,5 @@ interface UserRepositorySpi {
     suspend fun saveUserAndOutbox(user: User): User
     suspend fun findByIdAndStateOrNull(id: UUID, state: UserState): User?
     suspend fun applyChanges(user: User): User
-    suspend fun deleteByIdAndState(id: UUID, userState: UserState): User?
+    suspend fun deleteByIdAndState(id: UUID, userState: UserState)
 }

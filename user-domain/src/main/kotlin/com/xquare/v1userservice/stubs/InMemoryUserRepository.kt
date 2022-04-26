@@ -26,8 +26,9 @@ class InMemoryUserRepository(
         return user
     }
 
-    override suspend fun deleteByIdAndState(id: UUID, userState: UserState): User? {
-        val userToDelete = userMap[id]
-        return if (userToDelete?.state == userState) userMap.remove(id) else null
+    override suspend fun deleteByIdAndState(id: UUID, userState: UserState) {
+        if (userMap[id]?.state == userState) {
+            userMap.remove(id)
+        }
     }
 }

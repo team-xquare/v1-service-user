@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test
 import org.mapstruct.factory.Mappers
 import org.mockito.Spy
 
-
 internal class UserDomainMapperTest {
 
     @Spy
@@ -25,5 +24,4 @@ internal class UserDomainMapperTest {
         val userEntity = userMapper.userDomainToEntity(userDomainObject)
         EqualsTestUtils.isEqualTo(userEntity, userDomainObject)
     }
-
 }

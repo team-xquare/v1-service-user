@@ -1,5 +1,6 @@
 package com.xquare.v1userservice.user.repository
 
+import com.linecorp.kotlinjdsl.ReactiveQueryFactory
 import com.linecorp.kotlinjdsl.deleteQuery
 import com.linecorp.kotlinjdsl.query.HibernateMutinyReactiveQueryFactory
 import com.linecorp.kotlinjdsl.querydsl.expression.col
@@ -15,6 +16,8 @@ import io.vertx.core.json.JsonObject
 import java.sql.Timestamp
 import java.util.UUID
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import org.hibernate.reactive.mutiny.Mutiny.Session
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -22,25 +25,19 @@ class UserRepositoryImpl(
     private val reactiveQueryFactory: HibernateMutinyReactiveQueryFactory,
     private val userDomainMapper: UserDomainMapper
 ) : UserRepositorySpi {
-    override suspend fun saveUserAndOutbox(user: User): User = coroutineScope {
+    override suspend fun saveUserAndOutbox(user: User): User {
         val userEntityToSave = userDomainMapper.userDomainToEntity(user)
         val outboxEntityToSave = user.toOutboxEntity()
         reactiveQueryFactory.transactionWithFactory { session, _ ->
-            session.persist(outboxEntityToSave)
-                .awaitSuspending()
-
-            // save user asynchronously
-            session.persist(userEntityToSave)
-                .awaitSuspending()
+            session.persistOutboxEntity(outboxEntityToSave)
+            session.persistUserEntityConcurrently(userEntityToSave)
         }
 
         reactiveQueryFactory.withFactory { _, reactiveQueryFactory ->
-            reactiveQueryFactory.deleteQuery<OutboxEntity> {
-                where(col(OutboxEntity::id).equal(outboxEntityToSave.id))
-            }
+            reactiveQueryFactory.deleteOutboxEntity(outboxEntityToSave.id)
         }
 
-        user
+        return user
     }
 
     private fun User.toOutboxEntity() =
@@ -53,6 +50,22 @@ class UserRepositoryImpl(
             timestamp = Timestamp(System.currentTimeMillis())
         )
 
+    private suspend fun Session.persistOutboxEntity(outboxEntity: OutboxEntity) {
+        this.persist(outboxEntity).awaitSuspending()
+    }
+
+    private suspend fun Session.persistUserEntityConcurrently(userEntity: UserEntity) = coroutineScope {
+        launch {
+            this@persistUserEntityConcurrently.persist(userEntity).awaitSuspending()
+        }
+    }
+
+    private suspend fun ReactiveQueryFactory.deleteOutboxEntity(id: UUID) {
+        this.deleteQuery<OutboxEntity> {
+            where(col(OutboxEntity::id).equal(id))
+        }
+    }
+
     private fun buildOutboxPayloadJson(user: User) =
         JsonObject().apply {
             put("id", user.id)
@@ -60,36 +73,46 @@ class UserRepositoryImpl(
 
     override suspend fun findByIdAndStateOrNull(id: UUID, state: UserState): User? {
         val userEntity = reactiveQueryFactory.withFactory { _, reactiveQueryFactory ->
-            reactiveQueryFactory.singleQueryOrNull<UserEntity> {
-                select(entity(UserEntity::class))
-                from(entity(UserEntity::class))
-                where(
-                    col(UserEntity::id).equal(id)
-                        .and(col(UserEntity::state).equal(state))
-                )
-            }
+            reactiveQueryFactory.findByIdAndUserState(id, state)
         }
 
         return userEntity?.let { userDomainMapper.userEntityToDomain(it) }
     }
 
+    private suspend fun ReactiveQueryFactory.findByIdAndUserState(id: UUID, state: UserState): UserEntity? {
+        return this.singleQueryOrNull<UserEntity> {
+            select(entity(UserEntity::class))
+            from(entity(UserEntity::class))
+            where(
+                col(UserEntity::id).equal(id)
+                    .and(col(UserEntity::state).equal(state))
+            )
+        }
+    }
+
     override suspend fun applyChanges(user: User): User {
         val userEntityToUpdate = userDomainMapper.userDomainToEntity(user)
         val updatedEntity = reactiveQueryFactory.transactionWithFactory { session, _ ->
-            session.merge(userEntityToUpdate)
-                .awaitSuspending()
+            session.mergeUserEntity(userEntityToUpdate)
         }
         return userDomainMapper.userEntityToDomain(updatedEntity)
     }
 
-    override suspend fun deleteByIdAndState(id: UUID, userState: UserState): User? {
-        return reactiveQueryFactory.transactionWithFactory { _, reactiveQueryFactory ->
-            reactiveQueryFactory.deleteQuery(User::class) {
-                where(
-                    col(User::id).equal(id)
-                        .and(col(User::state).equal(userState))
-                )
-            }
-        }.singleResultOrNull()
+    private suspend fun Session.mergeUserEntity(userEntity: UserEntity) =
+        this.merge(userEntity).awaitSuspending()
+
+    override suspend fun deleteByIdAndState(id: UUID, userState: UserState) {
+        reactiveQueryFactory.transactionWithFactory { _, reactiveQueryFactory ->
+            reactiveQueryFactory.deleteWithUserIdAndState(id, userState)
+        }
+    }
+
+    private suspend fun ReactiveQueryFactory.deleteWithUserIdAndState(id: UUID, userState: UserState) {
+        this.deleteQuery<User> {
+            where(
+                col(User::id).equal(id)
+                    .and(col(User::state).equal(userState))
+            )
+        }
     }
 }
