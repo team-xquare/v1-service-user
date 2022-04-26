@@ -33,5 +33,5 @@ internal class CreateUserInPendingStateImplTest {
     }
 
     private suspend fun isUserExists(userId: UUID) =
-        userRepositorySpi.findByIdAndStateOrNull(userId, UserState.CREATE_PENDING) == null
+        userRepositorySpi.findByIdAndStateOrNull(userId, UserState.CREATE_PENDING) != null
 }
