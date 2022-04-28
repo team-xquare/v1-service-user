@@ -5,9 +5,12 @@ spring:
     consumer:
       group-id: user-service
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
       auto-offset-reset: latest
       bootstrap-servers: ${KAFKA_URLS}
+      properties:
+        spring.json.add.type.header: false
+        spring.deserializer.value.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
     producer:
       retries: 2
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
@@ -21,7 +24,7 @@ spring:
     database: ${DB_NAME}
     password: ${DB_PASSWORD}
     username: ${DB_USERNAME}
-    show-sql: false
+    show-sql: ${SHOW_SQL}
     format-sql: false
     highlight-sql: false
     ddl-auto: ${DDL_AUTO_MODE}
