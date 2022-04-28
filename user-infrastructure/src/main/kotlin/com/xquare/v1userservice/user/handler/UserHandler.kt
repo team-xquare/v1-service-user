@@ -22,6 +22,7 @@ class UserHandler(
 ) {
     suspend fun saveUserHandler(serverRequest: ServerRequest): ServerResponse {
         val requestBody: CreateUserRequest = serverRequest.getCreateUserRequestBody()
+        requestBodyValidator.validate(requestBody)
         processSagaStep(requestBody)
         return ServerResponse.created(URI("/users")).buildAndAwait()
     }
@@ -30,7 +31,6 @@ class UserHandler(
         this.bodyToMono<CreateUserRequest>().awaitSingle()
 
     private suspend fun processSagaStep(createUserRequest: CreateUserRequest) {
-        requestBodyValidator.validate(createUserRequest)
         val domainRequest = createUserRequest.toDomainUser()
         createUserInPendingState.processStep(domainRequest)
     }
