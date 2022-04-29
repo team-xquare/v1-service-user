@@ -50,6 +50,11 @@ class UserRepositoryImpl(
             timestamp = Timestamp(System.currentTimeMillis())
         )
 
+    private fun buildOutboxPayloadJson(user: User) =
+        JsonObject().apply {
+            put("user_id", user.id)
+        }
+
     private suspend fun Session.persistOutboxEntity(outboxEntity: OutboxEntity) {
         this.persist(outboxEntity).awaitSuspending()
     }
@@ -65,11 +70,6 @@ class UserRepositoryImpl(
             where(col(OutboxEntity::id).equal(id))
         }
     }
-
-    private fun buildOutboxPayloadJson(user: User) =
-        JsonObject().apply {
-            put("id", user.id)
-        }
 
     override suspend fun findByIdAndStateOrNull(id: UUID, state: UserState): User? {
         val userEntity = reactiveQueryFactory.withFactory { _, reactiveQueryFactory ->
@@ -108,11 +108,11 @@ class UserRepositoryImpl(
     }
 
     private suspend fun ReactiveQueryFactory.deleteWithUserIdAndState(id: UUID, userState: UserState) {
-        this.deleteQuery<User> {
+        this.deleteQuery<UserEntity> {
             where(
-                col(User::id).equal(id)
-                    .and(col(User::state).equal(userState))
+                col(UserEntity::id).equal(id)
+                    .and(col(UserEntity::state).equal(userState))
             )
-        }
+        }.executeUpdate()
     }
 }
