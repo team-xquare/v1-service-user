@@ -1,0 +1,33 @@
+POST http://debezium-url:8083/connectors
+Content-Type: application/json
+
+{
+  "name":"user-service-outbox-connector",
+  "config": {
+    "name": "user-service-outbox-connector",
+    "connector.class":"io.debezium.connector.mysql.MySqlConnector",
+    "tasks.max":"1",
+    "database.hostname":"",
+    "database.port": "",
+    "database.user":"",
+    "database.password":"",
+    "database.server.id":"",
+    "database.allowPublicKeyRetrieval":"true",
+    "database.server.name":"xquare-debezium",
+    "table.include.list" : "user.tbl_outbox",
+    "database.include.list" : "user",
+    "database.history.kafka.bootstrap.servers":"",
+    "tombstones.on.delete" : "false",
+    "transforms.outbox.route.by.field": "aggregate_type",
+    "transforms.outbox.table.field.event.id": "id",
+    "transforms.outbox.table.field.event.key": "aggregate_id",
+    "transforms.outbox.table.field.event.type": "aggregate_type",
+    "transforms.outbox.table.field.event.payload": "payload",
+    "route.by.field": "aggregate_type",
+    "database.history.kafka.topic": "user",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "key.converter.schemas.enable": "false",
+    "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter.schemas.enable": "false"
+  }
+}
