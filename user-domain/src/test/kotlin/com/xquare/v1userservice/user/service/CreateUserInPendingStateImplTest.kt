@@ -1,7 +1,6 @@
 package com.xquare.v1userservice.user.service
 
 import com.xquare.v1userservice.stubs.InMemoryUserRepository
-import com.xquare.v1userservice.user.UserState
 import com.xquare.v1userservice.user.UserUtils
 import com.xquare.v1userservice.user.saveuser.service.CreateUserInPendingStateImpl
 import java.util.UUID
@@ -33,5 +32,5 @@ internal class CreateUserInPendingStateImplTest {
     }
 
     private suspend fun isUserExists(userId: UUID) =
-        userRepositorySpi.findByIdAndStateOrNull(userId, UserState.CREATE_PENDING) != null
+        userRepositorySpi.findByIdAndStateWithCreatePending(userId) != null
 }

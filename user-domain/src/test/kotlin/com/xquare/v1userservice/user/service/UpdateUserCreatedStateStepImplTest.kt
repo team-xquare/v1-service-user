@@ -1,7 +1,6 @@
 package com.xquare.v1userservice.user.service
 
 import com.xquare.v1userservice.stubs.InMemoryUserRepository
-import com.xquare.v1userservice.user.UserState
 import com.xquare.v1userservice.user.UserUtils
 import com.xquare.v1userservice.user.saveuser.service.UpdateUserCreatedStateStepImpl
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -19,6 +18,6 @@ internal class UpdateUserCreatedStateStepImplTest {
     @Test
     fun processStepSuccessTest() = runTest {
         updateUserCreatedStateStep.processStep(user.id)
-        assertThat(userRepositorySpi.findByIdAndStateOrNull(user.id, UserState.CREATED)).isNotNull
+        assertThat(userRepositorySpi.findByIdAndStateWithCreatePending(user.id)).isNull()
     }
 }
