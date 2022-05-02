@@ -18,6 +18,6 @@ internal class UpdateUserCreatedStateStepImplTest {
     @Test
     fun processStepSuccessTest() = runTest {
         updateUserCreatedStateStep.processStep(user.id)
-        assertThat(userRepositorySpi.findByIdAndStateWithCreatePending(user.id)).isNotNull
+        assertThat(userRepositorySpi.findByIdAndStateWithCreatePending(user.id)).isNull()
     }
 }
