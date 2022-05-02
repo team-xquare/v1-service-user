@@ -71,9 +71,9 @@ class UserRepositoryImpl(
         }
     }
 
-    override suspend fun findByIdAndStateOrNull(id: UUID, state: UserState): User? {
+    override suspend fun findByIdAndStateWithCreatePending(id: UUID): User? {
         val userEntity = reactiveQueryFactory.withFactory { _, reactiveQueryFactory ->
-            reactiveQueryFactory.findByIdAndUserState(id, state)
+            reactiveQueryFactory.findByIdAndUserState(id, UserState.CREATE_PENDING)
         }
 
         return userEntity?.let { userDomainMapper.userEntityToDomain(it) }
@@ -101,9 +101,9 @@ class UserRepositoryImpl(
     private suspend fun Session.mergeUserEntity(userEntity: UserEntity) =
         this.merge(userEntity).awaitSuspending()
 
-    override suspend fun deleteByIdAndState(id: UUID, userState: UserState) {
+    override suspend fun deleteByIdAndStateWithCreatePending(id: UUID) {
         reactiveQueryFactory.transactionWithFactory { _, reactiveQueryFactory ->
-            reactiveQueryFactory.deleteWithUserIdAndState(id, userState)
+            reactiveQueryFactory.deleteWithUserIdAndState(id, UserState.CREATE_PENDING)
         }
     }
 

@@ -41,17 +41,17 @@ class ErrorWebExchangeHandler(
 
     private fun handleError(request: ServerRequest): Mono<ServerResponse> =
         when (val throwable = super.getError(request)) {
-            is BaseException -> buildErrorResponse(throwable)
-            is BaseError -> buildErrorResponse(throwable)
-            else -> buildErrorResponse(InternalServerError(InternalServerError.UNEXPECTED_EXCEPTION))
+            is BaseException -> throwable.toErrorResponse()
+            is BaseError -> throwable.toErrorResponse()
+            else -> InternalServerError(InternalServerError.UNEXPECTED_EXCEPTION).toErrorResponse()
         }
 
-    private fun buildErrorResponse(exceptionAttribute: ExceptionAttribute) =
-        ServerResponse.status(exceptionAttribute.statusCode)
+    private fun ExceptionAttribute.toErrorResponse() =
+        ServerResponse.status(this.statusCode)
             .bodyValue(
                 ErrorResponse(
-                    errorMessage = exceptionAttribute.errorMessage,
-                    responseStatus = exceptionAttribute.statusCode
+                    errorMessage = this.errorMessage,
+                    responseStatus = this.statusCode
                 )
             )
 }

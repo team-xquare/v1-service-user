@@ -16,9 +16,9 @@ class InMemoryUserRepository(
         return user
     }
 
-    override suspend fun findByIdAndStateOrNull(id: UUID, state: UserState): User? {
+    override suspend fun findByIdAndStateWithCreatePending(id: UUID): User? {
         val user = userMap[id]
-        return if (user?.state == state) user else null
+        return if (user?.state == UserState.CREATE_PENDING) user else null
     }
 
     override suspend fun applyChanges(user: User): User {
@@ -26,8 +26,8 @@ class InMemoryUserRepository(
         return user
     }
 
-    override suspend fun deleteByIdAndState(id: UUID, userState: UserState) {
-        if (userMap[id]?.state == userState) {
+    override suspend fun deleteByIdAndStateWithCreatePending(id: UUID) {
+        if (userMap[id]?.state == UserState.CREATE_PENDING) {
             userMap.remove(id)
         }
     }
