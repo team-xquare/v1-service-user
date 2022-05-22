@@ -21,6 +21,18 @@ class InMemoryUserRepository(
         return if (user?.state == UserState.CREATE_PENDING) user else null
     }
 
+    override suspend fun findByIdAndStateWithCreated(userId: UUID): User? {
+        return if (userMap[userId]?.state == UserState.CREATED) {
+            userMap[userId]
+        } else {
+            null
+        }
+    }
+
+    override suspend fun findByAccountIdAndStateWithCreated(accountId: String): User? {
+        return userMap.values.firstOrNull { it.accountId == accountId && it.state == UserState.CREATED }
+    }
+
     override suspend fun applyChanges(user: User): User {
         userMap[user.id] = user
         return user
