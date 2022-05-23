@@ -20,5 +20,4 @@ class GetUserInformationServiceImpl(
         return userRepositorySpi.findByAccountIdAndStateWithCreated(accountId)
             ?: throw UserNotFoundException(UserNotFoundException.USER_ID_NOT_FOUND)
     }
-
 }

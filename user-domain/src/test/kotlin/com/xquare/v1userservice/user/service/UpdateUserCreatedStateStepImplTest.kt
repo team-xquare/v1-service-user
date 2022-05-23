@@ -16,7 +16,6 @@ internal class UpdateUserCreatedStateStepImplTest {
     private var userRepositorySpi = InMemoryUserRepository(hashMapOf(user.id to user))
     private var updateUserCreatedStateStep = UpdateUserCreatedStateStepImpl(userRepositorySpi)
 
-
     @BeforeEach
     fun setup() {
         userRepositorySpi = InMemoryUserRepository(hashMapOf(user.id to user))
