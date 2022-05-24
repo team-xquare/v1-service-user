@@ -8,8 +8,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class UserExceptionEventHandler(
-    private val createUserInPendingStateRevert: CreateUserInPendingStateRevert,
-    private val updateUserCreatedStateRevert: CreateUserInPendingStateRevert
+    private val createUserInPendingStateRevert: CreateUserInPendingStateRevert
 ) {
 
     suspend fun exceptionHandler(

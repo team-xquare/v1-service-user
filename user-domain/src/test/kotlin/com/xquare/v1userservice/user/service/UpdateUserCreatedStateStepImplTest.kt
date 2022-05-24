@@ -6,14 +6,21 @@ import com.xquare.v1userservice.user.saveuser.service.UpdateUserCreatedStateStep
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 @ExperimentalCoroutinesApi
 internal class UpdateUserCreatedStateStepImplTest {
 
     private val user = UserUtils.buildUserWithCreatePendingState()
-    private val userRepositorySpi = InMemoryUserRepository(hashMapOf(user.id to user))
-    private val updateUserCreatedStateStep = UpdateUserCreatedStateStepImpl(userRepositorySpi)
+    private var userRepositorySpi = InMemoryUserRepository(hashMapOf(user.id to user))
+    private var updateUserCreatedStateStep = UpdateUserCreatedStateStepImpl(userRepositorySpi)
+
+    @BeforeEach
+    fun setup() {
+        userRepositorySpi = InMemoryUserRepository(hashMapOf(user.id to user))
+        updateUserCreatedStateStep = UpdateUserCreatedStateStepImpl(userRepositorySpi)
+    }
 
     @Test
     fun processStepSuccessTest() = runTest {

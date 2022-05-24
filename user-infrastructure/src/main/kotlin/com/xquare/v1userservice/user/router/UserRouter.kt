@@ -14,6 +14,8 @@ class UserRouter {
         "/users".nest {
             contentType(MediaType.APPLICATION_JSON)
             POST("", userHandler::saveUserHandler)
+            GET("/id/{userId}", userHandler::getUserByIdHandler)
+            GET("/account-id/{accountId}", userHandler::getUserByAccountIdHandler)
         }
     }
 }

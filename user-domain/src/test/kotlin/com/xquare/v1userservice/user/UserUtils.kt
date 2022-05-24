@@ -18,4 +18,20 @@ object UserUtils {
         profileFileName = "sdaf",
         id = UUID.randomUUID()
     )
+
+    fun buildCreatedUser() = User(
+        name = "name",
+        password = "testPassword",
+        accountId = "accountId",
+        birthDay = LocalDate.now(),
+        classNum = 2,
+        deviceToken = "sdaf",
+        entranceYear = Year.now().value,
+        grade = 1,
+        num = 2,
+        profileFileName = "sdaf",
+        id = UUID.randomUUID()
+    ).apply {
+        setUserStateToCreated()
+    }
 }

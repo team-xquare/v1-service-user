@@ -79,12 +79,39 @@ class UserRepositoryImpl(
         return userEntity?.let { userDomainMapper.userEntityToDomain(it) }
     }
 
+    override suspend fun findByIdAndStateWithCreated(userId: UUID): User? {
+        val userEntity = reactiveQueryFactory.withFactory { _, reactiveQueryFactory ->
+            reactiveQueryFactory.findByIdAndUserState(userId, UserState.CREATED)
+        }
+
+        return userEntity?.let { userDomainMapper.userEntityToDomain(it) }
+    }
+
     private suspend fun ReactiveQueryFactory.findByIdAndUserState(id: UUID, state: UserState): UserEntity? {
         return this.singleQueryOrNull<UserEntity> {
             select(entity(UserEntity::class))
             from(entity(UserEntity::class))
             where(
                 col(UserEntity::id).equal(id)
+                    .and(col(UserEntity::state).equal(state))
+            )
+        }
+    }
+
+    override suspend fun findByAccountIdAndStateWithCreated(accountId: String): User? {
+        val userEntity = reactiveQueryFactory.withFactory { _, reactiveQueryFactory ->
+            reactiveQueryFactory.findByAccountIdAndUserState(accountId, UserState.CREATED)
+        }
+
+        return userEntity?.let { userDomainMapper.userEntityToDomain(it) }
+    }
+
+    private suspend fun ReactiveQueryFactory.findByAccountIdAndUserState(accountId: String, state: UserState): UserEntity? {
+        return this.singleQueryOrNull<UserEntity> {
+            select(entity(UserEntity::class))
+            from(entity(UserEntity::class))
+            where(
+                col(UserEntity::accountId).equal(accountId)
                     .and(col(UserEntity::state).equal(state))
             )
         }
