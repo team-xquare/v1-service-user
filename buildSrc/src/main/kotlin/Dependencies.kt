@@ -42,6 +42,7 @@ object Dependencies {
 
     // security
     const val SPRING_SECURITY = "org.springframework.boot:spring-boot-starter-security"
+    const val SECURITY_JWT = "com.nimbusds:nimbus-jose-jwt:${DependencyVersions.NIMBUS_VERSION}"
 
     // test
     const val EMBEDDED_MYSQL = "com.wix:wix-embedded-mysql:${DependencyVersions.EMBEDDED_MYSQL_VERSION}"
