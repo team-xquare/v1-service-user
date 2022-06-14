@@ -34,6 +34,7 @@ dependencies {
     implementation(Dependencies.MAPSTRUCT)
     implementation(Dependencies.SPRING_SECURITY)
     implementation(Dependencies.SPRING_KAFKA)
+    implementation(Dependencies.SECURITY_JWT)
     testImplementation(Dependencies.EMBEDDED_MYSQL)
     testImplementation(Dependencies.MOCKK)
     testImplementation(Dependencies.SPRING_MOCKK)
