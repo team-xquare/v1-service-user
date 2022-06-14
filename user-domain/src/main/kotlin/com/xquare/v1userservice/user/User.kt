@@ -26,7 +26,9 @@ class User(
 
     deviceToken: String? = null,
 
-    val id: UUID = UUID.randomUUID()
+    val id: UUID = UUID.randomUUID(),
+
+    val role: UserRole
 ) {
 
     var state = UserState.CREATE_PENDING
