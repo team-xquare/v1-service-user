@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository
 class PasswordMatcherSpiImpl(
     private val passwordEncoder: PasswordEncoder
 ) : PasswordMatcherSpi {
-    override fun rawPasswordAndEncodedPasswordMatches(rawPassword: String, encodedPassword: String): Boolean {
+    override fun passwordMatches(rawPassword: String, encodedPassword: String): Boolean {
         return passwordEncoder.matches(rawPassword, encodedPassword)
     }
 }
