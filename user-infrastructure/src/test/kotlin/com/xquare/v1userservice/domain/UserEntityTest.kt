@@ -1,13 +1,14 @@
 package com.xquare.v1userservice.domain
 
 import com.xquare.v1userservice.user.UserEntity
+import com.xquare.v1userservice.user.UserRole
 import com.xquare.v1userservice.user.UserState
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.Year
 import java.util.UUID
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
 internal class UserEntityTest {
 
@@ -36,6 +37,7 @@ internal class UserEntityTest {
             num = 2,
             profileFileName = "sdaf",
             id = UUID.randomUUID(),
-            state = UserState.CREATE_PENDING
+            state = UserState.CREATE_PENDING,
+            role = UserRole.STU
         )
 }

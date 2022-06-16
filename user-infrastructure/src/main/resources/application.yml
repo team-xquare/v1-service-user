@@ -73,6 +73,11 @@ management:
     health:
       show-details: when_authorized
 
+service:
+  authority:
+    host: ${AUTHORITY_SERVICE_HOST}
+    get-authority-endpoint: ${GET_AUTHORITY_ENDPOINT}
+
 ---
 
 spring:

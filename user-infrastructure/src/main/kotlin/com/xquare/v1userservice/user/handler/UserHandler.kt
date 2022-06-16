@@ -2,10 +2,14 @@ package com.xquare.v1userservice.user.handler
 
 import com.xquare.v1userservice.configuration.validate.RequestBodyValidator
 import com.xquare.v1userservice.user.User
+import com.xquare.v1userservice.user.UserRole
 import com.xquare.v1userservice.user.router.dto.getuser.GetUserByAccountIdResponse
 import com.xquare.v1userservice.user.router.dto.saveuser.CreateUserRequest
+import com.xquare.v1userservice.user.router.dto.signin.SignInRequest
 import com.xquare.v1userservice.user.saveuser.api.CreateUserInPendingStateProcessor
 import com.xquare.v1userservice.user.saveuser.api.GetUserInformationService
+import com.xquare.v1userservice.user.signin.api.UserSignInApi
+import com.xquare.v1userservice.user.signin.service.SignInDomainRequest
 import java.net.URI
 import java.time.Year
 import java.util.UUID
@@ -23,7 +27,8 @@ class UserHandler(
     private val createUserInPendingState: CreateUserInPendingStateProcessor,
     private val getUserInformationService: GetUserInformationService,
     private val passwordEncoder: PasswordEncoder,
-    private val requestBodyValidator: RequestBodyValidator
+    private val requestBodyValidator: RequestBodyValidator,
+    private val userSignInApi: UserSignInApi
 ) {
     suspend fun saveUserHandler(serverRequest: ServerRequest): ServerResponse {
         val requestBody: CreateUserRequest = serverRequest.getCreateUserRequestBody()
@@ -50,7 +55,25 @@ class UserHandler(
             num = this.num,
             grade = this.grade,
             name = this.name,
-            classNum = this.classNum
+            classNum = this.classNum,
+            role = UserRole.STU
+        )
+
+    suspend fun checkSignInAvailableAndRespondUserInformation(serverRequest: ServerRequest): ServerResponse {
+        val signInRequest = serverRequest.getSignInRequestBody()
+        val domainRequest = signInRequest.toDomainRequest()
+        val user = userSignInApi.userSignIn(domainRequest)
+        val userResponseDto = user.toGetUserByAccountIdResponseDto()
+        return ServerResponse.ok().bodyValueAndAwait(userResponseDto)
+    }
+
+    private suspend fun ServerRequest.getSignInRequestBody() =
+        this.bodyToMono<SignInRequest>().awaitSingle()
+
+    private fun SignInRequest.toDomainRequest() =
+        SignInDomainRequest(
+            accountId = this.accountId,
+            password = this.password
         )
 
     suspend fun getUserByIdHandler(serverRequest: ServerRequest): ServerResponse {

@@ -30,7 +30,7 @@ class UserEventRouter(
         userEventHandler.authorityCreatedEventHandler(debeziumMessage)
     }
 
-    @KafkaListener(topicPattern = "${USER_ERROR_TOPIC_PREFIX}authority-creation", groupId = "user-service")
+    @KafkaListener(topics = ["${USER_ERROR_TOPIC_PREFIX}authority-creation", "${USER_ERROR_TOPIC_PREFIX}application-creation"], groupId = "user-service")
     fun userErrorHandler(
         authorityCreatedFailedEvent: AuthorityCreatedFailedEvent,
         @Header(KafkaHeaders.RECEIVED_TOPIC) topic: String

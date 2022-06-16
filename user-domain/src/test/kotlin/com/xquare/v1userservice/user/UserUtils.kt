@@ -16,7 +16,8 @@ object UserUtils {
         grade = 1,
         num = 2,
         profileFileName = "sdaf",
-        id = UUID.randomUUID()
+        id = UUID.randomUUID(),
+        role = UserRole.STU
     )
 
     fun buildCreatedUser() = User(
@@ -30,7 +31,8 @@ object UserUtils {
         grade = 1,
         num = 2,
         profileFileName = "sdaf",
-        id = UUID.randomUUID()
+        id = UUID.randomUUID(),
+        role = UserRole.STU
     ).apply {
         setUserStateToCreated()
     }
