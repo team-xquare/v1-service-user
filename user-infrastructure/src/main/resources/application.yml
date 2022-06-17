@@ -33,36 +33,10 @@ spring:
     property-naming-strategy: SNAKE_CASE
     date-format: yyyy-MM-dd'T'HH:mm:ss
     time-zone: Asia/Seoul
-  application:
-    name: user-service-v1
-  sleuth:
-    sampler:
-      probability: 1
-  zipkin:
-    base-url: ${ZIPKIN_URL}
-    sender:
-      type: rabbit
-  rabbitmq:
-    host: ${RABBIT_MQ_HOST}
-    port: ${RABBIT_MQ_PORT}
-    username: ${RABBIT_MQ_USERNAME}
-    password: ${RABBIT_MQ_PASSWORD}
 
 server:
   port: ${SERVER_PORT}
   shutdown: graceful
-
-cloud:
-  aws:
-    credentials:
-      access-key: ${AWS_ACCESS_KEY}
-      secret-key: ${AWS_SECRET_KEY}
-    region:
-      static: ${AWS_REGION}
-    # when we run spring cloud on EC2, it starts CloudFormation setting. If we don't, our application doesn't start
-    # So I turn of this setting
-    stack:
-      auto: false
 
 management:
   endpoints:
@@ -76,7 +50,6 @@ management:
 service:
   authority:
     host: ${AUTHORITY_SERVICE_HOST}
-    get-authority-endpoint: ${GET_AUTHORITY_ENDPOINT}
 
 ---
 

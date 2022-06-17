@@ -6,6 +6,5 @@ import org.springframework.boot.context.properties.ConstructorBinding
 @ConstructorBinding
 @ConfigurationProperties(prefix = "service.authority")
 class AuthorityProperties(
-    val host: String,
-    val getAuthorityEndpoint: String
+    val host: String
 )

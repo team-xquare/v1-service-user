@@ -1,19 +1,6 @@
 spring:
   main:
     web-application-type: reactive
-  kafka:
-    consumer:
-      group-id: user-service
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      auto-offset-reset: latest
-      bootstrap-servers: localhost:9092
-    producer:
-      retries: 2
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-      bootstrap-servers: localhost:9092
-    bootstrap-servers: localhost:9092
   datasource:
     dbms: mysql
     host: localhost
@@ -31,13 +18,3 @@ spring:
     property-naming-strategy: SNAKE_CASE
     date-format: yyyy-MM-dd'T'HH:mm:ss
     time-zone: Asia/Seoul
-
-cloud:
-  aws:
-    credentials:
-      access-key: adfsafd
-      secret-key: adfsadf
-    region:
-      static: ap-northeast-2
-    stack:
-      auto: false
