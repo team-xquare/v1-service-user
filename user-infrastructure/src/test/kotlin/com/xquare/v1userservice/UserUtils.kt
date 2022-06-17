@@ -2,6 +2,7 @@ package com.xquare.v1userservice
 
 import com.xquare.v1userservice.user.User
 import com.xquare.v1userservice.user.UserEntity
+import com.xquare.v1userservice.user.UserRole
 import com.xquare.v1userservice.user.UserState
 import java.time.LocalDate
 import java.time.Year
@@ -19,7 +20,8 @@ object UserUtils {
         grade = 1,
         num = 2,
         profileFileName = "sdaf",
-        id = UUID.randomUUID()
+        id = UUID.randomUUID(),
+        role = UserRole.STU
     )
 
     fun buildUserEntityWithCreatePendingState() = UserEntity(
@@ -34,6 +36,7 @@ object UserUtils {
         num = 2,
         profileFileName = "sdaf",
         id = UUID.randomUUID(),
-        state = UserState.CREATE_PENDING
+        state = UserState.CREATE_PENDING,
+        role = UserRole.STU
     )
 }

@@ -3,7 +3,7 @@ package com.xquare.v1userservice.user.saveuser.service
 import com.xquare.v1userservice.stubs.InMemoryUserRepository
 import com.xquare.v1userservice.user.EqualsTestUtils
 import com.xquare.v1userservice.user.UserUtils
-import com.xquare.v1userservice.user.saveuser.exceptions.UserNotFoundException
+import com.xquare.v1userservice.user.exceptions.UserNotFoundException
 import com.xquare.v1userservice.user.saveuser.spi.UserRepositorySpi
 import java.util.UUID
 import kotlinx.coroutines.ExperimentalCoroutinesApi

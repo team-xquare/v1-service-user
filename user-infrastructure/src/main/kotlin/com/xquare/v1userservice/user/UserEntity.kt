@@ -49,6 +49,8 @@ class UserEntity(
     state: UserState,
 
     deviceToken: String?,
+
+    val role: UserRole
 ) {
     @field:NotNull
     @field:Enumerated(EnumType.STRING)
