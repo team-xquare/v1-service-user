@@ -5,7 +5,7 @@ import java.time.LocalDate
 import java.util.UUID
 
 @Aggregate
-class User(
+data class User(
     val name: String,
 
     val entranceYear: Int,
@@ -20,30 +20,16 @@ class User(
 
     val accountId: String,
 
-    classNum: Int,
+    val classNum: Int,
 
-    num: Int,
+    val num: Int,
 
-    deviceToken: String? = null,
+    val deviceToken: String? = null,
+
+    val state: UserState = UserState.CREATE_PENDING,
 
     val id: UUID = UUID.randomUUID(),
 
     val role: UserRole
-) {
+)
 
-    var state = UserState.CREATE_PENDING
-        private set
-
-    var classNum = classNum
-        private set
-
-    var num = num
-        private set
-
-    var deviceToken = deviceToken
-        private set
-
-    fun setUserStateToCreated() {
-        this.state = UserState.CREATED
-    }
-}

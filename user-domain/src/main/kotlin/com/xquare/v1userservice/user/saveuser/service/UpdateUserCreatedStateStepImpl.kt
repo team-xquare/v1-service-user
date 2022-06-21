@@ -1,6 +1,7 @@
 package com.xquare.v1userservice.user.saveuser.service
 
 import com.xquare.v1userservice.annotations.SagaStep
+import com.xquare.v1userservice.user.UserState
 import com.xquare.v1userservice.user.exceptions.UserNotFoundException
 import com.xquare.v1userservice.user.saveuser.api.UpdateUserCreatedStateStepProcessor
 import com.xquare.v1userservice.user.saveuser.spi.UserRepositorySpi
@@ -12,8 +13,8 @@ class UpdateUserCreatedStateStepImpl(
 ) : UpdateUserCreatedStateStepProcessor {
     override suspend fun processStep(userId: UUID) {
         val user = getUserOrThrowUserNotFoundException(userId)
-        user.setUserStateToCreated()
-        userRepositorySpi.applyChanges(user)
+        val changedUser = user.copy(state = UserState.CREATED)
+        userRepositorySpi.applyChanges(changedUser)
     }
 
     private suspend fun getUserOrThrowUserNotFoundException(userId: UUID) =
