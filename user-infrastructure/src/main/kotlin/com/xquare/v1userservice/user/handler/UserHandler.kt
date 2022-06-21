@@ -6,8 +6,8 @@ import com.xquare.v1userservice.user.UserRole
 import com.xquare.v1userservice.user.router.dto.getuser.GetUserByAccountIdResponse
 import com.xquare.v1userservice.user.router.dto.saveuser.CreateUserRequest
 import com.xquare.v1userservice.user.router.dto.signin.SignInRequest
-import com.xquare.v1userservice.user.saveuser.api.CreateUserInPendingStateProcessor
 import com.xquare.v1userservice.user.saveuser.api.GetUserInformationService
+import com.xquare.v1userservice.user.saveuser.api.UserSignUpApi
 import com.xquare.v1userservice.user.signin.api.UserSignInApi
 import com.xquare.v1userservice.user.signin.service.SignInDomainRequest
 import java.net.URI
@@ -24,7 +24,7 @@ import org.springframework.web.reactive.function.server.buildAndAwait
 
 @Component
 class UserHandler(
-    private val createUserInPendingState: CreateUserInPendingStateProcessor,
+    private val userSignUpApi: UserSignUpApi,
     private val getUserInformationService: GetUserInformationService,
     private val passwordEncoder: PasswordEncoder,
     private val requestBodyValidator: RequestBodyValidator,
@@ -33,17 +33,15 @@ class UserHandler(
     suspend fun saveUserHandler(serverRequest: ServerRequest): ServerResponse {
         val requestBody: CreateUserRequest = serverRequest.getCreateUserRequestBody()
         requestBodyValidator.validate(requestBody)
-        processUserCreateSagaStep(requestBody)
+
+        val domainRequest = requestBody.toDomainUser()
+        userSignUpApi.saveUser(domainRequest)
+
         return ServerResponse.created(URI("/users")).buildAndAwait()
     }
 
     private suspend fun ServerRequest.getCreateUserRequestBody() =
         this.bodyToMono<CreateUserRequest>().awaitSingle()
-
-    private suspend fun processUserCreateSagaStep(createUserRequest: CreateUserRequest) {
-        val domainRequest = createUserRequest.toDomainUser()
-        createUserInPendingState.processStep(domainRequest)
-    }
 
     private suspend fun CreateUserRequest.toDomainUser() =
         User(
