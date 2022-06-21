@@ -16,7 +16,7 @@ class UserSignUpApiImpl(
     override suspend fun saveUser(user: User): User {
         val savedUser = createUserInPendingStateProcessor.processStep(user)
         saveUserBaseAuthoritySpi.saveBaseUserAuthority(savedUser.id)
-        updateUserCreatedStateStepProcessor.processStep(user.id)
+        updateUserCreatedStateStepProcessor.processStep(savedUser.id)
         return savedUser
     }
 }
