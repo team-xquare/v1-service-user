@@ -11,8 +11,8 @@ import java.util.UUID
 class CreateUserInPendingStateImpl(
     private val userRepositorySpi: UserRepositorySpi
 ) : CreateUserInPendingStateProcessor, CreateUserInPendingStateRevert {
-    override suspend fun processStep(user: User) {
-        userRepositorySpi.saveUserAndOutbox(user)
+    override suspend fun processStep(user: User): User {
+        return userRepositorySpi.saveUser(user)
     }
 
     override suspend fun revertStep(userId: UUID) {
