@@ -12,7 +12,7 @@ class SaveUserBaseAuthoritySpiImpl(
     private val webClient: WebClient,
     private val authorityProperties: AuthorityProperties
 ) : SaveUserBaseAuthoritySpi {
-    override suspend fun saveBaseUserAuthority(userId: UUID) {
+    override suspend fun processStep(userId: UUID) {
         val request = SaveUserBaseAuthorityRequest(userId)
         sendSaveUserBaseAuthorityRequest(request)
     }

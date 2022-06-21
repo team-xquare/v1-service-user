@@ -23,7 +23,7 @@ class CreateUserApiImpl(
         val verificationCode = verificationCodeSpi.getByCode(creatUserDomainRequest.verificationCode) ?: TODO()
         val domainUser = verificationCode.toUser(creatUserDomainRequest)
         val savedUser = createUserInPendingStateProcessor.processStep(domainUser)
-        saveUserBaseAuthoritySpi.saveBaseUserAuthority(savedUser.id)
+        saveUserBaseAuthoritySpi.processStep(savedUser.id)
         updateUserCreatedStateStepProcessor.processStep(savedUser.id)
         return savedUser
     }

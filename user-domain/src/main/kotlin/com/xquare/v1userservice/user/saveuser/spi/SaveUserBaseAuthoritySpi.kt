@@ -5,5 +5,5 @@ import java.util.UUID
 
 @Spi
 interface SaveUserBaseAuthoritySpi {
-    suspend fun saveBaseUserAuthority(userId: UUID)
+    suspend fun processStep(userId: UUID)
 }
