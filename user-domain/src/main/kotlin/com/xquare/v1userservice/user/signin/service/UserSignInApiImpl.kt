@@ -10,6 +10,7 @@ import com.xquare.v1userservice.user.signin.api.UserSignInApi
 import com.xquare.v1userservice.user.signin.spi.AuthorityListSpi
 import com.xquare.v1userservice.user.signin.spi.JwtTokenGeneratorSpi
 import com.xquare.v1userservice.user.signin.spi.PasswordMatcherSpi
+import java.time.LocalDateTime
 
 @DomainService
 class UserSignInApiImpl(
@@ -33,9 +34,12 @@ class UserSignInApiImpl(
 
         val accessToken = jwtTokenGeneratorSpi.generateJwtToken(signInDomainRequest.accountId, TokenType.ACCESS_TOKEN, params)
         val refreshToken = jwtTokenGeneratorSpi.generateJwtToken(signInDomainRequest.accountId, TokenType.REFRESH_TOKEN, params)
+        val expirationAt = LocalDateTime.now().plusHours(jwtTokenGeneratorSpi.getAccessTokenExpirationAsHour().toLong())
+
         return SignInResponse(
             accessToken = accessToken,
-            refreshToken = refreshToken
+            refreshToken = refreshToken,
+            expireAt = expirationAt
         )
     }
 
