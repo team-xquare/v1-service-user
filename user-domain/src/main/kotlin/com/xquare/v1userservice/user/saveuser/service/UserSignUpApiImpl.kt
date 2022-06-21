@@ -12,7 +12,7 @@ class UserSignUpApiImpl(
     private val createUserInPendingStateProcessor: CreateUserInPendingStateProcessor,
     private val updateUserCreatedStateStepProcessor: UpdateUserCreatedStateStepProcessor,
     private val saveUserBaseAuthoritySpi: SaveUserBaseAuthoritySpi
-): UserSignUpApi {
+) : UserSignUpApi {
     override suspend fun saveUser(user: User): User {
         val savedUser = createUserInPendingStateProcessor.processStep(user)
         saveUserBaseAuthoritySpi.saveBaseUserAuthority(savedUser.id)
