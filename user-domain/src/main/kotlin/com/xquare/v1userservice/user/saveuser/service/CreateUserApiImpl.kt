@@ -21,14 +21,14 @@ class CreateUserApiImpl(
 ) : CreateUserApi {
     override suspend fun saveUser(creatUserDomainRequest: CreatUserDomainRequest): User {
         val verificationCode = verificationCodeSpi.getByCode(creatUserDomainRequest.verificationCode) ?: TODO()
-        val domainUser = verificationCode.toUser(creatUserDomainRequest)
+        val domainUser = verificationCode.toStudentUser(creatUserDomainRequest)
         val savedUser = createUserInPendingStateProcessor.processStep(domainUser)
         saveUserBaseAuthoritySpi.processStep(savedUser.id)
         updateUserCreatedStateStepProcessor.processStep(savedUser.id)
         return savedUser
     }
 
-    private fun VerificationCode.toUser(creatUserDomainRequest: CreatUserDomainRequest) = User(
+    private fun VerificationCode.toStudentUser(creatUserDomainRequest: CreatUserDomainRequest) = User(
         name = this.userName,
         entranceYear = this.entranceYear,
         birthDay = this.birthDay,
