@@ -28,14 +28,6 @@ object Dependencies {
     const val ACTUATOR = "org.springframework.boot:spring-boot-starter-actuator"
     const val MICROMETER = "io.micrometer:micrometer-registry-prometheus"
 
-    // ZIPKIN
-    const val ZIPKIN = "org.springframework.cloud:spring-cloud-sleuth-zipkin"
-    const val STARTER_SLEUTH = "org.springframework.cloud:spring-cloud-starter-sleuth"
-
-    // Queue
-    const val SPRING_RABBIT = "org.springframework.amqp:spring-rabbit:${DependencyVersions.RABBIT_VERSION}"
-    const val SPRING_KAFKA = "org.springframework.kafka:spring-kafka"
-
     // mapstruct
     const val MAPSTRUCT = "org.mapstruct:mapstruct:${DependencyVersions.MAPSTRUCT_VERSION}"
     const val MAPSTRUCT_APT = "org.mapstruct:mapstruct-processor:${DependencyVersions.MAPSTRUCT_VERSION}"
@@ -60,5 +52,4 @@ object Dependencies {
 
     // cloud
     const val SPRING_CLOUD = "org.springframework.cloud:spring-cloud-dependencies:${DependencyVersions.SPRING_CLOUD_VERSION}"
-    const val AWS_MESSAGING = "org.springframework.cloud:spring-cloud-starter-aws-messaging:${DependencyVersions.AWS_MESSAGING_VERSION}"
 }
