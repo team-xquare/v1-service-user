@@ -18,7 +18,7 @@ class UserSignInApiImpl(
     private val jwtTokenGeneratorSpi: JwtTokenGeneratorSpi,
     private val authorityListSpi: AuthorityListSpi
 ) : UserSignInApi {
-    override suspend fun userSignIn(signInDomainRequest: SignInDomainRequest): User {
+    override suspend fun userSignIn(signInDomainRequest: SignInDomainRequest): SignInResponse {
         val user = userRepositorySpi.findByAccountIdAndStateWithCreated(signInDomainRequest.accountId)
             ?: throw UserNotFoundException(UserNotFoundException.USER_ID_NOT_FOUND)
 
@@ -31,8 +31,12 @@ class UserSignInApiImpl(
                 put("role", user.role)
             }
 
-        jwtTokenGeneratorSpi.generateJwtToken(signInDomainRequest.accountId, TokenType.ACCESS_TOKEN, params)
-        return user
+        val accessToken = jwtTokenGeneratorSpi.generateJwtToken(signInDomainRequest.accountId, TokenType.ACCESS_TOKEN, params)
+        val refreshToken = jwtTokenGeneratorSpi.generateJwtToken(signInDomainRequest.accountId, TokenType.REFRESH_TOKEN, params)
+        return SignInResponse(
+            accessToken = accessToken,
+            refreshToken = refreshToken
+        )
     }
 
     private fun checkPasswordMatches(user: User, rawPassword: String) {

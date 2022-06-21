@@ -60,9 +60,8 @@ class UserHandler(
     suspend fun userSignInHandler(serverRequest: ServerRequest): ServerResponse {
         val signInRequest = serverRequest.getSignInRequestBody()
         val domainRequest = signInRequest.toDomainRequest()
-        val user = userSignInApi.userSignIn(domainRequest)
-        val userResponseDto = user.toGetUserByAccountIdResponseDto()
-        return ServerResponse.ok().bodyValueAndAwait(userResponseDto)
+        val signInResponse = userSignInApi.userSignIn(domainRequest)
+        return ServerResponse.ok().bodyValueAndAwait(signInResponse)
     }
 
     private suspend fun ServerRequest.getSignInRequestBody() =
