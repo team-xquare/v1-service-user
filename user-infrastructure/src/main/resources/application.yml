@@ -1,22 +1,6 @@
 spring:
   main:
     web-application-type: reactive
-  kafka:
-    consumer:
-      group-id: user-service
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
-      auto-offset-reset: latest
-      bootstrap-servers: ${KAFKA_URLS}
-      properties:
-        spring.json.add.type.header: false
-        spring.deserializer.value.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
-    producer:
-      retries: 2
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-      bootstrap-servers: ${KAFKA_URLS}
-    bootstrap-servers: ${KAFKA_URLS}
   datasource:
     dbms: ${DBMS}
     host: ${DB_HOST}
@@ -49,20 +33,7 @@ spring:
     password: ${RABBIT_MQ_PASSWORD}
 
 server:
-  port: ${SERVER_PORT}
   shutdown: graceful
-
-cloud:
-  aws:
-    credentials:
-      access-key: ${AWS_ACCESS_KEY}
-      secret-key: ${AWS_SECRET_KEY}
-    region:
-      static: ${AWS_REGION}
-    # when we run spring cloud on EC2, it starts CloudFormation setting. If we don't, our application doesn't start
-    # So I turn of this setting
-    stack:
-      auto: false
 
 management:
   endpoints:

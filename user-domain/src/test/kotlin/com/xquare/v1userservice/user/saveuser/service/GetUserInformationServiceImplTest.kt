@@ -55,5 +55,5 @@ internal class GetUserInformationServiceImplTest {
     }
 
     private suspend fun saveUser() =
-        userRepositorySpi.saveUserAndOutbox(UserUtils.buildCreatedUser())
+        userRepositorySpi.saveUser(UserUtils.buildCreatedUser())
 }

@@ -5,7 +5,6 @@
     <persistence-unit name="user-service-mysql">
         <provider>org.hibernate.reactive.provider.ReactivePersistenceProvider</provider>
         <class>com.xquare.v1userservice.user.UserEntity</class>
-        <class>com.xquare.v1userservice.configuration.cdc.OutboxEntity</class>
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
     </persistence-unit>
 </persistence>

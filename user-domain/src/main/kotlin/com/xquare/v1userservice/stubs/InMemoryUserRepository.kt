@@ -11,7 +11,7 @@ class InMemoryUserRepository(
     private val userMap: HashMap<UUID, User> = hashMapOf()
 ) : UserRepositorySpi {
 
-    override suspend fun saveUserAndOutbox(user: User): User {
+    override suspend fun saveUser(user: User): User {
         userMap[user.id] = user
         return user
     }
