@@ -31,5 +31,8 @@ data class User(
     val id: UUID = UUID.randomUUID(),
 
     val role: UserRole
-)
-
+) {
+    fun setUserStateToCreated(): User {
+        return copy(state = UserState.CREATED)
+    }
+}
