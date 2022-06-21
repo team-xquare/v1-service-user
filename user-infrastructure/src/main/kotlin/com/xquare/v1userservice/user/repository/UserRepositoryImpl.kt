@@ -5,15 +5,12 @@ import com.linecorp.kotlinjdsl.deleteQuery
 import com.linecorp.kotlinjdsl.query.HibernateMutinyReactiveQueryFactory
 import com.linecorp.kotlinjdsl.querydsl.expression.col
 import com.linecorp.kotlinjdsl.singleQueryOrNull
-import com.xquare.v1userservice.configuration.cdc.OutboxEntity
 import com.xquare.v1userservice.user.User
 import com.xquare.v1userservice.user.UserEntity
 import com.xquare.v1userservice.user.UserState
 import com.xquare.v1userservice.user.mapper.UserDomainMapper
 import com.xquare.v1userservice.user.saveuser.spi.UserRepositorySpi
 import io.smallrye.mutiny.coroutines.awaitSuspending
-import io.vertx.core.json.JsonObject
-import java.sql.Timestamp
 import java.util.UUID
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -25,49 +22,18 @@ class UserRepositoryImpl(
     private val reactiveQueryFactory: HibernateMutinyReactiveQueryFactory,
     private val userDomainMapper: UserDomainMapper
 ) : UserRepositorySpi {
-    override suspend fun saveUserAndOutbox(user: User): User {
+    override suspend fun saveUser(user: User): User {
         val userEntityToSave = userDomainMapper.userDomainToEntity(user)
-        val outboxEntityToSave = user.toOutboxEntity()
         reactiveQueryFactory.transactionWithFactory { session, _ ->
-            session.persistOutboxEntity(outboxEntityToSave)
             session.persistUserEntityConcurrently(userEntityToSave)
-        }
-
-        reactiveQueryFactory.withFactory { _, reactiveQueryFactory ->
-            reactiveQueryFactory.deleteOutboxEntity(outboxEntityToSave.id)
         }
 
         return user
     }
 
-    private fun User.toOutboxEntity() =
-        OutboxEntity(
-            id = UUID.randomUUID(),
-            type = "UserCreated",
-            aggregateType = "user",
-            aggregateId = this.id,
-            payload = buildOutboxPayloadJson(this),
-            timestamp = Timestamp(System.currentTimeMillis())
-        )
-
-    private fun buildOutboxPayloadJson(user: User) =
-        JsonObject().apply {
-            put("user_id", user.id)
-        }
-
-    private suspend fun Session.persistOutboxEntity(outboxEntity: OutboxEntity) {
-        this.persist(outboxEntity).awaitSuspending()
-    }
-
     private suspend fun Session.persistUserEntityConcurrently(userEntity: UserEntity) = coroutineScope {
         launch {
             this@persistUserEntityConcurrently.persist(userEntity).awaitSuspending()
-        }
-    }
-
-    private suspend fun ReactiveQueryFactory.deleteOutboxEntity(id: UUID) {
-        this.deleteQuery<OutboxEntity> {
-            where(col(OutboxEntity::id).equal(id))
         }
     }
 

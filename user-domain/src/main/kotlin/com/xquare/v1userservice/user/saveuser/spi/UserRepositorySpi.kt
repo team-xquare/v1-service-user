@@ -6,7 +6,7 @@ import java.util.UUID
 
 @Spi
 interface UserRepositorySpi {
-    suspend fun saveUserAndOutbox(user: User): User
+    suspend fun saveUser(user: User): User
     suspend fun findByIdAndStateWithCreatePending(id: UUID): User?
     suspend fun findByIdAndStateWithCreated(userId: UUID): User?
     suspend fun findByAccountIdAndStateWithCreated(accountId: String): User?
