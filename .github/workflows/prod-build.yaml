@@ -54,16 +54,16 @@ jobs:
           push: true
           tags: ${{secrets.DOCKER_USER}}/${{env.SERVICE_NAME}}-${{env.SERVICE_TYPE}}:${{ steps.get_version.outputs.VERSION }}
           build-args: |
-            DBMS=${{secrets.DBMS}}
-            DB_HOST=${{secrets.DB_HOST}}
-            DB_PORT=${{secrets.DB_PORT}}
-            DB_NAME=${{secrets.DB_NAME}}
-            DB_PASSWORD=${{secrets.DB_PASSWORD}}
-            DB_USERNAME=${{secrets.DB_USERNAME}}
-            SHOW_SQL=${{secrets.SHOW_SQL}}
-            DDL_AUTO_MODE=${{secrets.DDL_AUTO_MODE}}
-            DB_POOL=${{secrets.DB_POOL}}
-            AUTHORITY_SERVICE_HOST=${{secrets.AUTHORITY_SERVICE_HOST}}
+            DBMS=${{secrets.DBMS_PROD}}
+            DB_HOST=${{secrets.DB_HOST_PROD}}
+            DB_PORT=${{secrets.DB_PORT_PROD}}
+            DB_NAME=${{secrets.DB_NAME_PROD}}
+            DB_PASSWORD=${{secrets.DB_PASSWORD_PROD}}
+            DB_USERNAME=${{secrets.DB_USERNAME_PROD}}
+            SHOW_SQL=${{secrets.SHOW_SQL_PROD}}
+            DDL_AUTO_MODE=${{secrets.DDL_AUTO_MODE_PROD}}
+            DB_POOL=${{secrets.DB_POOL_PROD}}
+            AUTHORITY_SERVICE_HOST=${{secrets.AUTHORITY_SERVICE_HOST_PROD}}
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v1
         with:
