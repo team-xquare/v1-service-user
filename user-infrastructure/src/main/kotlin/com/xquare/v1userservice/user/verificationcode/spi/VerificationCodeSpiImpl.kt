@@ -1,4 +1,4 @@
-package com.xquare.v1userservice.verificationcode.spi
+package com.xquare.v1userservice.user.verificationcode.spi
 
 import com.linecorp.kotlinjdsl.query.HibernateMutinyReactiveQueryFactory
 import com.linecorp.kotlinjdsl.querydsl.expression.col
