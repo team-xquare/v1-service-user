@@ -18,6 +18,8 @@ subprojects {
     dependencies {
         implementation(Dependencies.KOTLIN_REFLECT)
         implementation(Dependencies.KOTLIN_STDLIB)
+        implementation(Dependencies.COROUTINE_JDK)
+        implementation(Dependencies.KOTLINX_COROUTINE)
         testImplementation(Dependencies.SPRING_TEST)
         testImplementation(Dependencies.COROUTINE_TEST)
     }
