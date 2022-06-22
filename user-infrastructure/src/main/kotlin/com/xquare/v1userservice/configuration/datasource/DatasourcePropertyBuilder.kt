@@ -35,5 +35,5 @@ class DatasourcePropertyBuilder(
         }
 
     private fun getDatasourceUrlFromProperties() =
-        "jdbc:${datasourceProperties.dbms}://${datasourceProperties.host}:${datasourceProperties.port}/${datasourceProperties.database}?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Seoul"
+        "jdbc:${datasourceProperties.dbms}://${datasourceProperties.host}:${datasourceProperties.port}/${datasourceProperties.database}?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Seoul&tinyInt1isBit=false"
 }
