@@ -2,14 +2,15 @@ package com.xquare.v1userservice.user.router
 
 import com.ninjasquad.springmockk.MockkBean
 import com.xquare.v1userservice.configuration.security.SecurityConfig
-import com.xquare.v1userservice.user.router.dto.GetUserResponse
-import com.xquare.v1userservice.user.router.dto.CreateUserRequest
-import com.xquare.v1userservice.user.router.dto.SignInRequest
 import com.xquare.v1userservice.user.api.dtos.SignInResponse
+import com.xquare.v1userservice.user.router.dto.CreateUserRequest
+import com.xquare.v1userservice.user.router.dto.GetUserResponse
+import com.xquare.v1userservice.user.router.dto.SignInRequest
 import io.mockk.ConstantAnswer
 import io.mockk.coEvery
 import java.net.URI
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.UUID
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.reactive.awaitSingle
@@ -91,7 +92,8 @@ internal class UserRouterTest(
 
     private fun buildUserSignInResponse() = SignInResponse(
         accessToken = ACCESS_TOKEN_SUCCESS_VALUE,
-        refreshToken = REFRESH_TOKEN_SUCCESS_VALUE
+        refreshToken = REFRESH_TOKEN_SUCCESS_VALUE,
+        expireAt = LocalDateTime.now().plusHours(2)
     )
 
     private fun buildUserSignInRequest() = SignInRequest(
@@ -101,7 +103,7 @@ internal class UserRouterTest(
 
     private fun sendSignInRequestWithBody(signInRequest: SignInRequest) =
         webTestClient.post()
-            .uri("/users")
+            .uri("/users/login")
             .body<SignInRequest>(signInRequest.toMono())
             .exchange()
             .returnResult<SignInResponse>()
@@ -125,7 +127,7 @@ internal class UserRouterTest(
 
     private fun sendGetUserRequest() =
         webTestClient.get()
-            .uri("/users/${UUID.randomUUID()}")
+            .uri("/users/id/${UUID.randomUUID()}")
             .exchange()
             .returnResult<GetUserResponse>()
 
