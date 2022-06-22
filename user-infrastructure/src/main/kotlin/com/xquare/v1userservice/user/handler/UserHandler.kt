@@ -2,7 +2,7 @@ package com.xquare.v1userservice.user.handler
 
 import com.xquare.v1userservice.configuration.validate.RequestBodyValidator
 import com.xquare.v1userservice.user.User
-import com.xquare.v1userservice.user.router.dto.getuser.GetUserByAccountIdResponse
+import com.xquare.v1userservice.user.router.dto.getuser.GetUserResponse
 import com.xquare.v1userservice.user.router.dto.saveuser.CreateUserRequest
 import com.xquare.v1userservice.user.router.dto.signin.SignInRequest
 import com.xquare.v1userservice.user.saveuser.api.CreateUserApi
@@ -47,12 +47,11 @@ class UserHandler(
         password = this.password
     )
 
-    suspend fun checkSignInAvailableAndRespondUserInformation(serverRequest: ServerRequest): ServerResponse {
+    suspend fun userSignInHandler(serverRequest: ServerRequest): ServerResponse {
         val signInRequest = serverRequest.getSignInRequestBody()
         val domainRequest = signInRequest.toDomainRequest()
-        val user = userSignInApi.userSignIn(domainRequest)
-        val userResponseDto = user.toGetUserByAccountIdResponseDto()
-        return ServerResponse.ok().bodyValueAndAwait(userResponseDto)
+        val signInResponse = userSignInApi.userSignIn(domainRequest)
+        return ServerResponse.ok().bodyValueAndAwait(signInResponse)
     }
 
     private suspend fun ServerRequest.getSignInRequestBody() =
@@ -79,7 +78,7 @@ class UserHandler(
     }
 
     private fun User.toGetUserByAccountIdResponseDto() =
-        GetUserByAccountIdResponse(
+        GetUserResponse(
             accountId = this.accountId,
             password = this.password,
             name = this.name,

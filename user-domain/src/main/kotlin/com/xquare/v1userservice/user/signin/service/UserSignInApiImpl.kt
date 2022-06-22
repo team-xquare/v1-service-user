@@ -10,6 +10,7 @@ import com.xquare.v1userservice.user.signin.api.UserSignInApi
 import com.xquare.v1userservice.user.signin.spi.AuthorityListSpi
 import com.xquare.v1userservice.user.signin.spi.JwtTokenGeneratorSpi
 import com.xquare.v1userservice.user.signin.spi.PasswordMatcherSpi
+import java.time.LocalDateTime
 
 @DomainService
 class UserSignInApiImpl(
@@ -18,7 +19,7 @@ class UserSignInApiImpl(
     private val jwtTokenGeneratorSpi: JwtTokenGeneratorSpi,
     private val authorityListSpi: AuthorityListSpi
 ) : UserSignInApi {
-    override suspend fun userSignIn(signInDomainRequest: SignInDomainRequest): User {
+    override suspend fun userSignIn(signInDomainRequest: SignInDomainRequest): SignInResponse {
         val user = userRepositorySpi.findByAccountIdAndStateWithCreated(signInDomainRequest.accountId)
             ?: throw UserNotFoundException(UserNotFoundException.USER_ID_NOT_FOUND)
 
@@ -31,8 +32,15 @@ class UserSignInApiImpl(
                 put("role", user.role)
             }
 
-        jwtTokenGeneratorSpi.generateJwtToken(signInDomainRequest.accountId, TokenType.ACCESS_TOKEN, params)
-        return user
+        val accessToken = jwtTokenGeneratorSpi.generateJwtToken(signInDomainRequest.accountId, TokenType.ACCESS_TOKEN, params)
+        val refreshToken = jwtTokenGeneratorSpi.generateJwtToken(signInDomainRequest.accountId, TokenType.REFRESH_TOKEN, params)
+        val expirationAt = LocalDateTime.now().plusHours(jwtTokenGeneratorSpi.getAccessTokenExpirationAsHour().toLong())
+
+        return SignInResponse(
+            accessToken = accessToken,
+            refreshToken = refreshToken,
+            expireAt = expirationAt
+        )
     }
 
     private fun checkPasswordMatches(user: User, rawPassword: String) {
