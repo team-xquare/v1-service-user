@@ -19,18 +19,6 @@ spring:
     time-zone: Asia/Seoul
   application:
     name: user-service-v1
-  sleuth:
-    sampler:
-      probability: 1
-  zipkin:
-    base-url: ${ZIPKIN_URL}
-    sender:
-      type: rabbit
-  rabbitmq:
-    host: ${RABBIT_MQ_HOST}
-    port: ${RABBIT_MQ_PORT}
-    username: ${RABBIT_MQ_USERNAME}
-    password: ${RABBIT_MQ_PASSWORD}
 
 server:
   shutdown: graceful
@@ -47,8 +35,13 @@ management:
 service:
   authority:
     host: ${AUTHORITY_SERVICE_HOST}
-    get-authority-endpoint: ${GET_AUTHORITY_ENDPOINT}
 
+jwt:
+  secret-key: ${JWT_SECRET_KEY}
+  refresh-token-properties:
+    expiration-as-hour: ${JWT_REFRESH_TOKEN_EXP_AS_HOUR}
+  access-token-properties:
+    expiration-as-hour: ${JWT_ACCESS_TOKEN_EXP_AS_HOUR}
 ---
 
 spring:
