@@ -1,4 +1,4 @@
-package com.xquare.v1userservice.verificationcode
+package com.xquare.v1userservice.user.verificationcode
 
 import java.time.LocalDate
 import java.util.UUID

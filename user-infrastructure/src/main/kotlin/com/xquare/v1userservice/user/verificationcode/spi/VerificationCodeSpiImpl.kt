@@ -1,10 +1,9 @@
-package com.xquare.v1userservice.verificationcode.spi
+package com.xquare.v1userservice.user.verificationcode.spi
 
 import com.linecorp.kotlinjdsl.query.HibernateMutinyReactiveQueryFactory
 import com.linecorp.kotlinjdsl.querydsl.expression.col
 import com.linecorp.kotlinjdsl.selectQuery
 import com.xquare.v1userservice.user.verificationcode.VerificationCode
-import com.xquare.v1userservice.user.verificationcode.spi.VerificationCodeSpi
 import org.springframework.stereotype.Repository
 
 @Repository

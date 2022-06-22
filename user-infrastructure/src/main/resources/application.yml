@@ -35,6 +35,8 @@ management:
 service:
   authority:
     host: ${AUTHORITY_SERVICE_HOST}
+  application:
+    host: ${AUTHORITY_SERVICE_HOST}
 
 jwt:
   secret-key: ${JWT_SECRET_KEY}
