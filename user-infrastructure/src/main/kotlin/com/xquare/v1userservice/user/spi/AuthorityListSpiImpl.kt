@@ -1,7 +1,7 @@
 package com.xquare.v1userservice.user.spi
 
 import com.xquare.v1userservice.authority.AuthorityProperties
-import com.xquare.v1userservice.user.signin.spi.AuthorityListSpi
+import com.xquare.v1userservice.user.spi.dtos.AuthorityListResponse
 import java.util.UUID
 import org.springframework.stereotype.Repository
 import org.springframework.web.reactive.function.client.WebClient

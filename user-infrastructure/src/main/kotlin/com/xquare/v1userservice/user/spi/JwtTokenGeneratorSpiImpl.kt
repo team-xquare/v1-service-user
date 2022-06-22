@@ -3,7 +3,6 @@ package com.xquare.v1userservice.user.spi
 import com.xquare.v1userservice.jwt.JwtTokenGenerator
 import com.xquare.v1userservice.jwt.properties.JwtProperties
 import com.xquare.v1userservice.user.TokenType
-import com.xquare.v1userservice.user.signin.spi.JwtTokenGeneratorSpi
 import org.springframework.stereotype.Component
 
 @Component

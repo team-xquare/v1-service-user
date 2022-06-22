@@ -33,7 +33,5 @@ object UserUtils {
         profileFileName = "sdaf",
         id = UUID.randomUUID(),
         role = UserRole.STU
-    ).apply {
-        setUserStateToCreated()
-    }
+    ).setUserStateToCreated()
 }

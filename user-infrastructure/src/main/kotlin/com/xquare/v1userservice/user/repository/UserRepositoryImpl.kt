@@ -9,7 +9,7 @@ import com.xquare.v1userservice.user.User
 import com.xquare.v1userservice.user.UserEntity
 import com.xquare.v1userservice.user.UserState
 import com.xquare.v1userservice.user.mapper.UserDomainMapper
-import com.xquare.v1userservice.user.saveuser.spi.UserRepositorySpi
+import com.xquare.v1userservice.user.spi.UserRepositorySpi
 import io.smallrye.mutiny.coroutines.awaitSuspending
 import java.util.UUID
 import kotlinx.coroutines.coroutineScope

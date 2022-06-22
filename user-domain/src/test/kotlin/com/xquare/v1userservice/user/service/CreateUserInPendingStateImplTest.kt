@@ -2,8 +2,8 @@ package com.xquare.v1userservice.user.service
 
 import com.xquare.v1userservice.stubs.InMemoryUserRepository
 import com.xquare.v1userservice.user.UserUtils
-import com.xquare.v1userservice.user.saveuser.service.CreateUserInPendingStateImpl
-import com.xquare.v1userservice.user.saveuser.spi.UserRepositorySpi
+import com.xquare.v1userservice.user.api.impl.CreateUserInPendingStateImpl
+import com.xquare.v1userservice.user.spi.UserRepositorySpi
 import java.util.UUID
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
