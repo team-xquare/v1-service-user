@@ -10,6 +10,7 @@ import com.xquare.v1userservice.user.api.dtos.CreatUserDomainRequest
 import com.xquare.v1userservice.user.spi.PasswordEncoderSpi
 import com.xquare.v1userservice.user.spi.SaveUserBaseAuthoritySpi
 import com.xquare.v1userservice.user.verificationcode.VerificationCode
+import com.xquare.v1userservice.user.verificationcode.exceptions.VerificationCodeNotFoundException
 import com.xquare.v1userservice.user.verificationcode.spi.VerificationCodeSpi
 
 @DomainService
@@ -21,7 +22,8 @@ class CreateUserApiImpl(
     private val passwordEncoderSpi: PasswordEncoderSpi
 ) : CreateUserApi {
     override suspend fun saveUser(creatUserDomainRequest: CreatUserDomainRequest): User {
-        val verificationCode = verificationCodeSpi.getByCode(creatUserDomainRequest.verificationCode) ?: TODO()
+        val verificationCode = verificationCodeSpi.getByCode(creatUserDomainRequest.verificationCode)
+            ?: throw VerificationCodeNotFoundException("Verification Code Not Found")
         val domainUser = verificationCode.toStudentUser(creatUserDomainRequest)
         val savedUser = createUserInPendingStateProcessor.processStep(domainUser)
         saveUserBaseAuthoritySpi.processStep(savedUser.id)
