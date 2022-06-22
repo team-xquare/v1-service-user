@@ -2,13 +2,17 @@ package com.xquare.v1userservice.user.router
 
 import com.ninjasquad.springmockk.MockkBean
 import com.xquare.v1userservice.configuration.security.SecurityConfig
-import com.xquare.v1userservice.user.handler.UserHandler
-import com.xquare.v1userservice.user.router.dto.saveuser.CreateUserRequest
+import com.xquare.v1userservice.user.router.dto.GetUserResponse
+import com.xquare.v1userservice.user.router.dto.CreateUserRequest
+import com.xquare.v1userservice.user.router.dto.SignInRequest
+import com.xquare.v1userservice.user.api.dtos.SignInResponse
 import io.mockk.ConstantAnswer
 import io.mockk.coEvery
 import java.net.URI
 import java.time.LocalDate
+import java.util.UUID
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.reactive.awaitSingle
 import kotlinx.coroutines.test.runTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -20,6 +24,7 @@ import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.body
 import org.springframework.test.web.reactive.server.returnResult
 import org.springframework.web.reactive.function.server.ServerResponse
+import org.springframework.web.reactive.function.server.bodyValueAndAwait
 import org.springframework.web.reactive.function.server.buildAndAwait
 import reactor.kotlin.core.publisher.toMono
 
@@ -31,18 +36,23 @@ internal class UserRouterTest(
     private val webTestClient: WebTestClient
 ) {
 
+    companion object {
+        private const val ACCESS_TOKEN_SUCCESS_VALUE = "access.token.value"
+        private const val REFRESH_TOKEN_SUCCESS_VALUE = "refresh.token.value"
+    }
+
     @MockkBean
     private lateinit var userHandler: UserHandler
 
     @Test
-    fun userBaseRouter() = runTest {
-        mockUserHandlerToReturnCreated()
+    fun userSignUp() = runTest {
+        mockUserServiceToReturnUser()
         val request = buildSuccessRequest()
         val result = sendPostRequestWithBody(request)
         assertThat(result.status).isEqualTo(HttpStatus.CREATED)
     }
 
-    private suspend fun mockUserHandlerToReturnCreated() =
+    private suspend fun mockUserServiceToReturnUser() =
         coEvery { userHandler.saveUserHandler(any()) }
             .answers(ConstantAnswer(ServerResponse.created(URI("/users")).buildAndAwait()))
 
@@ -56,13 +66,78 @@ internal class UserRouterTest(
     private fun buildSuccessRequest() =
         CreateUserRequest(
             accountId = "tes12t",
-            name = "test",
-            authCode = "dsfadfs",
-            birthDay = LocalDate.now(),
-            grade = 3,
-            classNum = 5,
-            num = 20,
-            profileImageUrl = "https://",
+            verificationCode = "dsfadfs",
+            profileFileName = "https://",
             password = "test"
         )
+
+    @Test
+    fun userSignIn() = runTest {
+        mockUserHandlerToReturnUserSignInSuccess()
+
+        val request = buildUserSignInRequest()
+        val result = sendSignInRequestWithBody(request)
+        val responseBody = result.responseBody.awaitSingle()
+
+        assertThat(responseBody.accessToken).isEqualTo(ACCESS_TOKEN_SUCCESS_VALUE)
+        assertThat(responseBody.refreshToken).isEqualTo(REFRESH_TOKEN_SUCCESS_VALUE)
+    }
+
+    private suspend fun mockUserHandlerToReturnUserSignInSuccess() {
+        val response = buildUserSignInResponse()
+        coEvery { userHandler.userSignInHandler(any()) }
+            .answers(ConstantAnswer(ServerResponse.ok().bodyValueAndAwait(response)))
+    }
+
+    private fun buildUserSignInResponse() = SignInResponse(
+        accessToken = ACCESS_TOKEN_SUCCESS_VALUE,
+        refreshToken = REFRESH_TOKEN_SUCCESS_VALUE
+    )
+
+    private fun buildUserSignInRequest() = SignInRequest(
+        accountId = "test",
+        password = "test"
+    )
+
+    private fun sendSignInRequestWithBody(signInRequest: SignInRequest) =
+        webTestClient.post()
+            .uri("/users")
+            .body<SignInRequest>(signInRequest.toMono())
+            .exchange()
+            .returnResult<SignInResponse>()
+
+    @Test
+    fun getUserById() = runTest {
+        mockUserHandlerToReturnUserInformation()
+
+        val result = sendGetUserRequest()
+        val responseBody = result.responseBody.awaitSingle()
+
+        assertThat(result.status).isEqualTo(HttpStatus.OK)
+        assertThat(responseBody.id).isNotNull()
+    }
+
+    private suspend fun mockUserHandlerToReturnUserInformation() {
+        val response = buildGetUserResponse()
+        coEvery { userHandler.getUserByIdHandler(any()) }
+            .answers(ConstantAnswer(ServerResponse.ok().bodyValueAndAwait(response)))
+    }
+
+    private fun sendGetUserRequest() =
+        webTestClient.get()
+            .uri("/users/${UUID.randomUUID()}")
+            .exchange()
+            .returnResult<GetUserResponse>()
+
+    private fun buildGetUserResponse() = GetUserResponse(
+        id = UUID.randomUUID(),
+        accountId = "accountId",
+        name = "name",
+        birthDay = LocalDate.now(),
+        grade = 3,
+        classNum = 1,
+        num = 20,
+        profileFileName = "https://",
+        password = "password"
+    )
 }

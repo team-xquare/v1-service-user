@@ -1,6 +1,5 @@
 package com.xquare.v1userservice.user.router
 
-import com.xquare.v1userservice.user.handler.UserHandler
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.MediaType

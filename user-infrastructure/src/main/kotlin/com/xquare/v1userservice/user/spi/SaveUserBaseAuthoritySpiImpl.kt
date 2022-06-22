@@ -1,7 +1,7 @@
 package com.xquare.v1userservice.user.spi
 
 import com.xquare.v1userservice.authority.AuthorityProperties
-import com.xquare.v1userservice.user.saveuser.spi.SaveUserBaseAuthoritySpi
+import com.xquare.v1userservice.user.spi.dtos.SaveUserBaseAuthorityRequest
 import java.util.UUID
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Repository

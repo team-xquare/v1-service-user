@@ -2,7 +2,7 @@ package com.xquare.v1userservice.user.service
 
 import com.xquare.v1userservice.stubs.InMemoryUserRepository
 import com.xquare.v1userservice.user.UserUtils
-import com.xquare.v1userservice.user.saveuser.service.UpdateUserCreatedStateStepImpl
+import com.xquare.v1userservice.user.api.impl.UpdateUserCreatedStateStepImpl
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.assertj.core.api.Assertions.assertThat

@@ -3,7 +3,7 @@ package com.xquare.v1userservice.stubs
 import com.xquare.v1userservice.annotations.Stub
 import com.xquare.v1userservice.user.User
 import com.xquare.v1userservice.user.UserState
-import com.xquare.v1userservice.user.saveuser.spi.UserRepositorySpi
+import com.xquare.v1userservice.user.spi.UserRepositorySpi
 import java.util.UUID
 
 @Stub

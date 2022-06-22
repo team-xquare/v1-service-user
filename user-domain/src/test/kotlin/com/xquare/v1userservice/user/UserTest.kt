@@ -8,7 +8,7 @@ internal class UserTest {
     @Test
     fun setUserStateToCreated() {
         val user = UserUtils.buildUserWithCreatePendingState()
-        user.setUserStateToCreated()
+        user.clone()
         assertThat(user.state).isEqualTo(UserState.CREATED)
     }
 }
