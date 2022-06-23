@@ -6,5 +6,7 @@ data class SignInRequest(
     @field:NotNull
     val accountId: String,
     @field:NotNull
-    val password: String
+    val password: String,
+    @field:NotNull
+    val deviceToken: String
 )
