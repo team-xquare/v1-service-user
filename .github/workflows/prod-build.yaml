@@ -63,7 +63,7 @@ jobs:
             SHOW_SQL=${{secrets.SHOW_SQL_PROD}}
             DDL_AUTO_MODE=${{secrets.DDL_AUTO_MODE_PROD}}
             DB_POOL=${{secrets.DB_POOL_PROD}}
-            AUTHORITY_SERVICE_HOST=${{secrets.AUTHORITY_SERVICE_HOST_PROD}}
+            AUTHORITY_SERVICE_HOST=${{secrets.AUTHORITY_SERVICE_HOST}}
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v1
         with:
