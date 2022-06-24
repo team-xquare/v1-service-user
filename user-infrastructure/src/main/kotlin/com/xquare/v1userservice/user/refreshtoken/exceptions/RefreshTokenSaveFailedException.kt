@@ -4,4 +4,4 @@ import com.xquare.v1userservice.exceptions.BaseException
 
 class RefreshTokenSaveFailedException(
     errorMessage: String
-): BaseException(errorMessage, 500)
+) : BaseException(errorMessage, 500)
