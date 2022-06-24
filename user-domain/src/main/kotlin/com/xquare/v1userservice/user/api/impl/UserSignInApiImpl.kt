@@ -8,6 +8,8 @@ import com.xquare.v1userservice.user.api.dtos.SignInDomainRequest
 import com.xquare.v1userservice.user.api.dtos.SignInResponse
 import com.xquare.v1userservice.user.exceptions.PasswordNotMatchesException
 import com.xquare.v1userservice.user.exceptions.UserNotFoundException
+import com.xquare.v1userservice.user.refreshtoken.RefreshToken
+import com.xquare.v1userservice.user.refreshtoken.spi.RefreshTokenSpi
 import com.xquare.v1userservice.user.spi.AuthorityListSpi
 import com.xquare.v1userservice.user.spi.JwtTokenGeneratorSpi
 import com.xquare.v1userservice.user.spi.PasswordMatcherSpi
@@ -19,7 +21,8 @@ class UserSignInApiImpl(
     private val userRepositorySpi: UserRepositorySpi,
     private val passwordMatcherSpi: PasswordMatcherSpi,
     private val jwtTokenGeneratorSpi: JwtTokenGeneratorSpi,
-    private val authorityListSpi: AuthorityListSpi
+    private val authorityListSpi: AuthorityListSpi,
+    private val refreshTokenSpi: RefreshTokenSpi
 ) : UserSignInApi {
     override suspend fun userSignIn(signInDomainRequest: SignInDomainRequest): SignInResponse {
         val user = userRepositorySpi.findByAccountIdAndStateWithCreated(signInDomainRequest.accountId)
@@ -35,13 +38,19 @@ class UserSignInApiImpl(
             }
 
         val accessToken = jwtTokenGeneratorSpi.generateJwtToken(signInDomainRequest.accountId, TokenType.ACCESS_TOKEN, params)
+        val expireAt = LocalDateTime.now().plusHours(jwtTokenGeneratorSpi.getAccessTokenExpirationAsHour().toLong())
+
         val refreshToken = jwtTokenGeneratorSpi.generateJwtToken(signInDomainRequest.accountId, TokenType.REFRESH_TOKEN, params)
-        val expirationAt = LocalDateTime.now().plusHours(jwtTokenGeneratorSpi.getAccessTokenExpirationAsHour().toLong())
+        val refreshTokenDomain = RefreshToken(
+            tokenValue = refreshToken,
+            userId = user.id
+        )
+        refreshTokenSpi.saveRefreshToken(refreshTokenDomain)
 
         return SignInResponse(
             accessToken = accessToken,
             refreshToken = refreshToken,
-            expireAt = expirationAt
+            expireAt = expireAt
         )
     }
 
