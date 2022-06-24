@@ -33,6 +33,7 @@ dependencies {
     testImplementation(Dependencies.SPRING_MOCKK)
     kapt(Dependencies.MAPSTRUCT_APT)
     kapt(Dependencies.CONFIGURATION_PROCESSOR)
+    implementation(Dependencies.REACTIVE_REDIS)
 
     implementation(project(":user-domain"))
 }
