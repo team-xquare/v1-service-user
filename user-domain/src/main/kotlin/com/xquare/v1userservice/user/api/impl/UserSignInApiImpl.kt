@@ -25,13 +25,15 @@ class UserSignInApiImpl(
         val user = userRepositorySpi.findByAccountIdAndStateWithCreated(signInDomainRequest.accountId)
             ?: throw UserNotFoundException(UserNotFoundException.USER_ID_NOT_FOUND)
 
-        checkPasswordMatches(user, signInDomainRequest.password)
-        val authorities = authorityListSpi.getAuthorities(user.id)
+        val deviceTokenModifiedUser = userRepositorySpi.applyChanges(user.setDeviceToken(signInDomainRequest.deviceToken))
+
+        checkPasswordMatches(deviceTokenModifiedUser, signInDomainRequest.password)
+        val authorities = authorityListSpi.getAuthorities(deviceTokenModifiedUser.id)
 
         val params = HashMap<String, Any>()
             .apply {
                 put("authorities", authorities)
-                put("role", user.role)
+                put("role", deviceTokenModifiedUser.role)
             }
 
         val accessToken = jwtTokenGeneratorSpi.generateJwtToken(signInDomainRequest.accountId, TokenType.ACCESS_TOKEN, params)

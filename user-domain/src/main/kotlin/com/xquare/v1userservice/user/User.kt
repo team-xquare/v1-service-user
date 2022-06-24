@@ -35,4 +35,8 @@ data class User(
     fun setUserStateToCreated(): User {
         return copy(state = UserState.CREATED)
     }
+
+    fun setDeviceToken(deviceToken: String): User {
+        return copy(deviceToken = deviceToken)
+    }
 }

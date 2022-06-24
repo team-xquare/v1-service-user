@@ -98,7 +98,8 @@ internal class UserRouterTest(
 
     private fun buildUserSignInRequest() = SignInRequest(
         accountId = "test",
-        password = "test"
+        password = "test",
+        deviceToken = "test"
     )
 
     private fun sendSignInRequestWithBody(signInRequest: SignInRequest) =

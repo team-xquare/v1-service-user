@@ -60,7 +60,8 @@ class UserHandler(
     private fun SignInRequest.toDomainRequest() =
         SignInDomainRequest(
             accountId = this.accountId,
-            password = this.password
+            password = this.password,
+            deviceToken = this.deviceToken
         )
 
     suspend fun getUserByIdHandler(serverRequest: ServerRequest): ServerResponse {
