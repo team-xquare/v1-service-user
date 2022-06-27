@@ -1,7 +1,6 @@
 package com.xquare.v1userservice.user.refreshtoken.spi
 
 import com.xquare.v1userservice.jwt.properties.JwtProperties
-import com.xquare.v1userservice.jwt.properties.RefreshTokenProperties
 import com.xquare.v1userservice.user.refreshtoken.RefreshToken
 import com.xquare.v1userservice.user.refreshtoken.RefreshTokenEntity
 import com.xquare.v1userservice.user.refreshtoken.exceptions.RefreshTokenSaveFailedException
@@ -35,14 +34,15 @@ class RefreshTokenSpiImpl(
 
     override suspend fun findByRefreshToken(refreshToken: String): RefreshToken? {
         val refreshTokenEntity = reactiveRedisOperations.opsForValue().get(refreshToken).awaitSingleOrNull()
-            as? RefreshTokenEntity
+                as? RefreshTokenEntity
 
         return refreshTokenEntity?.let { refreshTokenDomainMapper.refreshTokenEntityToDomain(refreshTokenEntity) }
     }
 
     override suspend fun updateExpiredAt(refreshToken: RefreshToken) {
         val refreshTokenExpiration = Duration.ofHours(jwtProperties.refreshTokenProperties.expirationAsHour.toLong())
-        val isUpdateExpireSuccess = reactiveRedisOperations.expireAndAwait(refreshToken.tokenValue, refreshTokenExpiration)
+        val isUpdateExpireSuccess =
+            reactiveRedisOperations.expireAndAwait(refreshToken.tokenValue, refreshTokenExpiration)
 
         if (!isUpdateExpireSuccess) {
             throw RefreshTokenSaveFailedException("Refresh token Modify Failed")
