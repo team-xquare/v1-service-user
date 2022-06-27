@@ -14,6 +14,7 @@ class UserRouter {
             contentType(MediaType.APPLICATION_JSON)
             POST("", userHandler::saveUserHandler)
             POST("/login", userHandler::userSignInHandler)
+            PUT("/login", userHandler::userTokenRefreshHandler)
             GET("/id/{userId}", userHandler::getUserByIdHandler)
             GET("/account-id/{accountId}", userHandler::getUserByAccountIdHandler)
         }

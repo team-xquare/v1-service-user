@@ -6,9 +6,11 @@ import com.xquare.v1userservice.user.User
 import com.xquare.v1userservice.user.api.UserSignInApi
 import com.xquare.v1userservice.user.api.dtos.SignInDomainRequest
 import com.xquare.v1userservice.user.api.dtos.SignInResponse
+import com.xquare.v1userservice.user.api.dtos.TokenRefreshResponse
 import com.xquare.v1userservice.user.exceptions.PasswordNotMatchesException
 import com.xquare.v1userservice.user.exceptions.UserNotFoundException
 import com.xquare.v1userservice.user.refreshtoken.RefreshToken
+import com.xquare.v1userservice.user.refreshtoken.exceptions.RefreshTokenNotFoundException
 import com.xquare.v1userservice.user.refreshtoken.spi.RefreshTokenSpi
 import com.xquare.v1userservice.user.spi.AuthorityListSpi
 import com.xquare.v1userservice.user.spi.JwtTokenGeneratorSpi
@@ -31,13 +33,8 @@ class UserSignInApiImpl(
         val deviceTokenModifiedUser = userRepositorySpi.applyChanges(user.setDeviceToken(signInDomainRequest.deviceToken))
 
         checkPasswordMatches(deviceTokenModifiedUser, signInDomainRequest.password)
-        val authorities = authorityListSpi.getAuthorities(deviceTokenModifiedUser.id)
 
-        val params = HashMap<String, Any>()
-            .apply {
-                put("authorities", authorities)
-                put("role", deviceTokenModifiedUser.role)
-            }
+        val params = buildAccessTokenParams(user)
 
         val accessToken = jwtTokenGeneratorSpi.generateJwtToken(signInDomainRequest.accountId, TokenType.ACCESS_TOKEN, params)
         val expireAt = LocalDateTime.now().plusHours(jwtTokenGeneratorSpi.getAccessTokenExpirationAsHour().toLong())
@@ -62,5 +59,36 @@ class UserSignInApiImpl(
         if (!isPasswordMatches) {
             throw PasswordNotMatchesException(PasswordNotMatchesException.LOGIN_PASSWORD_NOT_MATCHES)
         }
+    }
+
+    override suspend fun userTokenRefresh(refreshToken: String): TokenRefreshResponse {
+        val refreshTokenEntity = refreshTokenSpi.findByRefreshToken(refreshToken)
+            ?: throw RefreshTokenNotFoundException("Refresh Token Not Found")
+
+        refreshTokenSpi.updateExpiredAt(refreshTokenEntity)
+
+        val user = userRepositorySpi.findByIdAndStateWithCreated(refreshTokenEntity.userId)
+            ?: throw UserNotFoundException(UserNotFoundException.USER_ID_NOT_FOUND)
+
+        val params = buildAccessTokenParams(user)
+
+        val accessToken = jwtTokenGeneratorSpi.generateJwtToken(user.accountId, TokenType.ACCESS_TOKEN, params)
+
+        val expireAt = LocalDateTime.now().plusHours(jwtTokenGeneratorSpi.getAccessTokenExpirationAsHour().toLong())
+
+        return TokenRefreshResponse(
+            accessToken = accessToken,
+            expireAt = expireAt
+        )
+    }
+
+    private suspend fun buildAccessTokenParams(user: User): MutableMap<String, Any> {
+        val authorities = authorityListSpi.getAuthorities(user.id)
+
+        return HashMap<String, Any>()
+            .apply {
+                put("authorities", authorities)
+                put("role", user.role)
+            }
     }
 }

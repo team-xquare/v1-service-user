@@ -1,5 +1,6 @@
 package com.xquare.v1userservice.user.router
 
+import com.xquare.v1userservice.configuration.validate.BadRequestException
 import com.xquare.v1userservice.configuration.validate.RequestBodyValidator
 import com.xquare.v1userservice.user.User
 import com.xquare.v1userservice.user.api.CreateUserApi
@@ -14,12 +15,14 @@ import java.net.URI
 import java.util.UUID
 import kotlinx.coroutines.reactor.awaitSingle
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
 import org.springframework.web.reactive.function.server.bodyToMono
 import org.springframework.web.reactive.function.server.bodyValueAndAwait
 import org.springframework.web.reactive.function.server.buildAndAwait
 
+@Transactional
 @Component
 class UserHandler(
     private val createUserApi: CreateUserApi,
@@ -63,6 +66,14 @@ class UserHandler(
             password = this.password,
             deviceToken = this.deviceToken
         )
+
+    suspend fun userTokenRefreshHandler(serverRequest: ServerRequest): ServerResponse {
+        val refreshToken = serverRequest.headers().firstHeader("Refresh-Token")
+            ?: throw BadRequestException("Refresh-Token is required")
+
+        val signInResponse = userSignInApi.userTokenRefresh(refreshToken)
+        return ServerResponse.ok().bodyValueAndAwait(signInResponse)
+    }
 
     suspend fun getUserByIdHandler(serverRequest: ServerRequest): ServerResponse {
         val userId = serverRequest.pathVariable("userId")
