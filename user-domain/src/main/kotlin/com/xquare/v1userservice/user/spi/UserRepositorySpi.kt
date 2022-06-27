@@ -12,4 +12,5 @@ interface UserRepositorySpi {
     suspend fun findByAccountIdAndStateWithCreated(accountId: String): User?
     suspend fun applyChanges(user: User): User
     suspend fun deleteByIdAndStateWithCreatePending(id: UUID)
+    suspend fun findAllByIdsIn(ids: List<UUID>): List<User>
 }
