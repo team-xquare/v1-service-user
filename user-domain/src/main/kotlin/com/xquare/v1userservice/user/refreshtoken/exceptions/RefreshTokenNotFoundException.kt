@@ -4,4 +4,4 @@ import com.xquare.v1userservice.exceptions.BaseException
 
 class RefreshTokenNotFoundException(
     errorMessage: String
-): BaseException(errorMessage, 404)
+) : BaseException(errorMessage, 404)
