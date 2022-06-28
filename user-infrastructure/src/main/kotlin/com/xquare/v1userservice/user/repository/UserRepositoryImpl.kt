@@ -4,6 +4,7 @@ import com.linecorp.kotlinjdsl.ReactiveQueryFactory
 import com.linecorp.kotlinjdsl.deleteQuery
 import com.linecorp.kotlinjdsl.query.HibernateMutinyReactiveQueryFactory
 import com.linecorp.kotlinjdsl.querydsl.expression.col
+import com.linecorp.kotlinjdsl.selectQuery
 import com.linecorp.kotlinjdsl.singleQueryOrNull
 import com.xquare.v1userservice.user.User
 import com.xquare.v1userservice.user.UserEntity
@@ -72,7 +73,10 @@ class UserRepositoryImpl(
         return userEntity?.let { userDomainMapper.userEntityToDomain(it) }
     }
 
-    private suspend fun ReactiveQueryFactory.findByAccountIdAndUserState(accountId: String, state: UserState): UserEntity? {
+    private suspend fun ReactiveQueryFactory.findByAccountIdAndUserState(
+        accountId: String,
+        state: UserState
+    ): UserEntity? {
         return this.singleQueryOrNull<UserEntity> {
             select(entity(UserEntity::class))
             from(entity(UserEntity::class))
@@ -107,5 +111,19 @@ class UserRepositoryImpl(
                     .and(col(UserEntity::state).equal(userState))
             )
         }.executeUpdate()
+    }
+
+    override suspend fun findAllByIdIn(idList: List<UUID>): List<User> {
+        return reactiveQueryFactory.withFactory { _, reactiveQueryFactory ->
+            reactiveQueryFactory.findAllByIdsIn(idList)
+        }.map { userDomainMapper.userEntityToDomain(it) }
+    }
+
+    private suspend fun ReactiveQueryFactory.findAllByIdsIn(ids: List<UUID>): List<UserEntity> {
+        return this.selectQuery<UserEntity> {
+            select(entity(UserEntity::class))
+            from(entity(UserEntity::class))
+            where(col(UserEntity::id).`in`(ids))
+        }.resultList()
     }
 }

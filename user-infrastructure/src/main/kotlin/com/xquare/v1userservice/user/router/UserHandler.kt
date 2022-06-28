@@ -4,11 +4,14 @@ import com.xquare.v1userservice.configuration.validate.BadRequestException
 import com.xquare.v1userservice.configuration.validate.RequestBodyValidator
 import com.xquare.v1userservice.user.User
 import com.xquare.v1userservice.user.api.CreateUserApi
+import com.xquare.v1userservice.user.api.GetUserDeviceTokensApi
 import com.xquare.v1userservice.user.api.GetUserInformationService
 import com.xquare.v1userservice.user.api.UserSignInApi
 import com.xquare.v1userservice.user.api.dtos.CreatUserDomainRequest
 import com.xquare.v1userservice.user.api.dtos.SignInDomainRequest
+import com.xquare.v1userservice.user.api.dtos.UserDeviceTokenResponse
 import com.xquare.v1userservice.user.router.dto.CreateUserRequest
+import com.xquare.v1userservice.user.router.dto.GetUserDeviceTokenListResponse
 import com.xquare.v1userservice.user.router.dto.GetUserResponse
 import com.xquare.v1userservice.user.router.dto.SignInRequest
 import java.net.URI
@@ -26,7 +29,8 @@ class UserHandler(
     private val createUserApi: CreateUserApi,
     private val getUserInformationService: GetUserInformationService,
     private val requestBodyValidator: RequestBodyValidator,
-    private val userSignInApi: UserSignInApi
+    private val userSignInApi: UserSignInApi,
+    private val getUserDeviceTokensApi: GetUserDeviceTokensApi
 ) {
     suspend fun saveUserHandler(serverRequest: ServerRequest): ServerResponse {
         val requestBody: CreateUserRequest = serverRequest.getCreateUserRequestBody()
@@ -99,4 +103,16 @@ class UserHandler(
             birthDay = this.birthDay,
             id = this.id
         )
+
+    suspend fun getUserDeviceTokensHandler(serverRequest: ServerRequest): ServerResponse {
+        val userIds = serverRequest.queryParams()["users"]?.map { UUID.fromString(it) } ?: emptyList()
+
+        val userDeviceTokenDomainResponse = getUserDeviceTokensApi.getUserDeviceTokensByIdIn(userIds)
+        val getUserDeviceTokenListResponse = userDeviceTokenDomainResponse.toGetUserDeviceTokenListResponse()
+        return ServerResponse.ok().bodyValueAndAwait(getUserDeviceTokenListResponse)
+    }
+
+    private fun UserDeviceTokenResponse.toGetUserDeviceTokenListResponse() = GetUserDeviceTokenListResponse(
+        tokens = this.tokens
+    )
 }

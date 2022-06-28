@@ -17,6 +17,7 @@ class UserRouter {
             PUT("/login", userHandler::userTokenRefreshHandler)
             GET("/id/{userId}", userHandler::getUserByIdHandler)
             GET("/account-id/{accountId}", userHandler::getUserByAccountIdHandler)
+            GET("/tokens/fcm", userHandler::getUserDeviceTokensHandler)
         }
     }
 }
