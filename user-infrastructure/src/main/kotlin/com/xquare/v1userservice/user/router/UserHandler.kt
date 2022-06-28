@@ -15,14 +15,12 @@ import java.net.URI
 import java.util.UUID
 import kotlinx.coroutines.reactor.awaitSingle
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
 import org.springframework.web.reactive.function.server.bodyToMono
 import org.springframework.web.reactive.function.server.bodyValueAndAwait
 import org.springframework.web.reactive.function.server.buildAndAwait
 
-@Transactional
 @Component
 class UserHandler(
     private val createUserApi: CreateUserApi,
