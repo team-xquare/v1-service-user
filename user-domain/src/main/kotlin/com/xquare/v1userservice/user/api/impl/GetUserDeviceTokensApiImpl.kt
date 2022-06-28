@@ -10,8 +10,8 @@ import java.util.UUID
 class GetUserDeviceTokensApiImpl(
     private val userRepositorySpi: UserRepositorySpi
 ) : GetUserDeviceTokensApi {
-    override suspend fun getUserDeviceTokensByIdIn(ids: List<UUID>): UserDeviceTokenResponse {
-        val userDeviceTokens = userRepositorySpi.findAllByIdsIn(ids)
+    override suspend fun getUserDeviceTokensByIdIn(idList: List<UUID>): UserDeviceTokenResponse {
+        val userDeviceTokens = userRepositorySpi.findAllByIdIn(idList)
             .filter { it.deviceToken != null }
             .map { it.deviceToken!! }
 

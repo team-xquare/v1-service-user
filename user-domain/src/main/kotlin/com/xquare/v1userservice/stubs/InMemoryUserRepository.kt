@@ -44,7 +44,7 @@ class InMemoryUserRepository(
         }
     }
 
-    override suspend fun findAllByIdsIn(ids: List<UUID>): List<User> {
-        return userMap.values.filter { ids.contains(it.id) }
+    override suspend fun findAllByIdIn(idList: List<UUID>): List<User> {
+        return userMap.values.filter { idList.contains(it.id) }
     }
 }

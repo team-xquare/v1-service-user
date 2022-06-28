@@ -113,9 +113,9 @@ class UserRepositoryImpl(
         }.executeUpdate()
     }
 
-    override suspend fun findAllByIdsIn(ids: List<UUID>): List<User> {
+    override suspend fun findAllByIdIn(idList: List<UUID>): List<User> {
         return reactiveQueryFactory.withFactory { _, reactiveQueryFactory ->
-            reactiveQueryFactory.findAllByIdsIn(ids)
+            reactiveQueryFactory.findAllByIdsIn(idList)
         }.map { userDomainMapper.userEntityToDomain(it) }
     }
 
