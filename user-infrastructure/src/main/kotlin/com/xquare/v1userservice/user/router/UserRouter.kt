@@ -16,6 +16,7 @@ class UserRouter {
             POST("/login", userHandler::userSignInHandler)
             GET("/id/{userId}", userHandler::getUserByIdHandler)
             GET("/account-id/{accountId}", userHandler::getUserByAccountIdHandler)
+            GET("/tokens/fcm", userHandler::getUserDeviceTokensHandler)
         }
     }
 }
