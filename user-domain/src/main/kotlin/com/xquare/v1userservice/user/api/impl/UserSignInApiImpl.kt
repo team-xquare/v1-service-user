@@ -10,6 +10,7 @@ import com.xquare.v1userservice.user.api.dtos.TokenRefreshResponse
 import com.xquare.v1userservice.user.exceptions.PasswordNotMatchesException
 import com.xquare.v1userservice.user.exceptions.UserNotFoundException
 import com.xquare.v1userservice.user.refreshtoken.RefreshToken
+import com.xquare.v1userservice.user.refreshtoken.exceptions.InvalidRefreshTokenException
 import com.xquare.v1userservice.user.refreshtoken.exceptions.RefreshTokenNotFoundException
 import com.xquare.v1userservice.user.refreshtoken.spi.RefreshTokenSpi
 import com.xquare.v1userservice.user.spi.AuthorityListSpi
@@ -62,7 +63,10 @@ class UserSignInApiImpl(
     }
 
     override suspend fun userTokenRefresh(refreshToken: String): TokenRefreshResponse {
-        val refreshTokenEntity = refreshTokenSpi.findByRefreshToken(refreshToken)
+        val pureRefreshToken = refreshToken.split(" ").getOrNull(1)
+            ?: throw InvalidRefreshTokenException("Invalid Refresh Token")
+
+        val refreshTokenEntity = refreshTokenSpi.findByRefreshToken(pureRefreshToken)
             ?: throw RefreshTokenNotFoundException("Refresh Token Not Found")
 
         refreshTokenSpi.updateExpiredAt(refreshTokenEntity)
