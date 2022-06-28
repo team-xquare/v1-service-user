@@ -33,7 +33,7 @@ class RefreshTokenSpiImpl(
 
     override suspend fun findByRefreshToken(refreshToken: String): RefreshToken? {
         val refreshTokenEntity = reactiveRedisOperations.opsForValue().get(refreshToken).awaitSingleOrNull()
-                as? RefreshTokenEntity
+            as? RefreshTokenEntity
 
         return refreshTokenEntity?.let { refreshTokenDomainMapper.refreshTokenEntityToDomain(refreshTokenEntity) }
     }
