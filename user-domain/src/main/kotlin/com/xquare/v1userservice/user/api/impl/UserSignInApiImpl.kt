@@ -31,25 +31,22 @@ class UserSignInApiImpl(
         val user = userRepositorySpi.findByAccountIdAndStateWithCreated(signInDomainRequest.accountId)
             ?: throw UserNotFoundException(UserNotFoundException.USER_ID_NOT_FOUND)
 
-        val deviceTokenModifiedUser = userRepositorySpi.applyChanges(user.setDeviceToken(signInDomainRequest.deviceToken))
+        val deviceTokenModifiedUser =
+            userRepositorySpi.applyChanges(user.setDeviceToken(signInDomainRequest.deviceToken))
 
         checkPasswordMatches(deviceTokenModifiedUser, signInDomainRequest.password)
 
         val params = buildAccessTokenParams(user)
 
-        val accessToken = jwtTokenGeneratorSpi.generateJwtToken(signInDomainRequest.accountId, TokenType.ACCESS_TOKEN, params)
+        val accessToken =
+            jwtTokenGeneratorSpi.generateJwtToken(signInDomainRequest.accountId, TokenType.ACCESS_TOKEN, params)
         val expireAt = LocalDateTime.now().plusHours(jwtTokenGeneratorSpi.getAccessTokenExpirationAsHour().toLong())
 
-        val refreshToken = jwtTokenGeneratorSpi.generateJwtToken(signInDomainRequest.accountId, TokenType.REFRESH_TOKEN, params)
-        val refreshTokenDomain = RefreshToken(
-            tokenValue = refreshToken,
-            userId = user.id
-        )
-        refreshTokenSpi.saveRefreshToken(refreshTokenDomain)
+        val refreshToken = saveNewRefreshToken(user, params)
 
         return SignInResponse(
             accessToken = accessToken,
-            refreshToken = refreshToken,
+            refreshToken = refreshToken.tokenValue,
             expireAt = expireAt
         )
     }
@@ -69,12 +66,14 @@ class UserSignInApiImpl(
         val refreshTokenEntity = refreshTokenSpi.findByRefreshToken(pureRefreshToken)
             ?: throw RefreshTokenNotFoundException("Refresh Token Not Found")
 
-        refreshTokenSpi.updateExpiredAt(refreshTokenEntity)
+        refreshTokenSpi.delete(refreshTokenEntity)
 
         val user = userRepositorySpi.findByIdAndStateWithCreated(refreshTokenEntity.userId)
             ?: throw UserNotFoundException(UserNotFoundException.USER_ID_NOT_FOUND)
 
         val params = buildAccessTokenParams(user)
+
+        saveNewRefreshToken(user, params)
 
         val accessToken = jwtTokenGeneratorSpi.generateJwtToken(user.accountId, TokenType.ACCESS_TOKEN, params)
 
@@ -94,5 +93,16 @@ class UserSignInApiImpl(
                 put("authorities", authorities)
                 put("role", user.role)
             }
+    }
+
+    private suspend fun saveNewRefreshToken(user: User, params: MutableMap<String, Any>): RefreshToken {
+        val newRefreshToken = jwtTokenGeneratorSpi.generateJwtToken(user.accountId, TokenType.REFRESH_TOKEN, params)
+
+        val refreshTokenDomain = RefreshToken(
+            tokenValue = newRefreshToken,
+            userId = user.id
+        )
+
+        return refreshTokenSpi.saveRefreshToken(refreshTokenDomain)
     }
 }
