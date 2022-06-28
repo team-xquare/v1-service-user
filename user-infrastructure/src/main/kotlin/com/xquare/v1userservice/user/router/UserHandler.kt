@@ -1,5 +1,6 @@
 package com.xquare.v1userservice.user.router
 
+import com.xquare.v1userservice.configuration.validate.BadRequestException
 import com.xquare.v1userservice.configuration.validate.RequestBodyValidator
 import com.xquare.v1userservice.user.User
 import com.xquare.v1userservice.user.api.CreateUserApi
@@ -67,6 +68,14 @@ class UserHandler(
             password = this.password,
             deviceToken = this.deviceToken
         )
+
+    suspend fun userTokenRefreshHandler(serverRequest: ServerRequest): ServerResponse {
+        val refreshToken = serverRequest.headers().firstHeader("Refresh-Token")
+            ?: throw BadRequestException("Refresh-Token is required")
+
+        val signInResponse = userSignInApi.userTokenRefresh(refreshToken)
+        return ServerResponse.ok().bodyValueAndAwait(signInResponse)
+    }
 
     suspend fun getUserByIdHandler(serverRequest: ServerRequest): ServerResponse {
         val userId = serverRequest.pathVariable("userId")
