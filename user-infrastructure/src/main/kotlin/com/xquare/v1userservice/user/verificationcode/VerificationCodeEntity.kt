@@ -15,33 +15,33 @@ class VerificationCodeEntity(
     @Column(columnDefinition = "BINARY(16)")
     val id: UUID,
 
-    @NotNull
+    @field:NotNull
     @Column(unique = true)
     val code: String,
 
-    @NotNull
+    @field:NotNull
     @Column(columnDefinition = "TINYINT(1) DEFAULT 0")
     val isUsed: Boolean,
 
-    @NotNull
+    @field:NotNull
     val expiredAt: LocalDate,
 
-    @NotNull
+    @field:NotNull
     val userName: String,
 
-    @NotNull
+    @field:NotNull
     @Column(columnDefinition = "TINYINT(1)")
     val grade: Int,
 
-    @NotNull
+    @field:NotNull
     @Column(columnDefinition = "TINYINT(1)")
     val classNum: Int,
 
-    @NotNull
+    @field:NotNull
     @Column(columnDefinition = "TINYINT(2)")
     val num: Int,
 
-    @NotNull
+    @field:NotNull
     val birthDay: LocalDate,
 
     @NotNull
