@@ -52,7 +52,7 @@ class UserSignInApiImpl(
     }
 
     private fun checkPasswordMatches(user: User, rawPassword: String) {
-        val isPasswordMatches = passwordMatcherSpi.passwordMatches(user.password, rawPassword)
+        val isPasswordMatches = passwordMatcherSpi.passwordMatches(rawPassword, user.password)
 
         if (!isPasswordMatches) {
             throw PasswordNotMatchesException(PasswordNotMatchesException.LOGIN_PASSWORD_NOT_MATCHES)

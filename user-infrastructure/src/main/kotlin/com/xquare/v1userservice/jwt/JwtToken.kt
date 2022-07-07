@@ -30,7 +30,7 @@ class JwtToken(
 
         val claimsSet = claimsSetBuilder.build()
 
-        val header = JWSHeader.Builder(JWSAlgorithm.HS512)
+        val header = JWSHeader.Builder(JWSAlgorithm.HS256)
             .type(JOSEObjectType.JWT)
             .build()
 
