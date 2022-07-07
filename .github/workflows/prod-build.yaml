@@ -55,7 +55,7 @@ jobs:
           password: ${{ steps.ecr.outputs.password }}
           registry: ${{ steps.ecr.outputs.registry }}
           tags: ${{ steps.get_version.outputs.VERSION }}
-          buildargs: |
+          build-args: |
             DBMS=${{secrets.DBMS_PROD}}
             DB_HOST=${{secrets.DB_HOST_PROD}}
             DB_PORT=${{secrets.DB_PORT_PROD}}
@@ -70,6 +70,9 @@ jobs:
             JWT_SECRET_KEY=${{secrets.JWT_SECRET_KEY_PROD}}
             JWT_ACCESS_TOKEN_EXP_AS_HOUR=${{secrets.JWT_ACCESS_TOKEN_EXP_AS_HOUR_PROD}}
             JWT_REFRESH_TOKEN_EXP_AS_HOUR=${{secrets.JWT_REFRESH_TOKEN_EXP_AS_HOUR_PROD}}
+            REDIS_HOST=${{secrets.REDIS_HOST_PROD}}
+            REDIS_PORT=${{secrets.REDIS_PORT_PROD}}
+            REDIS_PASSWORD=${{secrets.REDIS_PASSWORD_PROD}}
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v1
         with:
