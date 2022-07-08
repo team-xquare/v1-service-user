@@ -7,9 +7,11 @@ import com.xquare.v1userservice.user.api.CreateUserApi
 import com.xquare.v1userservice.user.api.CreateUserInPendingStateProcessor
 import com.xquare.v1userservice.user.api.UpdateUserCreatedStateStepProcessor
 import com.xquare.v1userservice.user.api.dtos.CreatUserDomainRequest
+import com.xquare.v1userservice.user.exceptions.UserAlreadyExistsException
 import com.xquare.v1userservice.user.spi.PasswordEncoderSpi
 import com.xquare.v1userservice.user.spi.SaveUserBaseApplicationSpi
 import com.xquare.v1userservice.user.spi.SaveUserBaseAuthoritySpi
+import com.xquare.v1userservice.user.spi.UserRepositorySpi
 import com.xquare.v1userservice.user.verificationcode.VerificationCode
 import com.xquare.v1userservice.user.verificationcode.exceptions.VerificationCodeNotFoundException
 import com.xquare.v1userservice.user.verificationcode.spi.VerificationCodeSpi
@@ -23,11 +25,13 @@ class CreateUserApiImpl(
     private val saveUserBaseAuthoritySpi: SaveUserBaseAuthoritySpi,
     private val verificationCodeSpi: VerificationCodeSpi,
     private val passwordEncoderSpi: PasswordEncoderSpi,
-    private val saveUserBaseApplicationSpi: SaveUserBaseApplicationSpi
+    private val saveUserBaseApplicationSpi: SaveUserBaseApplicationSpi,
+    private val userRepositorySpi: UserRepositorySpi
 ) : CreateUserApi {
     override suspend fun saveUser(creatUserDomainRequest: CreatUserDomainRequest): User = coroutineScope {
         val verificationCode = verificationCodeSpi.getByCode(creatUserDomainRequest.verificationCode)
             ?: throw VerificationCodeNotFoundException("Verification Code Not Found")
+        checkIsAccountIdAlreadyExists(creatUserDomainRequest.accountId)
         val domainUser = verificationCode.toStudentUser(creatUserDomainRequest)
         val savedUser = createUserInPendingStateProcessor.processStep(domainUser)
 
@@ -56,4 +60,9 @@ class CreateUserApiImpl(
         accountId = creatUserDomainRequest.accountId,
         profileFileName = creatUserDomainRequest.profileFileName
     )
+
+    private suspend fun checkIsAccountIdAlreadyExists(accountId: String) {
+        userRepositorySpi.findByAccountIdAndStateWithCreated(accountId)
+            ?.let { throw UserAlreadyExistsException("$accountId Already Exists") }
+    }
 }

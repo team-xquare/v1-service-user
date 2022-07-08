@@ -55,7 +55,7 @@ jobs:
           password: ${{ steps.ecr.outputs.password }}
           registry: ${{ steps.ecr.outputs.registry }}
           tags: ${{ steps.get_version.outputs.VERSION }}
-          build-args: |
+          buildargs: |
             DBMS=${{secrets.DBMS_PROD}}
             DB_HOST=${{secrets.DB_HOST_PROD}}
             DB_PORT=${{secrets.DB_PORT_PROD}}
