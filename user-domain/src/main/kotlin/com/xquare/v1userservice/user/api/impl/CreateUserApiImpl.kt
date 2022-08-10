@@ -28,24 +28,26 @@ class CreateUserApiImpl(
     private val saveUserBaseApplicationSpi: SaveUserBaseApplicationSpi,
     private val userRepositorySpi: UserRepositorySpi
 ) : CreateUserApi {
-    override suspend fun saveUser(creatUserDomainRequest: CreatUserDomainRequest): User = coroutineScope {
+    override suspend fun saveUser(creatUserDomainRequest: CreatUserDomainRequest): User {
         val verificationCode = verificationCodeSpi.getByCode(creatUserDomainRequest.verificationCode)
             ?: throw VerificationCodeNotFoundException("Verification Code Not Found")
         checkIsAccountIdAlreadyExists(creatUserDomainRequest.accountId)
         val domainUser = verificationCode.toStudentUser(creatUserDomainRequest)
         val savedUser = createUserInPendingStateProcessor.processStep(domainUser)
 
-        launch {
-            saveUserBaseAuthoritySpi.processStep(savedUser.id)
-        }
+        coroutineScope {
+            launch {
+                saveUserBaseAuthoritySpi.processStep(savedUser.id)
+            }
 
-        launch {
-            saveUserBaseApplicationSpi.processStep(savedUser.id)
+            launch {
+                saveUserBaseApplicationSpi.processStep(savedUser.id)
+            }
         }
 
         updateUserCreatedStateStepProcessor.processStep(savedUser.id)
 
-        savedUser
+        return savedUser
     }
 
     private fun VerificationCode.toStudentUser(creatUserDomainRequest: CreatUserDomainRequest) = User(
