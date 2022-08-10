@@ -74,7 +74,7 @@ jobs:
             REDIS_PORT=${{secrets.REDIS_PORT_PROD}}
             REDIS_PASSWORD=${{secrets.REDIS_PASSWORD_PROD}}
             AUTHORITY_SERVICE_HOST=${{secrets.AUTHORITY_SERVICE_HOST}}
-            APPLICATION_SERVICE_HOST=${{secrets.APPLICATION_SERVICE_HOST_PROD}}
+            APPLICATION_SERVICE_HOST=${{secrets.APPLICATION_SERVICE_HOST}}
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v1
         with:
