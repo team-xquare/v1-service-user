@@ -17,9 +17,10 @@ class AuthorityListSpiImpl(
         return getAuthorityNamesFromResponse(clientResponse)
     }
 
-    private fun sendGetAuthoritiesRequest(userId: UUID): WebClient.ResponseSpec {
+    private suspend fun sendGetAuthoritiesRequest(userId: UUID): WebClient.ResponseSpec {
         return webClient.get().uri { uri ->
-            uri.host(authorityProperties.host)
+            uri.scheme("https")
+                .host(authorityProperties.host)
                 .path("/authorities/{userId}")
                 .build(userId)
         }.retrieve()

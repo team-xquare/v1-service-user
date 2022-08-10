@@ -5,6 +5,7 @@ import com.xquare.v1userservice.user.spi.dtos.SaveUserBaseApplicationRequest
 import java.util.UUID
 import org.springframework.stereotype.Repository
 import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.awaitBodilessEntity
 
 @Repository
 class SaveUserBaseApplicationSpiImpl(
@@ -20,13 +21,14 @@ class SaveUserBaseApplicationSpiImpl(
     private fun buildBaseApplicationRequest(userId: UUID) =
         SaveUserBaseApplicationRequest(userId)
 
-    private fun sendPostApplicationDefaultValue(saveUserBaseApplicationRequest: SaveUserBaseApplicationRequest) =
+    private suspend fun sendPostApplicationDefaultValue(saveUserBaseApplicationRequest: SaveUserBaseApplicationRequest) =
         webClient.post()
             .uri {
-                it.host(applicationProperties.host)
+                it.scheme("https")
+                    .host(applicationProperties.host)
                     .path("/applications/signup")
                     .build()
             }
             .bodyValue(saveUserBaseApplicationRequest)
-            .retrieve()
+            .retrieve().awaitBodilessEntity()
 }
