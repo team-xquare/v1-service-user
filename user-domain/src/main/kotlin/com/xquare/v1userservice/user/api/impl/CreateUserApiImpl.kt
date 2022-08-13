@@ -17,7 +17,7 @@ import com.xquare.v1userservice.user.spi.UserRepositorySpi
 import com.xquare.v1userservice.user.verificationcode.VerificationCode
 import com.xquare.v1userservice.user.verificationcode.exceptions.VerificationCodeNotFoundException
 import com.xquare.v1userservice.user.verificationcode.spi.VerificationCodeSpi
-import com.xquare.v1userservice.utils.processAndRevert
+import com.xquare.v1userservice.utils.processAndRevertSteps
 import kotlinx.coroutines.coroutineScope
 
 @DomainService
@@ -37,18 +37,16 @@ class CreateUserApiImpl(
         val savedUser = createUserInPendingStateProcessor.processStep(domainUser)
 
         coroutineScope {
-            processAndRevert(
-                processSteps = saveUserBaseAuthorityProcessor::processStep,
-                processStepParam = savedUser.id,
+            processAndRevertSteps(
+                processStep = saveUserBaseAuthorityProcessor::processStep to savedUser.id,
                 revertSteps = listOf(
                     SaveUserBaseAuthorityCompensator::revertStep to savedUser.id,
                     CreateUserInPendingStateCompensator::revertStep to savedUser.id
                 )
             )
 
-            processAndRevert(
-                processSteps = saveUserBaseAuthorityProcessor::processStep,
-                processStepParam = savedUser.id,
+            processAndRevertSteps(
+                processStep = saveUserBaseAuthorityProcessor::processStep to savedUser.id,
                 revertSteps = listOf(
                     SaveUserBaseAuthorityCompensator::revertStep to savedUser.id,
                     SaveUserBaseApplicationCompensator::revertStep to savedUser.id,

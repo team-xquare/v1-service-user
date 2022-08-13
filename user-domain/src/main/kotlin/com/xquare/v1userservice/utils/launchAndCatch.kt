@@ -6,13 +6,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-suspend inline fun <T, PARAM, REVERT_PARAM> CoroutineScope.processAndRevert(
-    processStepParam: PARAM,
-    processSteps: KCallable<T>,
+suspend inline fun <T, PARAM, REVERT_PARAM> CoroutineScope.processAndRevertSteps(
+    processStep: Pair<KCallable<T>, PARAM>,
     revertSteps: List<Pair<KCallable<Unit>, REVERT_PARAM>>,
 ): T = try {
     withContext(Dispatchers.IO) {
-        processSteps.callSuspend(processStepParam)
+        processStep.first.callSuspend(processStep.second)
     }
 } catch (e: Exception) {
     revertSteps.forEach { it.first.callSuspend(this, it.second) }
