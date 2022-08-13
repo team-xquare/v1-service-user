@@ -24,7 +24,7 @@ class SaveUserBaseApplicationSpiImpl(
     private suspend fun sendPostApplicationDefaultValue(saveUserBaseApplicationRequest: SaveUserBaseApplicationRequest) =
         webClient.post()
             .uri {
-                it.scheme("https")
+                it.scheme("http")
                     .host(applicationProperties.host)
                     .path("/applications/signup")
                     .build()

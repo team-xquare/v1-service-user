@@ -21,9 +21,9 @@ class SaveUserBaseAuthoritySpiImpl(
     private suspend fun sendSaveUserBaseAuthorityRequest(saveUserBaseAuthorityRequest: SaveUserBaseAuthorityRequest) {
         webClient.post()
             .uri {
-                it.scheme("https")
+                it.scheme("http")
                     .host(authorityProperties.host)
-                    .path("/authorities/access-management")
+                    .path("/authorities/access-management/basic")
                     .build()
             }
             .accept(MediaType.APPLICATION_JSON)
