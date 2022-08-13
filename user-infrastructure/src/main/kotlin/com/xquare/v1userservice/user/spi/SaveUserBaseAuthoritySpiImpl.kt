@@ -12,7 +12,7 @@ import org.springframework.web.reactive.function.client.awaitBodilessEntity
 class SaveUserBaseAuthoritySpiImpl(
     private val webClient: WebClient,
     private val authorityProperties: AuthorityProperties,
-) : SaveUserBaseAuthoritySpi {
+) : SaveUserBaseAuthorityProcessor, SaveUserBaseAuthorityCompensator {
     override suspend fun processStep(userId: UUID) {
         val request = SaveUserBaseAuthorityRequest(userId)
         sendSaveUserBaseAuthorityRequest(request)
@@ -29,5 +29,9 @@ class SaveUserBaseAuthoritySpiImpl(
             .accept(MediaType.APPLICATION_JSON)
             .bodyValue(saveUserBaseAuthorityRequest)
             .retrieve().awaitBodilessEntity()
+    }
+
+    override suspend fun revertStep(userId: UUID) {
+        TODO("Not yet implemented")
     }
 }

@@ -4,28 +4,29 @@ import com.xquare.v1userservice.annotations.DomainService
 import com.xquare.v1userservice.user.User
 import com.xquare.v1userservice.user.UserRole
 import com.xquare.v1userservice.user.api.CreateUserApi
+import com.xquare.v1userservice.user.api.CreateUserInPendingStateCompensator
 import com.xquare.v1userservice.user.api.CreateUserInPendingStateProcessor
 import com.xquare.v1userservice.user.api.UpdateUserCreatedStateStepProcessor
 import com.xquare.v1userservice.user.api.dtos.CreatUserDomainRequest
 import com.xquare.v1userservice.user.exceptions.UserAlreadyExistsException
 import com.xquare.v1userservice.user.spi.PasswordEncoderSpi
-import com.xquare.v1userservice.user.spi.SaveUserBaseApplicationSpi
-import com.xquare.v1userservice.user.spi.SaveUserBaseAuthoritySpi
+import com.xquare.v1userservice.user.spi.SaveUserBaseApplicationCompensator
+import com.xquare.v1userservice.user.spi.SaveUserBaseAuthorityCompensator
+import com.xquare.v1userservice.user.spi.SaveUserBaseAuthorityProcessor
 import com.xquare.v1userservice.user.spi.UserRepositorySpi
 import com.xquare.v1userservice.user.verificationcode.VerificationCode
 import com.xquare.v1userservice.user.verificationcode.exceptions.VerificationCodeNotFoundException
 import com.xquare.v1userservice.user.verificationcode.spi.VerificationCodeSpi
+import com.xquare.v1userservice.utils.processAndRevertSteps
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 
 @DomainService
 class CreateUserApiImpl(
     private val createUserInPendingStateProcessor: CreateUserInPendingStateProcessor,
     private val updateUserCreatedStateStepProcessor: UpdateUserCreatedStateStepProcessor,
-    private val saveUserBaseAuthoritySpi: SaveUserBaseAuthoritySpi,
+    private val saveUserBaseAuthorityProcessor: SaveUserBaseAuthorityProcessor,
     private val verificationCodeSpi: VerificationCodeSpi,
     private val passwordEncoderSpi: PasswordEncoderSpi,
-    private val saveUserBaseApplicationSpi: SaveUserBaseApplicationSpi,
     private val userRepositorySpi: UserRepositorySpi
 ) : CreateUserApi {
     override suspend fun saveUser(creatUserDomainRequest: CreatUserDomainRequest): User {
@@ -36,13 +37,24 @@ class CreateUserApiImpl(
         val savedUser = createUserInPendingStateProcessor.processStep(domainUser)
 
         coroutineScope {
-            launch {
-                saveUserBaseAuthoritySpi.processStep(savedUser.id)
-            }
+            processAndRevertSteps(
+                processStep = saveUserBaseAuthorityProcessor::processStep to arrayOf(savedUser.id),
+                revertSteps = listOf(
+                    SaveUserBaseAuthorityCompensator::revertStep to arrayOf(
+                        savedUser.id,
+                        CreateUserInPendingStateCompensator::revertStep to arrayOf(savedUser.id)
+                    )
+                )
+            )
 
-            launch {
-                saveUserBaseApplicationSpi.processStep(savedUser.id)
-            }
+            processAndRevertSteps(
+                processStep = saveUserBaseAuthorityProcessor::processStep to arrayOf(savedUser.id),
+                revertSteps = listOf(
+                    SaveUserBaseAuthorityCompensator::revertStep to arrayOf(savedUser.id),
+                    SaveUserBaseApplicationCompensator::revertStep to arrayOf(savedUser.id),
+                    CreateUserInPendingStateCompensator::revertStep to arrayOf(savedUser.id)
+                )
+            )
         }
 
         updateUserCreatedStateStepProcessor.processStep(savedUser.id)
