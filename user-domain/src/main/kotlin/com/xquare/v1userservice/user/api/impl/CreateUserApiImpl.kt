@@ -40,10 +40,8 @@ class CreateUserApiImpl(
             processAndRevertSteps(
                 processStep = saveUserBaseAuthorityProcessor::processStep to arrayOf(savedUser.id),
                 revertSteps = listOf(
-                    SaveUserBaseAuthorityCompensator::revertStep to arrayOf(
-                        savedUser.id,
-                        CreateUserInPendingStateCompensator::revertStep to arrayOf(savedUser.id)
-                    )
+                    SaveUserBaseAuthorityCompensator::revertStep to arrayOf(savedUser.id),
+                    CreateUserInPendingStateCompensator::revertStep to arrayOf(savedUser.id)
                 )
             )
 
