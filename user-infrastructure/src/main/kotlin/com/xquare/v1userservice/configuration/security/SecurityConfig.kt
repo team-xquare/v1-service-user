@@ -12,7 +12,7 @@ import org.springframework.security.web.server.SecurityWebFilterChain
 class SecurityConfig {
 
     @Bean
-    protected fun filterChain(http: ServerHttpSecurity): SecurityWebFilterChain? {
+    protected fun filterChain(http: ServerHttpSecurity): SecurityWebFilterChain {
         return http
             .httpBasic().disable()
             .formLogin().disable()

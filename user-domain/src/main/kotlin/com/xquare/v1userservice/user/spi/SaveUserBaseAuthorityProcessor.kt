@@ -4,6 +4,6 @@ import com.xquare.v1userservice.annotations.Spi
 import java.util.UUID
 
 @Spi
-interface SaveUserBaseAuthoritySpi {
+interface SaveUserBaseAuthorityProcessor {
     suspend fun processStep(userId: UUID)
 }

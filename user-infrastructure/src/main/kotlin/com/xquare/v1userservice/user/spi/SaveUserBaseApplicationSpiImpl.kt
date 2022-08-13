@@ -11,7 +11,7 @@ import org.springframework.web.reactive.function.client.awaitBodilessEntity
 class SaveUserBaseApplicationSpiImpl(
     private val webClient: WebClient,
     private val applicationProperties: ApplicationProperties
-) : SaveUserBaseApplicationSpi {
+) : SaveUserBaseApplicationProcessor, SaveUserBaseApplicationCompensator {
     override suspend fun processStep(userId: UUID) {
         val baseApplicationRequest = buildBaseApplicationRequest(userId)
 
@@ -31,4 +31,8 @@ class SaveUserBaseApplicationSpiImpl(
             }
             .bodyValue(saveUserBaseApplicationRequest)
             .retrieve().awaitBodilessEntity()
+
+    override suspend fun revertStep(userId: UUID) {
+        TODO("Not yet implemented")
+    }
 }
