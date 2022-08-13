@@ -38,19 +38,21 @@ class CreateUserApiImpl(
 
         coroutineScope {
             processAndRevertSteps(
-                processStep = saveUserBaseAuthorityProcessor::processStep to savedUser.id,
+                processStep = saveUserBaseAuthorityProcessor::processStep to arrayOf(savedUser.id),
                 revertSteps = listOf(
-                    SaveUserBaseAuthorityCompensator::revertStep to savedUser.id,
-                    CreateUserInPendingStateCompensator::revertStep to savedUser.id
+                    SaveUserBaseAuthorityCompensator::revertStep to arrayOf(
+                        savedUser.id,
+                        CreateUserInPendingStateCompensator::revertStep to arrayOf(savedUser.id)
+                    )
                 )
             )
 
             processAndRevertSteps(
-                processStep = saveUserBaseAuthorityProcessor::processStep to savedUser.id,
+                processStep = saveUserBaseAuthorityProcessor::processStep to arrayOf(savedUser.id),
                 revertSteps = listOf(
-                    SaveUserBaseAuthorityCompensator::revertStep to savedUser.id,
-                    SaveUserBaseApplicationCompensator::revertStep to savedUser.id,
-                    CreateUserInPendingStateCompensator::revertStep to savedUser.id
+                    SaveUserBaseAuthorityCompensator::revertStep to arrayOf(savedUser.id),
+                    SaveUserBaseApplicationCompensator::revertStep to arrayOf(savedUser.id),
+                    CreateUserInPendingStateCompensator::revertStep to arrayOf(savedUser.id)
                 )
             )
         }
