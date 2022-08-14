@@ -1,8 +1,10 @@
 package com.xquare.v1userservice.user.spi
 
 import com.xquare.v1userservice.application.properties.ApplicationProperties
+import com.xquare.v1userservice.user.exceptions.ApplicationRequestFailedException
 import com.xquare.v1userservice.user.spi.dtos.SaveUserBaseApplicationRequest
 import java.util.UUID
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Repository
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.awaitBodilessEntity
@@ -30,7 +32,11 @@ class SaveUserBaseApplicationSpiImpl(
                     .build()
             }
             .bodyValue(saveUserBaseApplicationRequest)
-            .retrieve().awaitBodilessEntity()
+            .retrieve()
+            .onStatus(HttpStatus::isError) {
+                throw ApplicationRequestFailedException("Failed request to save application default value", it.rawStatusCode())
+            }
+            .awaitBodilessEntity()
 
     override suspend fun revertStep(userId: UUID) {
         TODO("Not yet implemented")

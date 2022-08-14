@@ -10,7 +10,6 @@ import com.xquare.v1userservice.user.api.UpdateUserCreatedStateStepProcessor
 import com.xquare.v1userservice.user.api.dtos.CreatUserDomainRequest
 import com.xquare.v1userservice.user.exceptions.UserAlreadyExistsException
 import com.xquare.v1userservice.user.spi.PasswordEncoderSpi
-import com.xquare.v1userservice.user.spi.SaveUserBaseApplicationCompensator
 import com.xquare.v1userservice.user.spi.SaveUserBaseAuthorityCompensator
 import com.xquare.v1userservice.user.spi.SaveUserBaseAuthorityProcessor
 import com.xquare.v1userservice.user.spi.UserRepositorySpi
@@ -27,7 +26,9 @@ class CreateUserApiImpl(
     private val saveUserBaseAuthorityProcessor: SaveUserBaseAuthorityProcessor,
     private val verificationCodeSpi: VerificationCodeSpi,
     private val passwordEncoderSpi: PasswordEncoderSpi,
-    private val userRepositorySpi: UserRepositorySpi
+    private val userRepositorySpi: UserRepositorySpi,
+    private val createUserInPendingStateCompensator: CreateUserInPendingStateCompensator,
+    private val saveUserBaseAuthorityCompensator: SaveUserBaseAuthorityCompensator
 ) : CreateUserApi {
     override suspend fun saveUser(creatUserDomainRequest: CreatUserDomainRequest): User {
         val verificationCode = verificationCodeSpi.getByCode(creatUserDomainRequest.verificationCode)
@@ -40,17 +41,15 @@ class CreateUserApiImpl(
             processAndRevertSteps(
                 processStep = saveUserBaseAuthorityProcessor::processStep to arrayOf(savedUser.id),
                 revertSteps = listOf(
-                    SaveUserBaseAuthorityCompensator::revertStep to arrayOf(savedUser.id),
-                    CreateUserInPendingStateCompensator::revertStep to arrayOf(savedUser.id)
+                    createUserInPendingStateCompensator::revertStep to arrayOf(savedUser.id)
                 )
             )
 
             processAndRevertSteps(
                 processStep = saveUserBaseAuthorityProcessor::processStep to arrayOf(savedUser.id),
                 revertSteps = listOf(
-                    SaveUserBaseAuthorityCompensator::revertStep to arrayOf(savedUser.id),
-                    SaveUserBaseApplicationCompensator::revertStep to arrayOf(savedUser.id),
-                    CreateUserInPendingStateCompensator::revertStep to arrayOf(savedUser.id)
+                    saveUserBaseAuthorityCompensator::revertStep to arrayOf(savedUser.id),
+                    createUserInPendingStateCompensator::revertStep to arrayOf(savedUser.id)
                 )
             )
         }

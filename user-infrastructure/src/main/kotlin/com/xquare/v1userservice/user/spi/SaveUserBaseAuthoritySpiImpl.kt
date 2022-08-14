@@ -1,8 +1,10 @@
 package com.xquare.v1userservice.user.spi
 
 import com.xquare.v1userservice.authority.AuthorityProperties
+import com.xquare.v1userservice.user.exceptions.AuthorityRequestFailedException
 import com.xquare.v1userservice.user.spi.dtos.SaveUserBaseAuthorityRequest
 import java.util.UUID
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Repository
 import org.springframework.web.reactive.function.client.WebClient
@@ -28,7 +30,9 @@ class SaveUserBaseAuthoritySpiImpl(
             }
             .accept(MediaType.APPLICATION_JSON)
             .bodyValue(saveUserBaseAuthorityRequest)
-            .retrieve().awaitBodilessEntity()
+            .retrieve().onStatus(HttpStatus::isError) {
+                throw AuthorityRequestFailedException("Request failed to save authorities", it.rawStatusCode())
+            }.awaitBodilessEntity()
     }
 
     override suspend fun revertStep(userId: UUID) {
