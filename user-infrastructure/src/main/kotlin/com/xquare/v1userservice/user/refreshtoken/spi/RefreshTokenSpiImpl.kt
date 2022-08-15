@@ -1,5 +1,7 @@
 package com.xquare.v1userservice.user.refreshtoken.spi
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.convertValue
 import com.xquare.v1userservice.jwt.properties.JwtProperties
 import com.xquare.v1userservice.user.refreshtoken.RefreshToken
 import com.xquare.v1userservice.user.refreshtoken.RefreshTokenEntity
@@ -15,7 +17,8 @@ import org.springframework.stereotype.Repository
 class RefreshTokenSpiImpl(
     private val reactiveRedisOperations: ReactiveRedisOperations<String, Any>,
     private val refreshTokenDomainMapper: RefreshTokenDomainMapper,
-    private val jwtProperties: JwtProperties
+    private val jwtProperties: JwtProperties,
+    private val objectMapper: ObjectMapper
 ) : RefreshTokenSpi {
     override suspend fun saveRefreshToken(refreshToken: RefreshToken): RefreshToken {
         val refreshTokenEntity = refreshTokenDomainMapper.refreshTokenDomainToEntity(refreshToken)
@@ -32,10 +35,10 @@ class RefreshTokenSpiImpl(
     }
 
     override suspend fun findByRefreshToken(refreshToken: String): RefreshToken? {
-        val refreshTokenEntity = reactiveRedisOperations.opsForValue().get(refreshToken).awaitSingleOrNull()
-            as? RefreshTokenEntity
+        val refreshTokenFromDB = reactiveRedisOperations.opsForValue().get(refreshToken).awaitSingleOrNull()
+        val refreshTokenEntity = refreshTokenFromDB?.let { objectMapper.convertValue<RefreshTokenEntity>(it) }
 
-        return refreshTokenEntity?.let { refreshTokenDomainMapper.refreshTokenEntityToDomain(refreshTokenEntity) }
+        return refreshTokenEntity?.let { refreshTokenDomainMapper.refreshTokenEntityToDomain(it) }
     }
 
     override suspend fun delete(refreshToken: RefreshToken) {

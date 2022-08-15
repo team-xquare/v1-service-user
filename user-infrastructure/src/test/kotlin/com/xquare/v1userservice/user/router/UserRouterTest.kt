@@ -2,7 +2,7 @@ package com.xquare.v1userservice.user.router
 
 import com.ninjasquad.springmockk.MockkBean
 import com.xquare.v1userservice.configuration.security.SecurityConfig
-import com.xquare.v1userservice.user.api.dtos.SignInResponse
+import com.xquare.v1userservice.user.api.dtos.TokenResponse
 import com.xquare.v1userservice.user.router.dto.CreateUserRequest
 import com.xquare.v1userservice.user.router.dto.GetUserResponse
 import com.xquare.v1userservice.user.router.dto.SignInRequest
@@ -90,7 +90,7 @@ internal class UserRouterTest(
             .answers(ConstantAnswer(ServerResponse.ok().bodyValueAndAwait(response)))
     }
 
-    private fun buildUserSignInResponse() = SignInResponse(
+    private fun buildUserSignInResponse() = TokenResponse(
         accessToken = ACCESS_TOKEN_SUCCESS_VALUE,
         refreshToken = REFRESH_TOKEN_SUCCESS_VALUE,
         expireAt = LocalDateTime.now().plusHours(2)
@@ -107,7 +107,7 @@ internal class UserRouterTest(
             .uri("/users/login")
             .body<SignInRequest>(signInRequest.toMono())
             .exchange()
-            .returnResult<SignInResponse>()
+            .returnResult<TokenResponse>()
 
     @Test
     fun getUserById() = runTest {

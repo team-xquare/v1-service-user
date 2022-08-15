@@ -5,8 +5,7 @@ import com.xquare.v1userservice.user.TokenType
 import com.xquare.v1userservice.user.User
 import com.xquare.v1userservice.user.api.UserSignInApi
 import com.xquare.v1userservice.user.api.dtos.SignInDomainRequest
-import com.xquare.v1userservice.user.api.dtos.SignInResponse
-import com.xquare.v1userservice.user.api.dtos.TokenRefreshResponse
+import com.xquare.v1userservice.user.api.dtos.TokenResponse
 import com.xquare.v1userservice.user.exceptions.PasswordNotMatchesException
 import com.xquare.v1userservice.user.exceptions.UserNotFoundException
 import com.xquare.v1userservice.user.refreshtoken.RefreshToken
@@ -27,7 +26,7 @@ class UserSignInApiImpl(
     private val authorityListSpi: AuthorityListSpi,
     private val refreshTokenSpi: RefreshTokenSpi
 ) : UserSignInApi {
-    override suspend fun userSignIn(signInDomainRequest: SignInDomainRequest): SignInResponse {
+    override suspend fun userSignIn(signInDomainRequest: SignInDomainRequest): TokenResponse {
         val user = userRepositorySpi.findByAccountIdAndStateWithCreated(signInDomainRequest.accountId)
             ?: throw UserNotFoundException(UserNotFoundException.USER_ID_NOT_FOUND)
 
@@ -44,7 +43,7 @@ class UserSignInApiImpl(
 
         val refreshToken = saveNewRefreshToken(user, params)
 
-        return SignInResponse(
+        return TokenResponse(
             accessToken = accessToken,
             refreshToken = refreshToken.tokenValue,
             expireAt = expireAt
@@ -59,7 +58,7 @@ class UserSignInApiImpl(
         }
     }
 
-    override suspend fun userTokenRefresh(refreshToken: String): TokenRefreshResponse {
+    override suspend fun userTokenRefresh(refreshToken: String): TokenResponse {
         val pureRefreshToken = refreshToken.split(" ").getOrNull(1)
             ?: throw InvalidRefreshTokenException("Invalid Refresh Token")
 
@@ -73,14 +72,15 @@ class UserSignInApiImpl(
 
         val params = buildAccessTokenParams(user)
 
-        saveNewRefreshToken(user, params)
+        val refreshTokenDomain = saveNewRefreshToken(user, params)
 
         val accessToken = jwtTokenGeneratorSpi.generateJwtToken(user.accountId, TokenType.ACCESS_TOKEN, params)
 
         val expireAt = LocalDateTime.now().plusHours(jwtTokenGeneratorSpi.getAccessTokenExpirationAsHour().toLong())
 
-        return TokenRefreshResponse(
+        return TokenResponse(
             accessToken = accessToken,
+            refreshToken = refreshTokenDomain.tokenValue,
             expireAt = expireAt
         )
     }

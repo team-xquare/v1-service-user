@@ -21,11 +21,11 @@ class AuthorityListSpiImpl(
 
     private suspend fun sendGetAuthoritiesRequest(userId: UUID): WebClient.ResponseSpec {
         return webClient.get().uri { uri ->
-                uri.scheme("http")
-                    .host(authorityProperties.host)
-                    .path("/authorities/{userId}")
-                    .build(userId)
-            }.retrieve()
+            uri.scheme("http")
+                .host(authorityProperties.host)
+                .path("/authorities/{userId}")
+                .build(userId)
+        }.retrieve()
             .onStatus(HttpStatus::isError) {
                 throw AuthorityRequestFailedException("Request failed to get authorities", it.rawStatusCode())
             }
