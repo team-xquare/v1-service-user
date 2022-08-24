@@ -3,7 +3,6 @@ package com.xquare.v1userservice.user.saveuser.service
 import com.xquare.v1userservice.stubs.InMemoryUserRepository
 import com.xquare.v1userservice.user.EqualsTestUtils
 import com.xquare.v1userservice.user.UserUtils
-import com.xquare.v1userservice.user.api.impl.GetUserInformationServiceImpl
 import com.xquare.v1userservice.user.exceptions.UserNotFoundException
 import com.xquare.v1userservice.user.spi.UserRepositorySpi
 import java.util.UUID

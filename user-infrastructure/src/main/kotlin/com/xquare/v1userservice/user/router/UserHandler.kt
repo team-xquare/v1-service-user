@@ -3,10 +3,7 @@ package com.xquare.v1userservice.user.router
 import com.xquare.v1userservice.configuration.validate.BadRequestException
 import com.xquare.v1userservice.configuration.validate.RequestBodyValidator
 import com.xquare.v1userservice.user.User
-import com.xquare.v1userservice.user.api.CreateUserApi
-import com.xquare.v1userservice.user.api.GetUserDeviceTokensApi
-import com.xquare.v1userservice.user.api.GetUserInformationService
-import com.xquare.v1userservice.user.api.UserSignInApi
+import com.xquare.v1userservice.user.api.UserApi
 import com.xquare.v1userservice.user.api.dtos.CreatUserDomainRequest
 import com.xquare.v1userservice.user.api.dtos.SignInDomainRequest
 import com.xquare.v1userservice.user.api.dtos.UserDeviceTokenResponse
@@ -26,18 +23,15 @@ import org.springframework.web.reactive.function.server.buildAndAwait
 
 @Component
 class UserHandler(
-    private val createUserApi: CreateUserApi,
-    private val getUserInformationService: GetUserInformationService,
-    private val requestBodyValidator: RequestBodyValidator,
-    private val userSignInApi: UserSignInApi,
-    private val getUserDeviceTokensApi: GetUserDeviceTokensApi
+    private val userApi: UserApi,
+    private val requestBodyValidator: RequestBodyValidator
 ) {
     suspend fun saveUserHandler(serverRequest: ServerRequest): ServerResponse {
         val requestBody: CreateUserRequest = serverRequest.getCreateUserRequestBody()
         requestBodyValidator.validate(requestBody)
 
         val domainRequest = requestBody.toDomainRequest()
-        createUserApi.saveUser(domainRequest)
+        userApi.saveUser(domainRequest)
 
         return ServerResponse.created(URI("/users")).buildAndAwait()
     }
@@ -55,7 +49,7 @@ class UserHandler(
     suspend fun userSignInHandler(serverRequest: ServerRequest): ServerResponse {
         val signInRequest = serverRequest.getSignInRequestBody()
         val domainRequest = signInRequest.toDomainRequest()
-        val signInResponse = userSignInApi.userSignIn(domainRequest)
+        val signInResponse = userApi.userSignIn(domainRequest)
         return ServerResponse.ok().bodyValueAndAwait(signInResponse)
     }
 
@@ -73,20 +67,20 @@ class UserHandler(
         val refreshToken = serverRequest.headers().firstHeader("Refresh-Token")
             ?: throw BadRequestException("Refresh-Token is required")
 
-        val signInResponse = userSignInApi.userTokenRefresh(refreshToken)
+        val signInResponse = userApi.userTokenRefresh(refreshToken)
         return ServerResponse.ok().bodyValueAndAwait(signInResponse)
     }
 
     suspend fun getUserByIdHandler(serverRequest: ServerRequest): ServerResponse {
         val userId = serverRequest.pathVariable("userId")
-        val user = getUserInformationService.getUserById(UUID.fromString(userId))
+        val user = userApi.getUserById(UUID.fromString(userId))
         val userResponseDto = user.toGetUserByAccountIdResponseDto()
         return ServerResponse.ok().bodyValueAndAwait(userResponseDto)
     }
 
     suspend fun getUserByAccountIdHandler(serverRequest: ServerRequest): ServerResponse {
         val accountId = serverRequest.pathVariable("accountId")
-        val user = getUserInformationService.getUserByAccountId(accountId)
+        val user = userApi.getUserByAccountId(accountId)
         val userResponseDto = user.toGetUserByAccountIdResponseDto()
         return ServerResponse.ok().bodyValueAndAwait(userResponseDto)
     }
@@ -107,7 +101,7 @@ class UserHandler(
     suspend fun getUserDeviceTokensHandler(serverRequest: ServerRequest): ServerResponse {
         val userIds = serverRequest.queryParams()["users"]?.map { UUID.fromString(it) } ?: emptyList()
 
-        val userDeviceTokenDomainResponse = getUserDeviceTokensApi.getUserDeviceTokensByIdIn(userIds)
+        val userDeviceTokenDomainResponse = userApi.getUserDeviceTokensByIdIn(userIds)
         val getUserDeviceTokenListResponse = userDeviceTokenDomainResponse.toGetUserDeviceTokenListResponse()
         return ServerResponse.ok().bodyValueAndAwait(getUserDeviceTokenListResponse)
     }
