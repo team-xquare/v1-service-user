@@ -1,29 +1,18 @@
 spring:
-  redis:
-    host: ${REDIS_HOST}
-    port: ${REDIS_PORT}
-    password: ${REDIS_PASSWORD}
   main:
     web-application-type: reactive
-  datasource:
-    dbms: ${DBMS}
-    host: ${DB_HOST}
-    port: ${DB_PORT}
-    database: ${DB_NAME}
-    password: ${DB_PASSWORD}
-    username: ${DB_USERNAME}
-    show-sql: ${SHOW_SQL}
-    format-sql: false
-    highlight-sql: false
-    ddl-auto: ${DDL_AUTO_MODE}
-    pool-size: ${DB_POOL}
   jackson:
     property-naming-strategy: SNAKE_CASE
     date-format: yyyy-MM-dd'T'HH:mm:ss
     time-zone: Asia/Seoul
   application:
-    name: user-service-v1
-
+    name: v1-user-service
+  config:
+    import: optional:configserver:https://api.xquare.app/cloud-config/
+  cloud:
+    config:
+      username: ${CLOUD_CONFIG_USERNAME}
+      password: ${CLOUD_CONFIG_PASSWORD}
 server:
   shutdown: graceful
 
@@ -35,26 +24,3 @@ management:
   endpoint:
     health:
       show-details: when_authorized
-
-service:
-  authority:
-    host: ${AUTHORITY_SERVICE_HOST}
-  application:
-    host: ${APPLICATION_SERVICE_HOST}
-
-jwt:
-  secret-key: ${JWT_SECRET_KEY}
-  refresh-token-properties:
-    expiration-as-hour: ${JWT_REFRESH_TOKEN_EXP_AS_HOUR}
-  access-token-properties:
-    expiration-as-hour: ${JWT_ACCESS_TOKEN_EXP_AS_HOUR}
----
-
-spring:
-  config:
-    activate:
-      on-profile: local
-  datasource:
-    show-sql: true
-    format-sql: true
-    highlight-sql: true
