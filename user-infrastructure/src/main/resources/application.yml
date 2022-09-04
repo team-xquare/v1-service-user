@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    active: ${PROFILE}
   main:
     web-application-type: reactive
   jackson:
