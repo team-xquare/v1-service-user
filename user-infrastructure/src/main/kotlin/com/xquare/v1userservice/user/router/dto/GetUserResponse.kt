@@ -18,7 +18,7 @@ data class GetUserResponse(
 
     val num: Int,
 
-    val profileFileName: String,
+    val profileFileName: String?,
 
     val password: String
 )

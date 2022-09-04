@@ -9,6 +9,7 @@ import com.xquare.v1userservice.user.api.CreateUserInPendingStateProcessor
 import com.xquare.v1userservice.user.api.UpdateUserCreatedStateStepProcessor
 import com.xquare.v1userservice.user.api.UserApi
 import com.xquare.v1userservice.user.api.dtos.CreatUserDomainRequest
+import com.xquare.v1userservice.user.api.dtos.PointDomainResponse
 import com.xquare.v1userservice.user.api.dtos.SignInDomainRequest
 import com.xquare.v1userservice.user.api.dtos.TokenResponse
 import com.xquare.v1userservice.user.api.dtos.UserDeviceTokenResponse
@@ -23,6 +24,7 @@ import com.xquare.v1userservice.user.spi.AuthorityListSpi
 import com.xquare.v1userservice.user.spi.JwtTokenGeneratorSpi
 import com.xquare.v1userservice.user.spi.PasswordEncoderSpi
 import com.xquare.v1userservice.user.spi.PasswordMatcherSpi
+import com.xquare.v1userservice.user.spi.PointSpi
 import com.xquare.v1userservice.user.spi.SaveUserBaseAuthorityCompensator
 import com.xquare.v1userservice.user.spi.SaveUserBaseAuthorityProcessor
 import com.xquare.v1userservice.user.spi.UserRepositorySpi
@@ -47,7 +49,8 @@ class UserApiImpl(
     private val jwtTokenGeneratorSpi: JwtTokenGeneratorSpi,
     private val refreshTokenSpi: RefreshTokenSpi,
     private val authorityListSpi: AuthorityListSpi,
-    private val passwordMatcherSpi: PasswordMatcherSpi
+    private val passwordMatcherSpi: PasswordMatcherSpi,
+    private val pointSpi: PointSpi
 ) : UserApi {
     override suspend fun saveUser(creatUserDomainRequest: CreatUserDomainRequest): User {
         val verificationCode = verificationCodeSpi.getByCode(creatUserDomainRequest.verificationCode)
@@ -192,5 +195,18 @@ class UserApiImpl(
         )
 
         return refreshTokenSpi.saveRefreshToken(refreshTokenDomain)
+    }
+
+    override suspend fun getUserPointInformation(userId: UUID): PointDomainResponse {
+        val user = userRepositorySpi.findByIdAndStateWithCreated(userId)
+            ?: throw UserNotFoundException(UserNotFoundException.USER_ID_NOT_FOUND)
+
+        val userPoint = pointSpi.getUserPoint(userId)
+
+        return PointDomainResponse(
+            goodPoint = userPoint.goodPoint,
+            badPoint = userPoint.badPoint,
+            userName = user.name
+        )
     }
 }

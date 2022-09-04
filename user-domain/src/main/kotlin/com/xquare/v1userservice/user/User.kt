@@ -14,7 +14,7 @@ data class User(
 
     val grade: Int,
 
-    val profileFileName: String,
+    val profileFileName: String?,
 
     val password: String,
 

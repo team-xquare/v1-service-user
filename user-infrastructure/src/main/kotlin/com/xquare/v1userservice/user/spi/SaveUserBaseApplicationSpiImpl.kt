@@ -1,6 +1,6 @@
 package com.xquare.v1userservice.user.spi
 
-import com.xquare.v1userservice.application.properties.ApplicationProperties
+import com.xquare.v1userservice.configuration.property.ServiceProperties
 import com.xquare.v1userservice.user.exceptions.ApplicationRequestFailedException
 import com.xquare.v1userservice.user.spi.dtos.SaveUserBaseApplicationRequest
 import java.util.UUID
@@ -12,7 +12,7 @@ import org.springframework.web.reactive.function.client.awaitBodilessEntity
 @Repository
 class SaveUserBaseApplicationSpiImpl(
     private val webClient: WebClient,
-    private val applicationProperties: ApplicationProperties
+    private val serviceProperties: ServiceProperties
 ) : SaveUserBaseApplicationProcessor, SaveUserBaseApplicationCompensator {
     override suspend fun processStep(userId: UUID) {
         val baseApplicationRequest = buildBaseApplicationRequest(userId)
@@ -27,7 +27,7 @@ class SaveUserBaseApplicationSpiImpl(
         webClient.post()
             .uri {
                 it.scheme("http")
-                    .host(applicationProperties.host)
+                    .host(serviceProperties.baseHost)
                     .path("/applications/signup")
                     .build()
             }

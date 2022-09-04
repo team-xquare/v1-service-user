@@ -12,7 +12,7 @@ data class CreateUserRequest(
     @field:NotBlank
     val verificationCode: String,
 
-    val profileFileName: String,
+    val profileFileName: String?,
 
     @field:NotNull
     val password: String

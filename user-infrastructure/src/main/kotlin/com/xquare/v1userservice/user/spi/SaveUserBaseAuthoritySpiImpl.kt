@@ -1,6 +1,6 @@
 package com.xquare.v1userservice.user.spi
 
-import com.xquare.v1userservice.authority.AuthorityProperties
+import com.xquare.v1userservice.configuration.property.ServiceProperties
 import com.xquare.v1userservice.user.exceptions.AuthorityRequestFailedException
 import com.xquare.v1userservice.user.spi.dtos.SaveUserBaseAuthorityRequest
 import java.util.UUID
@@ -13,7 +13,7 @@ import org.springframework.web.reactive.function.client.awaitBodilessEntity
 @Repository
 class SaveUserBaseAuthoritySpiImpl(
     private val webClient: WebClient,
-    private val authorityProperties: AuthorityProperties,
+    private val serviceProperties: ServiceProperties,
 ) : SaveUserBaseAuthorityProcessor, SaveUserBaseAuthorityCompensator {
     override suspend fun processStep(userId: UUID) {
         val request = SaveUserBaseAuthorityRequest(userId)
@@ -24,7 +24,7 @@ class SaveUserBaseAuthoritySpiImpl(
         webClient.post()
             .uri {
                 it.scheme("http")
-                    .host(authorityProperties.host)
+                    .host(serviceProperties.baseHost)
                     .path("/authorities/access-management/basic")
                     .build()
             }

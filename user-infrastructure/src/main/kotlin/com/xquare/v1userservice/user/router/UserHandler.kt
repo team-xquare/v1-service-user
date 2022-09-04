@@ -5,10 +5,12 @@ import com.xquare.v1userservice.configuration.validate.RequestBodyValidator
 import com.xquare.v1userservice.user.User
 import com.xquare.v1userservice.user.api.UserApi
 import com.xquare.v1userservice.user.api.dtos.CreatUserDomainRequest
+import com.xquare.v1userservice.user.api.dtos.PointDomainResponse
 import com.xquare.v1userservice.user.api.dtos.SignInDomainRequest
 import com.xquare.v1userservice.user.api.dtos.UserDeviceTokenResponse
 import com.xquare.v1userservice.user.router.dto.CreateUserRequest
 import com.xquare.v1userservice.user.router.dto.GetUserDeviceTokenListResponse
+import com.xquare.v1userservice.user.router.dto.GetUserPointResponse
 import com.xquare.v1userservice.user.router.dto.GetUserResponse
 import com.xquare.v1userservice.user.router.dto.SignInRequest
 import java.net.URI
@@ -108,5 +110,18 @@ class UserHandler(
 
     private fun UserDeviceTokenResponse.toGetUserDeviceTokenListResponse() = GetUserDeviceTokenListResponse(
         tokens = this.tokens
+    )
+
+    suspend fun getUserPointHandler(serverRequest: ServerRequest): ServerResponse {
+        val userId = serverRequest.pathVariable("userId")
+        val pointDomainResponse = userApi.getUserPointInformation(UUID.fromString(userId))
+        val pointResponse = pointDomainResponse.toResponse()
+        return ServerResponse.ok().bodyValueAndAwait(pointResponse)
+    }
+
+    private fun PointDomainResponse.toResponse() = GetUserPointResponse(
+        name = this.userName,
+        goodPoint = this.goodPoint,
+        badPoint = this.badPoint
     )
 }

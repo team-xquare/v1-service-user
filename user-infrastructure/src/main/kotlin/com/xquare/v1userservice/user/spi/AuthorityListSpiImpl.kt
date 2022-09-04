@@ -1,6 +1,6 @@
 package com.xquare.v1userservice.user.spi
 
-import com.xquare.v1userservice.authority.AuthorityProperties
+import com.xquare.v1userservice.configuration.property.ServiceProperties
 import com.xquare.v1userservice.user.exceptions.AuthorityRequestFailedException
 import com.xquare.v1userservice.user.spi.dtos.AuthorityListResponse
 import java.util.UUID
@@ -12,7 +12,7 @@ import org.springframework.web.reactive.function.client.awaitBody
 @Repository
 class AuthorityListSpiImpl(
     private val webClient: WebClient,
-    private val authorityProperties: AuthorityProperties
+    private val serviceProperties: ServiceProperties
 ) : AuthorityListSpi {
     override suspend fun getAuthorities(userId: UUID): List<String> {
         val clientResponse = sendGetAuthoritiesRequest(userId)
@@ -22,7 +22,7 @@ class AuthorityListSpiImpl(
     private suspend fun sendGetAuthoritiesRequest(userId: UUID): WebClient.ResponseSpec {
         return webClient.get().uri { uri ->
             uri.scheme("http")
-                .host(authorityProperties.host)
+                .host(serviceProperties.baseHost)
                 .path("/authorities/{userId}")
                 .build(userId)
         }.retrieve()
