@@ -57,25 +57,8 @@ jobs:
           registry: ${{ steps.ecr.outputs.registry }}
           tags: ${{ steps.get_version.outputs.VERSION }}
           buildargs: |
-            DBMS=${{secrets.DBMS_PROD}}
-            DB_HOST=${{secrets.DB_HOST_PROD}}
-            DB_PORT=${{secrets.DB_PORT_PROD}}
-            DB_NAME=${{secrets.DB_NAME_PROD}}
-            DB_PASSWORD=${{secrets.DB_PASSWORD_PROD}}
-            DB_USERNAME=${{secrets.DB_USERNAME_PROD}}
-            SHOW_SQL=${{secrets.SHOW_SQL_PROD}}
-            DDL_AUTO_MODE=${{secrets.DDL_AUTO_MODE_PROD}}
-            DB_POOL=${{secrets.DB_POOL_PROD}}
-            AUTHORITY_SERVICE_HOST=${{secrets.AUTHORITY_SERVICE_HOST}}
-            APPLICATION_SERVICE_HOST=${{secrets.APPLICATION_SERVICE_HOST}}
-            JWT_SECRET_KEY=${{secrets.JWT_SECRET_KEY_PROD}}
-            JWT_ACCESS_TOKEN_EXP_AS_HOUR=${{secrets.JWT_ACCESS_TOKEN_EXP_AS_HOUR_PROD}}
-            JWT_REFRESH_TOKEN_EXP_AS_HOUR=${{secrets.JWT_REFRESH_TOKEN_EXP_AS_HOUR_PROD}}
-            REDIS_HOST=${{secrets.REDIS_HOST_PROD}}
-            REDIS_PORT=${{secrets.REDIS_PORT_PROD}}
-            REDIS_PASSWORD=${{secrets.REDIS_PASSWORD_PROD}}
-            AUTHORITY_SERVICE_HOST=${{secrets.AUTHORITY_SERVICE_HOST}}
-            APPLICATION_SERVICE_HOST=${{secrets.APPLICATION_SERVICE_HOST}}
+            CLOUD_CONFIG_PASSWORD=${{secrets.CLOUD_CONFIG_PASSWORD}}
+            CLOUD_CONFIG_USERNAME=${{secrets.CLOUD_CONFIG_USERNAME}}
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v1
         with:
