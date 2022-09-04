@@ -38,6 +38,7 @@ jobs:
           arguments: |
             build
             --no-daemon
+            -x test
 
       - name: Login to ECR
         id: ecr
