@@ -34,6 +34,7 @@ dependencies {
     kapt(Dependencies.MAPSTRUCT_APT)
     kapt(Dependencies.CONFIGURATION_PROCESSOR)
     implementation(Dependencies.REACTIVE_REDIS)
+    implementation(Dependencies.CLOUD_CONFIG)
 
     implementation(project(":user-domain"))
 }

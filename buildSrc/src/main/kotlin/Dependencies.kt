@@ -55,4 +55,7 @@ object Dependencies {
 
     // redis
     const val REACTIVE_REDIS = "org.springframework.boot:spring-boot-starter-data-redis-reactive"
+
+    // cloud config
+    const val CLOUD_CONFIG = "org.springframework.cloud:spring-cloud-config-client"
 }
