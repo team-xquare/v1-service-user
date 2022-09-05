@@ -1,0 +1,66 @@
+name: Build for Stage
+on:
+  push:
+    branches:
+      - main
+
+env:
+  SERVICE_NAME: user
+  SERVICE_TYPE: be
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java-version: [ 17 ]
+    outputs:
+      version: ${{ steps.get_version.outputs.BRANCH_NAME }}
+
+    steps:
+      - name: Check Out The Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: ${{ matrix.java-version }}
+          distribution: 'zulu'
+
+      - name: Gradle Build
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: |
+            build
+            --no-daemon
+            -x test
+      - name: Login to ECR
+        id: ecr
+        uses: elgohr/ecr-login-action@master
+        with:
+          access_key: ${{ secrets.AWS_ACCESS_KEY }}
+          secret_access_key: ${{ secrets.AWS_SECRET_KEY }}
+          region: ${{ secrets.AWS_REGION }}
+
+      - name: Publish to Registry
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: ${{env.SERVICE_NAME}}-${{env.SERVICE_TYPE}}
+          username: ${{ steps.ecr.outputs.username }}
+          password: ${{ steps.ecr.outputs.password }}
+          registry: ${{ steps.ecr.outputs.registry }}
+          tags: ${{ github.sha }}
+          buildargs: |
+            CLOUD_CONFIG_USERNAME=${{secrets.CLOUD_CONFIG_USERNAME}}
+            CLOUD_CONFIG_PASSWORD=${{secrets.CLOUD_CONFIG_PASSWORD}}
+            PROFILE=stage
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.GITOPS_DEPLOY_STAGE_TOKEN }}
+          repository: team-xquare/xquare-gitops-repo-staging
+          event-type: update_image
+          client-payload: '{"ref": "${{ github.ref }}", 
+                          "version": "${{ github.sha }}",
+                          "service_name": "${{env.SERVICE_NAME}}",
+                          "service_type": "${{env.SERVICE_TYPE}}" }'
