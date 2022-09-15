@@ -18,7 +18,7 @@ class PointSpiImpl(
 ) : PointSpi {
     override suspend fun getUserPoint(userId: UUID): PointResponse {
         return webClient.get().uri {
-            it.scheme("http")
+            it.scheme("https")
                 .host(pointHost)
                 .path("/point/{userId}")
                 .build(userId)
