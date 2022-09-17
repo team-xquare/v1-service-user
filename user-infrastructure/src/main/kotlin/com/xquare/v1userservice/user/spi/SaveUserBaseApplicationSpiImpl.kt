@@ -15,14 +15,9 @@ class SaveUserBaseApplicationSpiImpl(
     @Value("\${service.application.host}")
     private val applicationHost: String
 ) : SaveUserBaseApplicationProcessor, SaveUserBaseApplicationCompensator {
-    override suspend fun processStep(userId: UUID): Result<Unit> {
-        return try {
-            val baseApplicationRequest = buildBaseApplicationRequest(userId)
-            sendPostApplicationDefaultValue(baseApplicationRequest)
-            Result.success(Unit)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
+    override suspend fun processStep(userId: UUID) {
+        val baseApplicationRequest = buildBaseApplicationRequest(userId)
+        sendPostApplicationDefaultValue(baseApplicationRequest)
     }
 
     private fun buildBaseApplicationRequest(userId: UUID) =

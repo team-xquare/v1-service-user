@@ -63,18 +63,20 @@ class UserApiImpl(
         val savedUser = createUserInPendingStateProcessor.processStep(domainUser)
 
         coroutineScope {
-            saveUserBaseAuthorityProcessor.processStep(savedUser.id)
-                .onFailure {
-                    saveUserBaseAuthorityCompensator.revertStep(savedUser.id)
-                    createUserInPendingStateCompensator.revertStep(savedUser.id)
-                }
+            runCatching {
+                saveUserBaseAuthorityProcessor.processStep(savedUser.id)
+            }.onFailure {
+                saveUserBaseAuthorityCompensator.revertStep(savedUser.id)
+                createUserInPendingStateCompensator.revertStep(savedUser.id)
+            }
 
-            saveUserBaseApplicationProcessor.processStep(savedUser.id)
-                .onFailure {
-                    saveUserBaseApplicationCompensator.revertStep(savedUser.id)
-                    saveUserBaseAuthorityCompensator.revertStep(savedUser.id)
-                    createUserInPendingStateCompensator.revertStep(savedUser.id)
-                }
+            runCatching {
+                saveUserBaseApplicationProcessor.processStep(savedUser.id)
+            }.onFailure {
+                saveUserBaseApplicationCompensator.revertStep(savedUser.id)
+                saveUserBaseAuthorityCompensator.revertStep(savedUser.id)
+                createUserInPendingStateCompensator.revertStep(savedUser.id)
+            }
         }
 
         updateUserCreatedStateStepProcessor.processStep(savedUser.id)
