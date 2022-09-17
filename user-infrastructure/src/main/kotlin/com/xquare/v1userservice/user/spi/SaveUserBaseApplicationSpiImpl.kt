@@ -17,7 +17,6 @@ class SaveUserBaseApplicationSpiImpl(
 ) : SaveUserBaseApplicationProcessor, SaveUserBaseApplicationCompensator {
     override suspend fun processStep(userId: UUID) {
         val baseApplicationRequest = buildBaseApplicationRequest(userId)
-
         sendPostApplicationDefaultValue(baseApplicationRequest)
     }
 
