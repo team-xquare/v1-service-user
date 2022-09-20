@@ -18,9 +18,14 @@ class SaveUserBaseAuthoritySpiImpl(
     @Value("\${service.scheme}")
     private val scheme: String
 ) : SaveUserBaseAuthorityProcessor, SaveUserBaseAuthorityCompensator {
-    override suspend fun processStep(userId: UUID) {
-        val request = SaveUserBaseAuthorityRequest(userId)
-        sendSaveUserBaseAuthorityRequest(request)
+    override suspend fun processStep(userId: UUID): Result<Unit> {
+        return try {
+            val request = SaveUserBaseAuthorityRequest(userId)
+            sendSaveUserBaseAuthorityRequest(request)
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     private suspend fun sendSaveUserBaseAuthorityRequest(saveUserBaseAuthorityRequest: SaveUserBaseAuthorityRequest) {

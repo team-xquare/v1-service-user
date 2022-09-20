@@ -25,13 +25,14 @@ import com.xquare.v1userservice.user.spi.JwtTokenGeneratorSpi
 import com.xquare.v1userservice.user.spi.PasswordEncoderSpi
 import com.xquare.v1userservice.user.spi.PasswordMatcherSpi
 import com.xquare.v1userservice.user.spi.PointSpi
+import com.xquare.v1userservice.user.spi.SaveUserBaseApplicationCompensator
+import com.xquare.v1userservice.user.spi.SaveUserBaseApplicationProcessor
 import com.xquare.v1userservice.user.spi.SaveUserBaseAuthorityCompensator
 import com.xquare.v1userservice.user.spi.SaveUserBaseAuthorityProcessor
 import com.xquare.v1userservice.user.spi.UserRepositorySpi
 import com.xquare.v1userservice.user.verificationcode.VerificationCode
 import com.xquare.v1userservice.user.verificationcode.exceptions.VerificationCodeNotFoundException
 import com.xquare.v1userservice.user.verificationcode.spi.VerificationCodeSpi
-import com.xquare.v1userservice.utils.processAndRevertSteps
 import java.time.LocalDateTime
 import java.util.UUID
 import kotlinx.coroutines.coroutineScope
@@ -46,6 +47,8 @@ class UserApiImpl(
     private val userRepositorySpi: UserRepositorySpi,
     private val createUserInPendingStateCompensator: CreateUserInPendingStateCompensator,
     private val saveUserBaseAuthorityCompensator: SaveUserBaseAuthorityCompensator,
+    private val saveUserBaseApplicationProcessor: SaveUserBaseApplicationProcessor,
+    private val saveUserBaseApplicationCompensator: SaveUserBaseApplicationCompensator,
     private val jwtTokenGeneratorSpi: JwtTokenGeneratorSpi,
     private val refreshTokenSpi: RefreshTokenSpi,
     private val authorityListSpi: AuthorityListSpi,
@@ -60,20 +63,20 @@ class UserApiImpl(
         val savedUser = createUserInPendingStateProcessor.processStep(domainUser)
 
         coroutineScope {
-            processAndRevertSteps(
-                processStep = saveUserBaseAuthorityProcessor::processStep to arrayOf(savedUser.id),
-                revertSteps = listOf(
-                    createUserInPendingStateCompensator::revertStep to arrayOf(savedUser.id)
-                )
-            )
+            runCatching {
+                saveUserBaseAuthorityProcessor.processStep(savedUser.id)
+            }.onFailure {
+                saveUserBaseAuthorityCompensator.revertStep(savedUser.id)
+                createUserInPendingStateCompensator.revertStep(savedUser.id)
+            }
 
-            processAndRevertSteps(
-                processStep = saveUserBaseAuthorityProcessor::processStep to arrayOf(savedUser.id),
-                revertSteps = listOf(
-                    saveUserBaseAuthorityCompensator::revertStep to arrayOf(savedUser.id),
-                    createUserInPendingStateCompensator::revertStep to arrayOf(savedUser.id)
-                )
-            )
+            runCatching {
+                saveUserBaseApplicationProcessor.processStep(savedUser.id)
+            }.onFailure {
+                saveUserBaseApplicationCompensator.revertStep(savedUser.id)
+                saveUserBaseAuthorityCompensator.revertStep(savedUser.id)
+                createUserInPendingStateCompensator.revertStep(savedUser.id)
+            }
         }
 
         updateUserCreatedStateStepProcessor.processStep(savedUser.id)
