@@ -14,13 +14,15 @@ import org.springframework.web.reactive.function.client.awaitBody
 class PointSpiImpl(
     private val webClient: WebClient,
     @Value("\${service.point.host}")
-    private val pointHost: String
+    private val pointHost: String,
+    @Value("\${service.scheme}")
+    private val scheme: String
 ) : PointSpi {
     override suspend fun getUserPoint(userId: UUID): PointResponse {
         return webClient.get().uri {
-            it.scheme("http")
+            it.scheme(scheme)
                 .host(pointHost)
-                .path("/point/{userId}")
+                .path("/points/{userId}")
                 .build(userId)
         }.retrieve()
             .onStatus(HttpStatus::isError) {

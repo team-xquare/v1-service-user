@@ -14,7 +14,9 @@ import org.springframework.web.reactive.function.client.awaitBodilessEntity
 class SaveUserBaseAuthoritySpiImpl(
     private val webClient: WebClient,
     @Value("\${service.authority.host}")
-    private val authorityHost: String
+    private val authorityHost: String,
+    @Value("\${service.scheme}")
+    private val scheme: String
 ) : SaveUserBaseAuthorityProcessor, SaveUserBaseAuthorityCompensator {
     override suspend fun processStep(userId: UUID) {
         val request = SaveUserBaseAuthorityRequest(userId)
@@ -24,7 +26,7 @@ class SaveUserBaseAuthoritySpiImpl(
     private suspend fun sendSaveUserBaseAuthorityRequest(saveUserBaseAuthorityRequest: SaveUserBaseAuthorityRequest) {
         webClient.post()
             .uri {
-                it.scheme("http")
+                it.scheme(scheme)
                     .host(authorityHost)
                     .path("/authorities/access-management/basic")
                     .build()

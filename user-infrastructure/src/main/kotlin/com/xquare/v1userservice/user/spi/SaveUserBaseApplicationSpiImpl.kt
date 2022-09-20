@@ -13,7 +13,9 @@ import org.springframework.web.reactive.function.client.awaitBodilessEntity
 class SaveUserBaseApplicationSpiImpl(
     private val webClient: WebClient,
     @Value("\${service.application.host}")
-    private val applicationHost: String
+    private val applicationHost: String,
+    @Value("\${service.scheme}")
+    private val scheme: String
 ) : SaveUserBaseApplicationProcessor, SaveUserBaseApplicationCompensator {
     override suspend fun processStep(userId: UUID) {
         val baseApplicationRequest = buildBaseApplicationRequest(userId)
@@ -27,7 +29,7 @@ class SaveUserBaseApplicationSpiImpl(
     private suspend fun sendPostApplicationDefaultValue(saveUserBaseApplicationRequest: SaveUserBaseApplicationRequest) =
         webClient.post()
             .uri {
-                it.scheme("http")
+                it.scheme(scheme)
                     .host(applicationHost)
                     .path("/applications/signup")
                     .build()

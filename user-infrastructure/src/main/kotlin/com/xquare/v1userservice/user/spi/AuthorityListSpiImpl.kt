@@ -13,7 +13,9 @@ import org.springframework.web.reactive.function.client.awaitBody
 class AuthorityListSpiImpl(
     private val webClient: WebClient,
     @Value("\${service.authority.host}")
-    private val authorityHost: String
+    private val authorityHost: String,
+    @Value("\${service.scheme}")
+    private val scheme: String
 ) : AuthorityListSpi {
     override suspend fun getAuthorities(userId: UUID): List<String> {
         val clientResponse = sendGetAuthoritiesRequest(userId)
@@ -22,7 +24,7 @@ class AuthorityListSpiImpl(
 
     private suspend fun sendGetAuthoritiesRequest(userId: UUID): WebClient.ResponseSpec {
         return webClient.get().uri { uri ->
-            uri.scheme("http")
+            uri.scheme(scheme)
                 .host(authorityHost)
                 .path("/authorities/{userId}")
                 .build(userId)
