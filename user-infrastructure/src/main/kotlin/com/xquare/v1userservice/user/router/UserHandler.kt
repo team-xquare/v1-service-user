@@ -2,6 +2,7 @@ package com.xquare.v1userservice.user.router
 
 import com.xquare.v1userservice.configuration.validate.BadRequestException
 import com.xquare.v1userservice.configuration.validate.RequestBodyValidator
+import com.xquare.v1userservice.jwt.UnAuthorizedException
 import com.xquare.v1userservice.user.User
 import com.xquare.v1userservice.user.api.UserApi
 import com.xquare.v1userservice.user.api.dtos.CreatUserDomainRequest
@@ -113,7 +114,7 @@ class UserHandler(
     )
 
     suspend fun getUserPointHandler(serverRequest: ServerRequest): ServerResponse {
-        val userId = serverRequest.pathVariable("userId")
+        val userId = serverRequest.headers().firstHeader("Request-User-Id") ?: throw UnAuthorizedException("UnAuthorized")
         val pointDomainResponse = userApi.getUserPointInformation(UUID.fromString(userId))
         val pointResponse = pointDomainResponse.toResponse()
         return ServerResponse.ok().bodyValueAndAwait(pointResponse)
