@@ -26,7 +26,7 @@ class AuthorityListSpiImpl(
         return webClient.get().uri { uri ->
             uri.scheme(scheme)
                 .host(authorityHost)
-                .path("/authorities/{userId}")
+                .path("/authorities/access-management/{userId}")
                 .build(userId)
         }.retrieve()
             .onStatus(HttpStatus::isError) {
