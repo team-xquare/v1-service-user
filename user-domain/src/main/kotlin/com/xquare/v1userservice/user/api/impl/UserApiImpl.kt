@@ -132,7 +132,7 @@ class UserApiImpl(
         val params = buildAccessTokenParams(user)
 
         val accessToken =
-            jwtTokenGeneratorSpi.generateJwtToken(signInDomainRequest.accountId, TokenType.ACCESS_TOKEN, params)
+            jwtTokenGeneratorSpi.generateJwtToken(user.id.toString(), TokenType.ACCESS_TOKEN, params)
         val expireAt = LocalDateTime.now().plusHours(jwtTokenGeneratorSpi.getAccessTokenExpirationAsHour().toLong())
 
         val refreshToken = saveNewRefreshToken(user, params)
@@ -163,12 +163,12 @@ class UserApiImpl(
 
         val user = userRepositorySpi.findByIdAndStateWithCreated(refreshTokenEntity.userId)
             ?: throw UserNotFoundException(UserNotFoundException.USER_ID_NOT_FOUND)
+        refreshTokenSpi.delete(refreshTokenEntity)
 
         val params = buildAccessTokenParams(user)
 
         val refreshTokenDomain = saveNewRefreshToken(user, params)
-
-        val accessToken = jwtTokenGeneratorSpi.generateJwtToken(user.accountId, TokenType.ACCESS_TOKEN, params)
+        val accessToken = jwtTokenGeneratorSpi.generateJwtToken(user.id.toString(), TokenType.ACCESS_TOKEN, params)
 
         val expireAt = LocalDateTime.now().plusHours(jwtTokenGeneratorSpi.getAccessTokenExpirationAsHour().toLong())
 
@@ -190,7 +190,7 @@ class UserApiImpl(
     }
 
     private suspend fun saveNewRefreshToken(user: User, params: MutableMap<String, Any>): RefreshToken {
-        val newRefreshToken = jwtTokenGeneratorSpi.generateJwtToken(user.accountId, TokenType.REFRESH_TOKEN, params)
+        val newRefreshToken = jwtTokenGeneratorSpi.generateJwtToken(user.id.toString(), TokenType.REFRESH_TOKEN, params)
 
         val refreshTokenDomain = RefreshToken(
             tokenValue = newRefreshToken,
