@@ -11,6 +11,7 @@ import com.xquare.v1userservice.user.api.dtos.SignInDomainRequest
 import com.xquare.v1userservice.user.api.dtos.UserDeviceTokenResponse
 import com.xquare.v1userservice.user.router.dto.CreateUserRequest
 import com.xquare.v1userservice.user.router.dto.GetUserDeviceTokenListResponse
+import com.xquare.v1userservice.user.router.dto.GetUserListResponse
 import com.xquare.v1userservice.user.router.dto.GetUserPointResponse
 import com.xquare.v1userservice.user.router.dto.GetUserResponse
 import com.xquare.v1userservice.user.router.dto.SignInRequest
@@ -79,6 +80,15 @@ class UserHandler(
         val user = userApi.getUserById(UUID.fromString(userId))
         val userResponseDto = user.toGetUserByAccountIdResponseDto()
         return ServerResponse.ok().bodyValueAndAwait(userResponseDto)
+    }
+
+    suspend fun getUserByIdsInHandler(serverRequest: ServerRequest): ServerResponse {
+        val userIds = serverRequest.queryParams()["userId"]?.map { UUID.fromString(it) }
+            ?: throw BadRequestException("userId is required")
+        val users = userApi.getUsersByIdsIn(userIds)
+        val userResponseDtos = users.map { it.toGetUserByAccountIdResponseDto() }
+        val userListResponse = GetUserListResponse(userResponseDtos)
+        return ServerResponse.ok().bodyValueAndAwait(userListResponse)
     }
 
     suspend fun getUserByAccountIdHandler(serverRequest: ServerRequest): ServerResponse {

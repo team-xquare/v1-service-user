@@ -11,6 +11,7 @@ import java.util.UUID
 interface UserApi {
     suspend fun saveUser(creatUserDomainRequest: CreatUserDomainRequest): User
     suspend fun getUserById(userId: UUID): User
+    suspend fun getUsersByIdsIn(userIds: List<UUID>): List<User>
     suspend fun getUserByAccountId(accountId: String): User
     suspend fun userSignIn(signInDomainRequest: SignInDomainRequest): TokenResponse
     suspend fun userTokenRefresh(refreshToken: String): TokenResponse

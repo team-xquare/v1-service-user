@@ -115,6 +115,10 @@ class UserApiImpl(
             ?: throw UserNotFoundException(UserNotFoundException.USER_ID_NOT_FOUND)
     }
 
+    override suspend fun getUsersByIdsIn(userIds: List<UUID>): List<User> {
+        return userRepositorySpi.findAllByIdIn(userIds)
+    }
+
     override suspend fun getUserByAccountId(accountId: String): User {
         return userRepositorySpi.findByAccountIdAndStateWithCreated(accountId)
             ?: throw UserNotFoundException(UserNotFoundException.USER_ID_NOT_FOUND)
