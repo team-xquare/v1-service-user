@@ -169,7 +169,6 @@ class UserApiImpl(
 
         val refreshTokenDomain = saveNewRefreshToken(user, params)
         val accessToken = jwtTokenGeneratorSpi.generateJwtToken(user.id.toString(), TokenType.ACCESS_TOKEN, params)
-        val accessToken = jwtTokenGeneratorSpi.generateJwtToken(user.accountId, TokenType.ACCESS_TOKEN, params)
 
         val expireAt = LocalDateTime.now().plusHours(jwtTokenGeneratorSpi.getAccessTokenExpirationAsHour().toLong())
 
