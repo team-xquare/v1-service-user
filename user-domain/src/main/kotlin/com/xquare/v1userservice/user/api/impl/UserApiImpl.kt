@@ -209,7 +209,8 @@ class UserApiImpl(
         return PointDomainResponse(
             goodPoint = userPoint.goodPoint,
             badPoint = userPoint.badPoint,
-            userName = user.name
+            userName = user.name,
+            profileFileName = user.profileFileName
         )
     }
 }
