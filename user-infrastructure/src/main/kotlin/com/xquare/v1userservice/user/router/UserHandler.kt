@@ -81,6 +81,14 @@ class UserHandler(
         return ServerResponse.ok().bodyValueAndAwait(userResponseDto)
     }
 
+    suspend fun getUserByIdsInHandler(serverRequest: ServerRequest): ServerResponse {
+        val userIds = serverRequest.queryParams()["userId"]?.map { UUID.fromString(it) }
+            ?: throw BadRequestException("userId is required")
+        val users = userApi.getUsersByIdsIn(userIds)
+        val userResponseDtos = users.map { it.toGetUserByAccountIdResponseDto() }
+        return ServerResponse.ok().bodyValueAndAwait(userResponseDtos)
+    }
+
     suspend fun getUserByAccountIdHandler(serverRequest: ServerRequest): ServerResponse {
         val accountId = serverRequest.pathVariable("accountId")
         val user = userApi.getUserByAccountId(accountId)
