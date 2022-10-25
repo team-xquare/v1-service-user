@@ -5,6 +5,9 @@ import com.xquare.v1userservice.configuration.exception.RequestHandlerNotFoundEx
 import com.xquare.v1userservice.configuration.validate.BadRequestException
 import com.xquare.v1userservice.exceptions.BaseException
 import com.xquare.v1userservice.exceptions.ExceptionAttribute
+import io.vertx.mysqlclient.MySQLException
+import javax.persistence.PersistenceException
+import org.hibernate.HibernateException
 import org.springframework.boot.autoconfigure.web.WebProperties
 import org.springframework.boot.autoconfigure.web.reactive.error.AbstractErrorWebExceptionHandler
 import org.springframework.boot.web.reactive.error.ErrorAttributes
@@ -47,8 +50,26 @@ class ErrorWebExchangeHandler(
             is BaseException -> throwable.toErrorResponse()
             is ServerWebInputException, is NoSuchElementException -> BadRequestException("Missing Request Body").toErrorResponse()
             is ResponseStatusException -> RequestHandlerNotFoundException("${request.method()} ${request.path()} Handler Not Found").toErrorResponse()
+            is PersistenceException -> throwable.handleDatabaseError()
             else -> InternalServerError(InternalServerError.UNEXPECTED_EXCEPTION).toErrorResponse()
         }
+
+    private fun PersistenceException.handleDatabaseError(): Mono<ServerResponse> {
+        val cause = if (this.cause != null) {
+            this.cause!!
+        } else {
+            InternalServerError(InternalServerError.UNEXPECTED_EXCEPTION)
+        }
+
+        val message = when (cause) {
+            is MySQLException -> cause.sqlState
+            is HibernateException -> "${cause.message}"
+            else -> InternalServerError.UNEXPECTED_EXCEPTION
+        }
+
+        return InternalServerError(message).toErrorResponse()
+
+    }
 
     private fun ExceptionAttribute.toErrorResponse() =
         ServerResponse.status(this.statusCode)

@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Repository
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.awaitBodilessEntity
+import reactor.core.publisher.Mono
 
 @Repository
 class SaveUserBaseApplicationSpiImpl(
@@ -30,7 +31,7 @@ class SaveUserBaseApplicationSpiImpl(
             .uri {
                 it.scheme(scheme)
                     .host(applicationHost)
-                    .path("/applications/signup")
+                    .path("/applications/stay/signup")
                     .build()
             }
             .bodyValue(saveUserBaseApplicationRequest)
@@ -41,6 +42,17 @@ class SaveUserBaseApplicationSpiImpl(
             .awaitBodilessEntity()
 
     override suspend fun revertStep(userId: UUID) {
-        TODO("Not yet implemented")
+        webClient.post()
+            .uri {
+                it.scheme(scheme)
+                    .host(applicationHost)
+                    .path("/applications/stay/signup/$userId")
+                    .build()
+            }
+            .retrieve()
+            .onStatus(HttpStatus::isError) {
+                Mono.empty()
+            }
+            .awaitBodilessEntity()
     }
 }
