@@ -31,7 +31,7 @@ class UserEntity(
     @field:NotNull
     val grade: Int,
 
-    @field:Size(max = 255)
+    @field:Size(max = 2000)
     val profileFileName: String?,
 
     @field:NotNull
