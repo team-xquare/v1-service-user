@@ -3,11 +3,15 @@ package com.xquare.v1userservice.user.spi
 import com.xquare.v1userservice.user.exceptions.ApplicationRequestFailedException
 import com.xquare.v1userservice.user.spi.dtos.SaveUserBaseApplicationRequest
 import java.util.UUID
+import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Repository
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.awaitBodilessEntity
+import reactor.core.publisher.Mono
+
+private val logger = KotlinLogging.logger {  }
 
 @Repository
 class SaveUserBaseApplicationSpiImpl(
@@ -30,7 +34,7 @@ class SaveUserBaseApplicationSpiImpl(
             .uri {
                 it.scheme(scheme)
                     .host(applicationHost)
-                    .path("/applications/signup")
+                    .path("/applications/stay/signup")
                     .build()
             }
             .bodyValue(saveUserBaseApplicationRequest)
@@ -41,6 +45,18 @@ class SaveUserBaseApplicationSpiImpl(
             .awaitBodilessEntity()
 
     override suspend fun revertStep(userId: UUID) {
-        TODO("Not yet implemented")
+        webClient.post()
+            .uri {
+                it.scheme(scheme)
+                    .host(applicationHost)
+                    .path("/applications/stay/signup/$userId")
+                    .build()
+            }
+            .retrieve()
+            .onStatus(HttpStatus::isError) {
+                logger.error("Failed to revert /applications/stay/signup/$userId status: ${it.rawStatusCode()}")
+                Mono.empty()
+            }
+            .awaitBodilessEntity()
     }
 }
