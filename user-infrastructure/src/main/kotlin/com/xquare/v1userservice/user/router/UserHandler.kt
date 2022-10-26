@@ -133,6 +133,7 @@ class UserHandler(
     private fun PointDomainResponse.toResponse() = GetUserPointResponse(
         name = this.userName,
         goodPoint = this.goodPoint,
-        badPoint = this.badPoint
+        badPoint = this.badPoint,
+        profileFileName = this.profileFileName
     )
 }
