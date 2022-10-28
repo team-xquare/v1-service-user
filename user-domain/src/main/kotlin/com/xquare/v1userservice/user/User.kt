@@ -39,4 +39,8 @@ data class User(
     fun setDeviceToken(deviceToken: String): User {
         return copy(deviceToken = deviceToken)
     }
+
+    fun updateProfileFileName(profileFileName: String?): User {
+        return this.copy(profileFileName = profileFileName)
+    }
 }

@@ -15,6 +15,7 @@ import com.xquare.v1userservice.user.router.dto.GetUserListResponse
 import com.xquare.v1userservice.user.router.dto.GetUserPointResponse
 import com.xquare.v1userservice.user.router.dto.GetUserResponse
 import com.xquare.v1userservice.user.router.dto.SignInRequest
+import com.xquare.v1userservice.user.router.dto.UpdateProfileFileRequest
 import java.net.URI
 import java.util.UUID
 import kotlinx.coroutines.reactor.awaitSingle
@@ -122,6 +123,16 @@ class UserHandler(
     private fun UserDeviceTokenResponse.toGetUserDeviceTokenListResponse() = GetUserDeviceTokenListResponse(
         tokens = this.tokens
     )
+
+    suspend fun updateUserProfileFileName(serverRequest: ServerRequest): ServerResponse {
+        val userId = serverRequest.headers().firstHeader("Request-User-Id") ?: throw UnAuthorizedException("UnAuthorized")
+        val updateProfileFileRequest = serverRequest.getUpdateUserProfileFileRequestBody()
+        userApi.updateProfileFileName(UUID.fromString(userId), updateProfileFileRequest.profileFileName)
+        return ServerResponse.noContent().buildAndAwait()
+    }
+
+    private suspend fun ServerRequest.getUpdateUserProfileFileRequestBody() =
+        this.bodyToMono<UpdateProfileFileRequest>().awaitSingle()
 
     suspend fun getUserPointHandler(serverRequest: ServerRequest): ServerResponse {
         val userId = serverRequest.headers().firstHeader("Request-User-Id") ?: throw UnAuthorizedException("UnAuthorized")

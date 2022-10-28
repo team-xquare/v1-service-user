@@ -110,6 +110,13 @@ class UserApiImpl(
         return UserDeviceTokenResponse(userDeviceTokens)
     }
 
+    override suspend fun updateProfileFileName(userId: UUID, profileFileName: String?) {
+        val user = userRepositorySpi.findByIdAndStateWithCreated(userId)
+            ?: throw UserNotFoundException(UserNotFoundException.USER_ID_NOT_FOUND)
+        user.updateProfileFileName(profileFileName)
+        userRepositorySpi.applyChanges(user)
+    }
+
     override suspend fun getUserById(userId: UUID): User {
         return userRepositorySpi.findByIdAndStateWithCreated(userId)
             ?: throw UserNotFoundException(UserNotFoundException.USER_ID_NOT_FOUND)

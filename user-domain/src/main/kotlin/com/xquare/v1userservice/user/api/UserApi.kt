@@ -16,5 +16,6 @@ interface UserApi {
     suspend fun userSignIn(signInDomainRequest: SignInDomainRequest): TokenResponse
     suspend fun userTokenRefresh(refreshToken: String): TokenResponse
     suspend fun getUserDeviceTokensByIdIn(idList: List<UUID>): UserDeviceTokenResponse
+    suspend fun updateProfileFileName(userId: UUID, profileFileName: String?)
     suspend fun getUserPointInformation(userId: UUID): PointDomainResponse
 }
