@@ -124,7 +124,7 @@ class UserHandler(
         tokens = this.tokens
     )
 
-    suspend fun updateUserProfileFileName(serverRequest: ServerRequest): ServerResponse {
+    suspend fun updateUserProfileFileNameHandler(serverRequest: ServerRequest): ServerResponse {
         val userId = serverRequest.headers().firstHeader("Request-User-Id") ?: throw UnAuthorizedException("UnAuthorized")
         val updateProfileFileRequest = serverRequest.getUpdateUserProfileFileRequestBody()
         userApi.updateProfileFileName(UUID.fromString(userId), updateProfileFileRequest.profileFileName)
