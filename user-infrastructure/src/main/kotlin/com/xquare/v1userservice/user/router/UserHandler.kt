@@ -13,6 +13,7 @@ import com.xquare.v1userservice.user.router.dto.CreateUserRequest
 import com.xquare.v1userservice.user.router.dto.GetUserDeviceTokenListResponse
 import com.xquare.v1userservice.user.router.dto.GetUserListResponse
 import com.xquare.v1userservice.user.router.dto.GetUserPointResponse
+import com.xquare.v1userservice.user.router.dto.GetUserProfileResponse
 import com.xquare.v1userservice.user.router.dto.GetUserResponse
 import com.xquare.v1userservice.user.router.dto.SignInRequest
 import com.xquare.v1userservice.user.router.dto.UpdateProfileFileRequest
@@ -110,6 +111,24 @@ class UserHandler(
             num = this.num,
             birthDay = this.birthDay,
             id = this.id
+        )
+
+    suspend fun getUserProfileHandler(serverRequest: ServerRequest): ServerResponse {
+        val userId = serverRequest.headers().firstHeader("Request-User-Id") ?: throw UnAuthorizedException("UnAuthorized")
+        val user = userApi.getUserById(UUID.fromString(userId))
+        val userProfileResponseDto = user.toGetUserProfileResponseDto()
+        return ServerResponse.ok().bodyValueAndAwait(userProfileResponseDto)
+    }
+
+    private fun User.toGetUserProfileResponseDto() =
+        GetUserProfileResponse(
+            accountId = this.accountId,
+            name = this.name,
+            birthDay = this.birthDay,
+            grade = this.grade,
+            classNum = this.classNum,
+            num = this.num,
+            profileFileName = this.profileFileName
         )
 
     suspend fun getUserDeviceTokensHandler(serverRequest: ServerRequest): ServerResponse {
