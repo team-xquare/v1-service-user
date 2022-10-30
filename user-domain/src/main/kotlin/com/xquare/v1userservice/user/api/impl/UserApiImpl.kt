@@ -35,7 +35,6 @@ import com.xquare.v1userservice.user.verificationcode.exceptions.VerificationCod
 import com.xquare.v1userservice.user.verificationcode.spi.VerificationCodeSpi
 import java.time.LocalDateTime
 import java.util.UUID
-import kotlinx.coroutines.coroutineScope
 
 @DomainService
 class UserApiImpl(
@@ -113,8 +112,8 @@ class UserApiImpl(
     override suspend fun updateProfileFileName(userId: UUID, profileFileName: String?) {
         val user = userRepositorySpi.findByIdAndStateWithCreated(userId)
             ?: throw UserNotFoundException(UserNotFoundException.USER_ID_NOT_FOUND)
-        user.updateProfileFileName(profileFileName)
-        userRepositorySpi.applyChanges(user)
+        val updatedUser = user.updateProfileFileName(profileFileName)
+        userRepositorySpi.applyChanges(updatedUser)
     }
 
     override suspend fun getUserById(userId: UUID): User {
