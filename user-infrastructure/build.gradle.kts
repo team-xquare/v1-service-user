@@ -42,7 +42,7 @@ dependencies {
 kapt {
     arguments {
         arg("mapstruct.defaultComponentModel", "spring")
-        arg("mapstruct.unmappedTargetPolicy", "error")
+        arg("mapstruct.unmappedTargetPolicy", "ignore")
     }
 }
 
