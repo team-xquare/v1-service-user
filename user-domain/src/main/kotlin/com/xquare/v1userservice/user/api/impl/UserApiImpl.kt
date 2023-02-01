@@ -223,4 +223,8 @@ class UserApiImpl(
             profileFileName = user.profileFileName
         )
     }
+
+    override suspend fun getUserByGradeAndClass(grade: Int, classNum: Int): List<User> {
+        return userRepositorySpi.findAllByGradeAndClass(grade, classNum)
+    }
 }

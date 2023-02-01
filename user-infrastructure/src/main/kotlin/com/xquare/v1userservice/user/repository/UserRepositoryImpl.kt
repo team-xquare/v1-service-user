@@ -126,4 +126,27 @@ class UserRepositoryImpl(
             where(col(UserEntity::id).`in`(ids))
         }.resultList()
     }
+
+    override suspend fun findAllByGradeAndClass(grade: Int, classNum: Int): List<User> {
+        return reactiveQueryFactory.withFactory { _, reactiveQueryFactory ->
+            reactiveQueryFactory.findAllByGradeAndClass(grade, classNum)
+        }.map { userDomainMapper.userEntityToDomain(it) }
+    }
+
+    private suspend fun ReactiveQueryFactory.findAllByGradeAndClass(grade: Int, classNum: Int): List<UserEntity> {
+        return if (classNum == 0) {
+            this.selectQuery<UserEntity> {
+                select(entity(UserEntity::class))
+                from(entity(UserEntity::class))
+                where(col(UserEntity::grade).equal(grade))
+            }.resultList()
+        } else this.selectQuery<UserEntity> {
+            select(entity(UserEntity::class))
+            from(entity(UserEntity::class))
+            where(
+                col(UserEntity::grade).equal(grade)
+                    .and(col(UserEntity::classNum).equal(classNum))
+            )
+        }.resultList()
+    }
 }

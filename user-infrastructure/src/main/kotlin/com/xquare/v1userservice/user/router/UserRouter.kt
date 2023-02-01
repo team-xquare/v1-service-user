@@ -22,6 +22,7 @@ class UserRouter {
             GET("/account-id/{accountId}", userHandler::getUserByAccountIdHandler)
             GET("/tokens/fcm", userHandler::getUserDeviceTokensHandler)
             GET("/simple", userHandler::getUserPointHandler)
+            GET("/class", userHandler::getUserByGradeAndClassHandler)
         }
     }
 }

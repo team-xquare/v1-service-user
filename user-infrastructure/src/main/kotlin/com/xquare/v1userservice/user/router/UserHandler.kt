@@ -11,6 +11,8 @@ import com.xquare.v1userservice.user.api.dtos.SignInDomainRequest
 import com.xquare.v1userservice.user.api.dtos.UserDeviceTokenResponse
 import com.xquare.v1userservice.user.router.dto.CreateUserRequest
 import com.xquare.v1userservice.user.router.dto.GetUserDeviceTokenListResponse
+import com.xquare.v1userservice.user.router.dto.GetUserGradeAndClassListResponse
+import com.xquare.v1userservice.user.router.dto.GetUserGradeAndClassResponse
 import com.xquare.v1userservice.user.router.dto.GetUserListResponse
 import com.xquare.v1userservice.user.router.dto.GetUserPointResponse
 import com.xquare.v1userservice.user.router.dto.GetUserProfileResponse
@@ -166,4 +168,34 @@ class UserHandler(
         badPoint = this.badPoint,
         profileFileName = this.profileFileName
     )
+
+    suspend fun getUserByGradeAndClassHandler(serverRequest: ServerRequest): ServerResponse {
+        val grade = grade(serverRequest.queryParams().getFirst("grade"))
+        val classNum = classNum(serverRequest.queryParams().getFirst("classNum"))
+        val users = userApi.getUserByGradeAndClass(grade, classNum)
+        val userResponse = users.map { it.toGetUserGradeAndClass() }
+        val userListResponse = GetUserGradeAndClassListResponse(userResponse)
+        return ServerResponse.ok().bodyValueAndAwait(userListResponse)
+    }
+
+    private fun User.toGetUserGradeAndClass(): GetUserGradeAndClassResponse {
+        val num = if (this.num < 9) "0${this.num}" else this.num.toString()
+
+        return GetUserGradeAndClassResponse(
+            id = this.id,
+            profileFileName = this.profileFileName,
+            num = "${this.grade}${this.classNum}${num}",
+            name = this.name
+        )
+    }
+
+    private fun grade(grade: String?): Int {
+        return if (grade == null || grade == "") {
+            throw BadRequestException("grade is required")
+        } else grade.toInt()
+    }
+
+    private fun classNum(classNum: String?): Int {
+        return if (classNum == null || classNum == "") 0 else classNum.toInt()
+    }
 }
