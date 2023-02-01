@@ -184,7 +184,7 @@ class UserHandler(
         return GetUserGradeAndClassResponse(
             id = this.id,
             profileFileName = this.profileFileName,
-            num = "${this.grade}${this.classNum}${num}",
+            num = "${this.grade}${this.classNum}$num",
             name = this.name
         )
     }
