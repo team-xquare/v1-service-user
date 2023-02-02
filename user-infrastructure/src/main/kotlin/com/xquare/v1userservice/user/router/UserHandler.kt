@@ -174,7 +174,7 @@ class UserHandler(
 
     suspend fun getUserByGradeAndClassHandler(serverRequest: ServerRequest): ServerResponse {
         val grade = serverRequest.queryParams().getFirst("grade")?.toIntOrNull() ?: throw BadRequestException("grade is required")
-        val classNum = serverRequest.queryParams().getFirst("classNum")?.toIntOrNull() ?: 0
+        val classNum = serverRequest.queryParams().getFirst("classNum")?.toIntOrNull()
         val users = userApi.getUserByGradeAndClass(grade, classNum)
         val userResponse = users.map { it.toGetUserGradeAndClass() }
         val userListResponse = GetUserGradeAndClassListResponse(userResponse)
