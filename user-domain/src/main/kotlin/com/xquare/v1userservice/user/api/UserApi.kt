@@ -18,5 +18,5 @@ interface UserApi {
     suspend fun getUserDeviceTokensByIdIn(idList: List<UUID>): UserDeviceTokenResponse
     suspend fun updateProfileFileName(userId: UUID, profileFileName: String?)
     suspend fun getUserPointInformation(userId: UUID): PointDomainResponse
-    suspend fun getUserByGradeAndClass(grade: Int, classNum: Int): List<User>
+    suspend fun getUserByGradeAndClass(grade: Int, classNum: Int?): List<User>
 }

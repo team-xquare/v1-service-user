@@ -48,7 +48,7 @@ class InMemoryUserRepository(
         return userMap.values.filter { idList.contains(it.id) }
     }
 
-    override suspend fun findAllByGradeAndClass(grade: Int, classNum: Int): List<User> {
+    override suspend fun findAllByGradeAndClass(grade: Int, classNum: Int?): List<User> {
         return userMap.values.filter {
             it.grade == grade && it.classNum == classNum || classNum == 0
         }
