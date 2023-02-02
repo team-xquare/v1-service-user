@@ -19,8 +19,6 @@ import com.xquare.v1userservice.user.router.dto.GetUserProfileResponse
 import com.xquare.v1userservice.user.router.dto.GetUserResponse
 import com.xquare.v1userservice.user.router.dto.SignInRequest
 import com.xquare.v1userservice.user.router.dto.UpdateProfileFileRequest
-import java.net.URI
-import java.util.UUID
 import kotlinx.coroutines.reactor.awaitSingle
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest
@@ -28,6 +26,8 @@ import org.springframework.web.reactive.function.server.ServerResponse
 import org.springframework.web.reactive.function.server.bodyToMono
 import org.springframework.web.reactive.function.server.bodyValueAndAwait
 import org.springframework.web.reactive.function.server.buildAndAwait
+import java.net.URI
+import java.util.*
 
 @Component
 class UserHandler(
@@ -116,7 +116,8 @@ class UserHandler(
         )
 
     suspend fun getUserProfileHandler(serverRequest: ServerRequest): ServerResponse {
-        val userId = serverRequest.headers().firstHeader("Request-User-Id") ?: throw UnAuthorizedException("UnAuthorized")
+        val userId =
+            serverRequest.headers().firstHeader("Request-User-Id") ?: throw UnAuthorizedException("UnAuthorized")
         val user = userApi.getUserById(UUID.fromString(userId))
         val userProfileResponseDto = user.toGetUserProfileResponseDto()
         return ServerResponse.ok().bodyValueAndAwait(userProfileResponseDto)
@@ -146,7 +147,8 @@ class UserHandler(
     )
 
     suspend fun updateUserProfileFileNameHandler(serverRequest: ServerRequest): ServerResponse {
-        val userId = serverRequest.headers().firstHeader("Request-User-Id") ?: throw UnAuthorizedException("UnAuthorized")
+        val userId =
+            serverRequest.headers().firstHeader("Request-User-Id") ?: throw UnAuthorizedException("UnAuthorized")
         val updateProfileFileRequest = serverRequest.getUpdateUserProfileFileRequestBody()
         userApi.updateProfileFileName(UUID.fromString(userId), updateProfileFileRequest.profileFileName)
         return ServerResponse.noContent().buildAndAwait()
@@ -156,7 +158,8 @@ class UserHandler(
         this.bodyToMono<UpdateProfileFileRequest>().awaitSingle()
 
     suspend fun getUserPointHandler(serverRequest: ServerRequest): ServerResponse {
-        val userId = serverRequest.headers().firstHeader("Request-User-Id") ?: throw UnAuthorizedException("UnAuthorized")
+        val userId =
+            serverRequest.headers().firstHeader("Request-User-Id") ?: throw UnAuthorizedException("UnAuthorized")
         val pointDomainResponse = userApi.getUserPointInformation(UUID.fromString(userId))
         val pointResponse = pointDomainResponse.toResponse()
         return ServerResponse.ok().bodyValueAndAwait(pointResponse)
@@ -170,8 +173,8 @@ class UserHandler(
     )
 
     suspend fun getUserByGradeAndClassHandler(serverRequest: ServerRequest): ServerResponse {
-        val grade = grade(serverRequest.queryParams().getFirst("grade"))
-        val classNum = classNum(serverRequest.queryParams().getFirst("classNum"))
+        val grade = serverRequest.queryParams().getFirst("grade")?.toIntOrNull() ?: throw BadRequestException("grade is required")
+        val classNum = serverRequest.queryParams().getFirst("classNum")?.toIntOrNull() ?: 0
         val users = userApi.getUserByGradeAndClass(grade, classNum)
         val userResponse = users.map { it.toGetUserGradeAndClass() }
         val userListResponse = GetUserGradeAndClassListResponse(userResponse)
@@ -187,15 +190,5 @@ class UserHandler(
             num = "${this.grade}${this.classNum}$num",
             name = this.name
         )
-    }
-
-    private fun grade(grade: String?): Int {
-        return if (grade == null || grade == "") {
-            throw BadRequestException("grade is required")
-        } else grade.toInt()
-    }
-
-    private fun classNum(classNum: String?): Int {
-        return if (classNum == null || classNum == "") 0 else classNum.toInt()
     }
 }
