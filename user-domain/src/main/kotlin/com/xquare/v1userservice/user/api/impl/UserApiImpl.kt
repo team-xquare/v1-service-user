@@ -34,7 +34,7 @@ import com.xquare.v1userservice.user.verificationcode.VerificationCode
 import com.xquare.v1userservice.user.verificationcode.exceptions.VerificationCodeNotFoundException
 import com.xquare.v1userservice.user.verificationcode.spi.VerificationCodeSpi
 import java.time.LocalDateTime
-import java.util.UUID
+import java.util.*
 
 @DomainService
 class UserApiImpl(
@@ -55,9 +55,10 @@ class UserApiImpl(
     private val pointSpi: PointSpi
 ) : UserApi {
     override suspend fun saveUser(creatUserDomainRequest: CreatUserDomainRequest): User {
-        val verificationCode = verificationCodeSpi.getByCode(creatUserDomainRequest.verificationCode)
+        val verificationCode: VerificationCode = verificationCodeSpi.getByCode(creatUserDomainRequest.verificationCode)
             ?: throw VerificationCodeNotFoundException("Verification Code Not Found")
         checkIsAccountIdAlreadyExists(creatUserDomainRequest.accountId)
+        checkIsUsed(verificationCode.isUsed)
         val domainUser = verificationCode.toStudentUser(creatUserDomainRequest)
         val savedUser = createUserInPendingStateProcessor.processStep(domainUser)
 
@@ -99,6 +100,12 @@ class UserApiImpl(
     private suspend fun checkIsAccountIdAlreadyExists(accountId: String) {
         userRepositorySpi.findByAccountIdAndStateWithCreated(accountId)
             ?.let { throw UserAlreadyExistsException("$accountId Already Exists") }
+    }
+
+    private suspend fun checkIsUsed(isUsed: Boolean) {
+        if (isUsed) {
+            throw UserAlreadyExistsException("User Is Used")
+        }
     }
 
     override suspend fun getUserDeviceTokensByIdIn(idList: List<UUID>): UserDeviceTokenResponse {
