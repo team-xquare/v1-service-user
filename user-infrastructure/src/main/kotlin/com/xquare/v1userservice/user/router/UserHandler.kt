@@ -2,8 +2,8 @@ package com.xquare.v1userservice.user.router
 
 import com.xquare.v1userservice.configuration.validate.BadRequestException
 import com.xquare.v1userservice.configuration.validate.RequestBodyValidator
-import com.xquare.v1userservice.jwt.UnAuthorizedException
 import com.xquare.v1userservice.user.User
+import com.xquare.v1userservice.user.aop.RequestHeaderAspect
 import com.xquare.v1userservice.user.api.UserApi
 import com.xquare.v1userservice.user.api.dtos.CreatUserDomainRequest
 import com.xquare.v1userservice.user.api.dtos.PointDomainResponse
@@ -11,8 +11,8 @@ import com.xquare.v1userservice.user.api.dtos.SignInDomainRequest
 import com.xquare.v1userservice.user.api.dtos.UserDeviceTokenResponse
 import com.xquare.v1userservice.user.router.dto.CreateUserRequest
 import com.xquare.v1userservice.user.router.dto.GetUserDeviceTokenListResponse
-import com.xquare.v1userservice.user.router.dto.GetUserGradeAndClassListResponse
-import com.xquare.v1userservice.user.router.dto.GetUserGradeAndClassResponse
+import com.xquare.v1userservice.user.router.dto.GetUserGradeClassNumListResponse
+import com.xquare.v1userservice.user.router.dto.GetUserGradeClassNumResponse
 import com.xquare.v1userservice.user.router.dto.GetUserListResponse
 import com.xquare.v1userservice.user.router.dto.GetUserPointResponse
 import com.xquare.v1userservice.user.router.dto.GetUserProfileResponse
@@ -32,7 +32,8 @@ import java.util.*
 @Component
 class UserHandler(
     private val userApi: UserApi,
-    private val requestBodyValidator: RequestBodyValidator
+    private val requestBodyValidator: RequestBodyValidator,
+    private val requestHeaderAspect: RequestHeaderAspect
 ) {
     suspend fun saveUserHandler(serverRequest: ServerRequest): ServerResponse {
         val requestBody: CreateUserRequest = serverRequest.getCreateUserRequestBody()
@@ -116,9 +117,8 @@ class UserHandler(
         )
 
     suspend fun getUserProfileHandler(serverRequest: ServerRequest): ServerResponse {
-        val userId =
-            serverRequest.headers().firstHeader("Request-User-Id") ?: throw UnAuthorizedException("UnAuthorized")
-        val user = userApi.getUserById(UUID.fromString(userId))
+        val userId = requestHeaderAspect.getUserId(serverRequest)
+        val user = userApi.getUserById(userId)
         val userProfileResponseDto = user.toGetUserProfileResponseDto()
         return ServerResponse.ok().bodyValueAndAwait(userProfileResponseDto)
     }
@@ -147,10 +147,9 @@ class UserHandler(
     )
 
     suspend fun updateUserProfileFileNameHandler(serverRequest: ServerRequest): ServerResponse {
-        val userId =
-            serverRequest.headers().firstHeader("Request-User-Id") ?: throw UnAuthorizedException("UnAuthorized")
+        val userId = requestHeaderAspect.getUserId(serverRequest)
         val updateProfileFileRequest = serverRequest.getUpdateUserProfileFileRequestBody()
-        userApi.updateProfileFileName(UUID.fromString(userId), updateProfileFileRequest.profileFileName)
+        userApi.updateProfileFileName(userId, updateProfileFileRequest.profileFileName)
         return ServerResponse.noContent().buildAndAwait()
     }
 
@@ -158,9 +157,8 @@ class UserHandler(
         this.bodyToMono<UpdateProfileFileRequest>().awaitSingle()
 
     suspend fun getUserPointHandler(serverRequest: ServerRequest): ServerResponse {
-        val userId =
-            serverRequest.headers().firstHeader("Request-User-Id") ?: throw UnAuthorizedException("UnAuthorized")
-        val pointDomainResponse = userApi.getUserPointInformation(UUID.fromString(userId))
+        val userId = requestHeaderAspect.getUserId(serverRequest)
+        val pointDomainResponse = userApi.getUserPointInformation(userId)
         val pointResponse = pointDomainResponse.toResponse()
         return ServerResponse.ok().bodyValueAndAwait(pointResponse)
     }
@@ -177,14 +175,14 @@ class UserHandler(
         val classNum = serverRequest.queryParams().getFirst("classNum")?.toIntOrNull()
         val users = userApi.getUserByGradeAndClass(grade, classNum)
         val userResponse = users.map { it.toGetUserGradeAndClass() }
-        val userListResponse = GetUserGradeAndClassListResponse(userResponse)
+        val userListResponse = GetUserGradeClassNumListResponse(userResponse)
         return ServerResponse.ok().bodyValueAndAwait(userListResponse)
     }
 
-    private fun User.toGetUserGradeAndClass(): GetUserGradeAndClassResponse {
+    private fun User.toGetUserGradeAndClass(): GetUserGradeClassNumResponse {
         val num = if (this.num < 9) "0${this.num}" else this.num.toString()
 
-        return GetUserGradeAndClassResponse(
+        return GetUserGradeClassNumResponse(
             id = this.id,
             profileFileName = this.profileFileName,
             num = "${this.grade}${this.classNum}$num",
