@@ -68,7 +68,6 @@ class ErrorWebExchangeHandler(
         }
 
         return InternalServerError(message).toErrorResponse()
-
     }
 
     private fun ExceptionAttribute.toErrorResponse() =

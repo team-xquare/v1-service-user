@@ -2,6 +2,7 @@ package com.xquare.v1userservice.user.repository
 
 import com.linecorp.kotlinjdsl.ReactiveQueryFactory
 import com.linecorp.kotlinjdsl.deleteQuery
+import com.linecorp.kotlinjdsl.listQuery
 import com.linecorp.kotlinjdsl.query.HibernateMutinyReactiveQueryFactory
 import com.linecorp.kotlinjdsl.querydsl.expression.col
 import com.linecorp.kotlinjdsl.selectQuery
@@ -12,11 +13,11 @@ import com.xquare.v1userservice.user.UserState
 import com.xquare.v1userservice.user.mapper.UserDomainMapper
 import com.xquare.v1userservice.user.spi.UserRepositorySpi
 import io.smallrye.mutiny.coroutines.awaitSuspending
-import java.util.UUID
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import org.hibernate.reactive.mutiny.Mutiny.Session
 import org.springframework.stereotype.Repository
+import java.util.*
 
 @Repository
 class UserRepositoryImpl(
@@ -125,5 +126,25 @@ class UserRepositoryImpl(
             from(entity(UserEntity::class))
             where(col(UserEntity::id).`in`(ids))
         }.resultList()
+    }
+
+    override suspend fun findAllByGradeAndClass(grade: Int, classNum: Int?): List<User> {
+        return reactiveQueryFactory.withFactory { _, reactiveQueryFactory ->
+            reactiveQueryFactory.findAllByGradeAndClass(grade, classNum)
+        }.map { userDomainMapper.userEntityToDomain(it) }
+    }
+
+    private suspend fun ReactiveQueryFactory.findAllByGradeAndClass(grade: Int?, classNum: Int?): List<UserEntity> {
+        return this.listQuery {
+            select(entity(UserEntity::class))
+            from(entity(UserEntity::class))
+            where(
+                and(
+                    grade?.let { col(UserEntity::grade).equal(grade) },
+                    classNum?.let { col(UserEntity::classNum).equal(classNum) }
+                )
+            )
+            orderBy(col(UserEntity::classNum).asc(), col(UserEntity::num).asc())
+        }
     }
 }

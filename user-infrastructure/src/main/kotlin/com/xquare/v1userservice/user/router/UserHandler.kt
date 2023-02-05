@@ -2,8 +2,8 @@ package com.xquare.v1userservice.user.router
 
 import com.xquare.v1userservice.configuration.validate.BadRequestException
 import com.xquare.v1userservice.configuration.validate.RequestBodyValidator
-import com.xquare.v1userservice.jwt.UnAuthorizedException
 import com.xquare.v1userservice.user.User
+import com.xquare.v1userservice.user.aop.RequestHeaderAspect
 import com.xquare.v1userservice.user.api.UserApi
 import com.xquare.v1userservice.user.api.dtos.CreatUserDomainRequest
 import com.xquare.v1userservice.user.api.dtos.PointDomainResponse
@@ -11,14 +11,14 @@ import com.xquare.v1userservice.user.api.dtos.SignInDomainRequest
 import com.xquare.v1userservice.user.api.dtos.UserDeviceTokenResponse
 import com.xquare.v1userservice.user.router.dto.CreateUserRequest
 import com.xquare.v1userservice.user.router.dto.GetUserDeviceTokenListResponse
+import com.xquare.v1userservice.user.router.dto.GetUserGradeClassNumListResponse
+import com.xquare.v1userservice.user.router.dto.GetUserGradeClassNumResponse
 import com.xquare.v1userservice.user.router.dto.GetUserListResponse
 import com.xquare.v1userservice.user.router.dto.GetUserPointResponse
 import com.xquare.v1userservice.user.router.dto.GetUserProfileResponse
 import com.xquare.v1userservice.user.router.dto.GetUserResponse
 import com.xquare.v1userservice.user.router.dto.SignInRequest
 import com.xquare.v1userservice.user.router.dto.UpdateProfileFileRequest
-import java.net.URI
-import java.util.UUID
 import kotlinx.coroutines.reactor.awaitSingle
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest
@@ -26,11 +26,14 @@ import org.springframework.web.reactive.function.server.ServerResponse
 import org.springframework.web.reactive.function.server.bodyToMono
 import org.springframework.web.reactive.function.server.bodyValueAndAwait
 import org.springframework.web.reactive.function.server.buildAndAwait
+import java.net.URI
+import java.util.*
 
 @Component
 class UserHandler(
     private val userApi: UserApi,
-    private val requestBodyValidator: RequestBodyValidator
+    private val requestBodyValidator: RequestBodyValidator,
+    private val requestHeaderAspect: RequestHeaderAspect
 ) {
     suspend fun saveUserHandler(serverRequest: ServerRequest): ServerResponse {
         val requestBody: CreateUserRequest = serverRequest.getCreateUserRequestBody()
@@ -114,8 +117,8 @@ class UserHandler(
         )
 
     suspend fun getUserProfileHandler(serverRequest: ServerRequest): ServerResponse {
-        val userId = serverRequest.headers().firstHeader("Request-User-Id") ?: throw UnAuthorizedException("UnAuthorized")
-        val user = userApi.getUserById(UUID.fromString(userId))
+        val userId = requestHeaderAspect.getUserId(serverRequest)
+        val user = userApi.getUserById(userId)
         val userProfileResponseDto = user.toGetUserProfileResponseDto()
         return ServerResponse.ok().bodyValueAndAwait(userProfileResponseDto)
     }
@@ -144,9 +147,9 @@ class UserHandler(
     )
 
     suspend fun updateUserProfileFileNameHandler(serverRequest: ServerRequest): ServerResponse {
-        val userId = serverRequest.headers().firstHeader("Request-User-Id") ?: throw UnAuthorizedException("UnAuthorized")
+        val userId = requestHeaderAspect.getUserId(serverRequest)
         val updateProfileFileRequest = serverRequest.getUpdateUserProfileFileRequestBody()
-        userApi.updateProfileFileName(UUID.fromString(userId), updateProfileFileRequest.profileFileName)
+        userApi.updateProfileFileName(userId, updateProfileFileRequest.profileFileName)
         return ServerResponse.noContent().buildAndAwait()
     }
 
@@ -154,8 +157,8 @@ class UserHandler(
         this.bodyToMono<UpdateProfileFileRequest>().awaitSingle()
 
     suspend fun getUserPointHandler(serverRequest: ServerRequest): ServerResponse {
-        val userId = serverRequest.headers().firstHeader("Request-User-Id") ?: throw UnAuthorizedException("UnAuthorized")
-        val pointDomainResponse = userApi.getUserPointInformation(UUID.fromString(userId))
+        val userId = requestHeaderAspect.getUserId(serverRequest)
+        val pointDomainResponse = userApi.getUserPointInformation(userId)
         val pointResponse = pointDomainResponse.toResponse()
         return ServerResponse.ok().bodyValueAndAwait(pointResponse)
     }
@@ -166,4 +169,24 @@ class UserHandler(
         badPoint = this.badPoint,
         profileFileName = this.profileFileName
     )
+
+    suspend fun getUserByGradeAndClassHandler(serverRequest: ServerRequest): ServerResponse {
+        val grade = serverRequest.queryParams().getFirst("grade")?.toIntOrNull() ?: throw BadRequestException("grade is required")
+        val classNum = serverRequest.queryParams().getFirst("classNum")?.toIntOrNull()
+        val users = userApi.getUserByGradeAndClass(grade, classNum)
+        val userResponse = users.map { it.toGetUserGradeAndClass() }
+        val userListResponse = GetUserGradeClassNumListResponse(userResponse)
+        return ServerResponse.ok().bodyValueAndAwait(userListResponse)
+    }
+
+    private fun User.toGetUserGradeAndClass(): GetUserGradeClassNumResponse {
+        val num = if (this.num < 9) "0${this.num}" else this.num.toString()
+
+        return GetUserGradeClassNumResponse(
+            id = this.id,
+            profileFileName = this.profileFileName,
+            num = "${this.grade}${this.classNum}$num",
+            name = this.name
+        )
+    }
 }
