@@ -180,7 +180,7 @@ class UserHandler(
     }
 
     private fun User.toGetUserGradeAndClass(): GetUserGradeClassNumResponse {
-        val num = if (this.num < 9) "0${this.num}" else this.num.toString()
+        val num = if (this.num <= 9) "0${this.num}" else this.num.toString()
 
         return GetUserGradeClassNumResponse(
             id = this.id,
