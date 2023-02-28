@@ -22,9 +22,10 @@ class PointSpiImpl(
         return webClient.get().uri {
             it.scheme(scheme)
                 .host(pointHost)
-                .path("/points/{userId}")
+                .path("/points")
                 .build(userId)
-        }.retrieve()
+        }.header("Request-User-Id", userId.toString())
+            .retrieve()
             .onStatus(HttpStatus::isError) {
                 throw PointRequestFailedException("Failed request to get user point", it.rawStatusCode())
             }
