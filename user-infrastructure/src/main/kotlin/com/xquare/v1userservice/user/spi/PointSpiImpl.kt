@@ -19,12 +19,9 @@ class PointSpiImpl(
     private val scheme: String
 ) : PointSpi {
     override suspend fun getUserPoint(userId: UUID): PointResponse {
-        return webClient.get().uri {
-            it.scheme(scheme)
-                .host(pointHost)
-                .path("/points")
-                .build(userId)
-        }.header("Request-User-Id", userId.toString())
+        return webClient.get()
+            .uri("https://stag-api.xquare.app/points")  //TODO scheme, pointHost 분리
+            .header("Request-User-Id", userId.toString())
             .retrieve()
             .onStatus(HttpStatus::isError) {
                 throw PointRequestFailedException("Failed request to get user point", it.rawStatusCode())
