@@ -27,7 +27,7 @@ import org.springframework.web.reactive.function.server.bodyToMono
 import org.springframework.web.reactive.function.server.bodyValueAndAwait
 import org.springframework.web.reactive.function.server.buildAndAwait
 import java.net.URI
-import java.util.*
+import java.util.UUID
 
 @Component
 class UserHandler(
