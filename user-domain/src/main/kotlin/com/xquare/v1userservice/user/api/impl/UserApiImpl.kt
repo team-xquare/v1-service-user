@@ -34,7 +34,7 @@ import com.xquare.v1userservice.user.verificationcode.VerificationCode
 import com.xquare.v1userservice.user.verificationcode.exceptions.VerificationCodeNotFoundException
 import com.xquare.v1userservice.user.verificationcode.spi.VerificationCodeSpi
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 
 @DomainService
 class UserApiImpl(
@@ -80,6 +80,7 @@ class UserApiImpl(
         }
 
         updateUserCreatedStateStepProcessor.processStep(savedUser.id)
+        pointSpi.saveUserPointStatus(savedUser.id)
 
         return savedUser
     }

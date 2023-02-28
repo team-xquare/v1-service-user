@@ -7,4 +7,6 @@ import java.util.UUID
 @Spi
 interface PointSpi {
     suspend fun getUserPoint(userId: UUID): PointResponse
+
+    suspend fun saveUserPointStatus(userId: UUID)
 }
