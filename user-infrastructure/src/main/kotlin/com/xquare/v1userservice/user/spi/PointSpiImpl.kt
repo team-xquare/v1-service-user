@@ -46,6 +46,5 @@ class PointSpiImpl(
             .onStatus(HttpStatus::isError) {
                 throw PointRequestFailedException("Failed request to save user point status", it.rawStatusCode())
             }
-            .awaitBody<Unit>()
     }
 }
