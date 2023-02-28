@@ -35,4 +35,15 @@ class PointSpiImpl(
                 )
             }
     }
+
+    override suspend fun saveUserPointStatus(userId: UUID) {
+        webClient.post()
+            .uri("https://stag-api.xquare.app/points")
+            .header("Request-User-Id", userId.toString())
+            .retrieve()
+            .onStatus(HttpStatus::isError) {
+                throw PointRequestFailedException("Failed request to save user point status", it.rawStatusCode())
+            }
+            .awaitBody<Unit>()
+    }
 }

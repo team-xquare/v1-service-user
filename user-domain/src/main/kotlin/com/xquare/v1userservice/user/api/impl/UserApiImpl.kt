@@ -80,6 +80,7 @@ class UserApiImpl(
         }
 
         updateUserCreatedStateStepProcessor.processStep(savedUser.id)
+        pointSpi.saveUserPointStatus(savedUser.id)
 
         return savedUser
     }
