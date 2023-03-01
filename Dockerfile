@@ -10,4 +10,4 @@ ARG PROFILE
 ENV PROFILE ${PROFILE}
 
 ADD user-infrastructure/build/libs/*.jar app.jar
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+ENTRYPOINT ["java", "-jar", "-Duser.timezone=Asia/Seoul", "/app.jar"]
