@@ -22,7 +22,7 @@ class PointSpiImpl(
         return webClient.get().uri {
             it.scheme(scheme)
                 .host(pointHost)
-                .path("/points/{student-id}")
+                .path("/points/student/{student-id}")
                 .build(userId)
         }.retrieve()
             .onStatus(HttpStatus::isError) {
