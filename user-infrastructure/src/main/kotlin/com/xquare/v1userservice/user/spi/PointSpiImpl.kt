@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Repository
 import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.awaitBodilessEntity
 import org.springframework.web.reactive.function.client.awaitBody
 
 @Repository
@@ -45,6 +46,6 @@ class PointSpiImpl(
         }.retrieve()
             .onStatus(HttpStatus::isError) {
                 throw PointRequestFailedException("Failed request to save user point status", it.rawStatusCode())
-            }
+            }.awaitBodilessEntity()
     }
 }
