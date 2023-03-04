@@ -134,6 +134,12 @@ class UserRepositoryImpl(
         }.map { userDomainMapper.userEntityToDomain(it) }
     }
 
+    override suspend fun findAllUser(): List<User> {
+        return reactiveQueryFactory.withFactory { _, reactiveQueryFactory ->
+            reactiveQueryFactory.findAll()
+        }.map { userDomainMapper.userEntityToDomain(it) }
+    }
+
     private suspend fun ReactiveQueryFactory.findAllByGradeAndClass(grade: Int?, classNum: Int?): List<UserEntity> {
         return this.listQuery {
             select(entity(UserEntity::class))
@@ -144,6 +150,15 @@ class UserRepositoryImpl(
                     classNum?.let { col(UserEntity::classNum).equal(classNum) }
                 )
             )
+            orderBy(col(UserEntity::classNum).asc(), col(UserEntity::num).asc())
+        }
+    }
+
+    private suspend fun ReactiveQueryFactory.findAll(): List<UserEntity> {
+        return this.listQuery {
+            select(entity(UserEntity::class))
+            from(entity(UserEntity::class))
+            where(not(col(UserEntity::grade).equal(0)))
             orderBy(col(UserEntity::classNum).asc(), col(UserEntity::num).asc())
         }
     }

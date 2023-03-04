@@ -53,4 +53,8 @@ class InMemoryUserRepository(
             it.grade == grade && it.classNum == classNum || classNum == 0
         }
     }
+
+    override suspend fun findAllUser(): List<User> {
+        return userMap.values.toList()
+    }
 }

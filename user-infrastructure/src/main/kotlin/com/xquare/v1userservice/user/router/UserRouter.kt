@@ -23,6 +23,7 @@ class UserRouter {
             GET("/tokens/fcm", userHandler::getUserDeviceTokensHandler)
             GET("/simple", userHandler::getUserPointHandler)
             GET("/class", userHandler::getUserByGradeAndClassHandler)
+            GET("/all", userHandler::getAllUser)
         }
     }
 }

@@ -189,4 +189,11 @@ class UserHandler(
             name = this.name
         )
     }
+
+    suspend fun getAllUser(serverRequest: ServerRequest): ServerResponse {
+        val users = userApi.getAllUser()
+        val userResponse = users.map { it.toGetUserGradeAndClass() }
+        val userListResponse = GetUserGradeClassNumListResponse(userResponse)
+        return ServerResponse.ok().bodyValueAndAwait(userListResponse)
+    }
 }
