@@ -192,8 +192,8 @@ class UserHandler(
 
     suspend fun getAllUser(serverRequest: ServerRequest): ServerResponse {
         val users = userApi.getAllUser()
-        val userResponse = users.map { it.toGetUserGradeAndClass() }
-        val userListResponse = GetUserGradeClassNumListResponse(userResponse)
+        val userResponseDtos = users.map { it.toGetUserByAccountIdResponseDto() }
+        val userListResponse = GetUserListResponse(userResponseDtos)
         return ServerResponse.ok().bodyValueAndAwait(userListResponse)
     }
 }
