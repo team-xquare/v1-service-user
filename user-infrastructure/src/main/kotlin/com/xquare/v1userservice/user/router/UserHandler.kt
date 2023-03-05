@@ -10,6 +10,8 @@ import com.xquare.v1userservice.user.api.dtos.PointDomainResponse
 import com.xquare.v1userservice.user.api.dtos.SignInDomainRequest
 import com.xquare.v1userservice.user.api.dtos.UserDeviceTokenResponse
 import com.xquare.v1userservice.user.router.dto.CreateUserRequest
+import com.xquare.v1userservice.user.router.dto.GetTeacherInfoResponse
+import com.xquare.v1userservice.user.router.dto.GetTeacherResponse
 import com.xquare.v1userservice.user.router.dto.GetUserDeviceTokenListResponse
 import com.xquare.v1userservice.user.router.dto.GetUserGradeClassNumListResponse
 import com.xquare.v1userservice.user.router.dto.GetUserGradeClassNumResponse
@@ -27,7 +29,7 @@ import org.springframework.web.reactive.function.server.bodyToMono
 import org.springframework.web.reactive.function.server.bodyValueAndAwait
 import org.springframework.web.reactive.function.server.buildAndAwait
 import java.net.URI
-import java.util.UUID
+import java.util.*
 
 @Component
 class UserHandler(
@@ -171,7 +173,8 @@ class UserHandler(
     )
 
     suspend fun getUserByGradeAndClassHandler(serverRequest: ServerRequest): ServerResponse {
-        val grade = serverRequest.queryParams().getFirst("grade")?.toIntOrNull() ?: throw BadRequestException("grade is required")
+        val grade = serverRequest.queryParams().getFirst("grade")?.toIntOrNull()
+            ?: throw BadRequestException("grade is required")
         val classNum = serverRequest.queryParams().getFirst("classNum")?.toIntOrNull()
         val users = userApi.getUserByGradeAndClass(grade, classNum)
         val userResponse = users.map { it.toGetUserGradeAndClass() }
@@ -199,7 +202,14 @@ class UserHandler(
 
     suspend fun getAllTeacherHandler(serverRequest: ServerRequest): ServerResponse {
         val teachers = userApi.getAllTeacher()
-        val teacherResponse = teachers.map { it.toGetUserByAccountIdResponseDto() }
+        val teacherInfoResponse = teachers.map { it.toGetTeacherInfoResponseDto() }
+        val teacherResponse = GetTeacherResponse(teacherInfoResponse)
         return ServerResponse.ok().bodyValueAndAwait(teacherResponse)
     }
+
+    private fun User.toGetTeacherInfoResponseDto() =
+        GetTeacherInfoResponse(
+            id = this.id,
+            name = this.name,
+        )
 }
