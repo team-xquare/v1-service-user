@@ -2,9 +2,10 @@ package com.xquare.v1userservice.stubs
 
 import com.xquare.v1userservice.annotations.Stub
 import com.xquare.v1userservice.user.User
+import com.xquare.v1userservice.user.UserRole
 import com.xquare.v1userservice.user.UserState
 import com.xquare.v1userservice.user.spi.UserRepositorySpi
-import java.util.UUID
+import java.util.*
 
 @Stub
 class InMemoryUserRepository(
@@ -56,5 +57,9 @@ class InMemoryUserRepository(
 
     override suspend fun findAllUser(): List<User> {
         return userMap.values.toList()
+    }
+
+    override suspend fun findAllTeacher(): List<User> {
+        return userMap.values.filter { it.role == UserRole.SCH }
     }
 }

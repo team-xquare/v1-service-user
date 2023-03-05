@@ -9,6 +9,7 @@ import com.linecorp.kotlinjdsl.selectQuery
 import com.linecorp.kotlinjdsl.singleQueryOrNull
 import com.xquare.v1userservice.user.User
 import com.xquare.v1userservice.user.UserEntity
+import com.xquare.v1userservice.user.UserRole
 import com.xquare.v1userservice.user.UserState
 import com.xquare.v1userservice.user.mapper.UserDomainMapper
 import com.xquare.v1userservice.user.spi.UserRepositorySpi
@@ -17,7 +18,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import org.hibernate.reactive.mutiny.Mutiny.Session
 import org.springframework.stereotype.Repository
-import java.util.UUID
+import java.util.*
 
 @Repository
 class UserRepositoryImpl(
@@ -140,6 +141,12 @@ class UserRepositoryImpl(
         }.map { userDomainMapper.userEntityToDomain(it) }
     }
 
+    override suspend fun findAllTeacher(): List<User> {
+        return reactiveQueryFactory.withFactory { _, reactiveQueryFactory ->
+            reactiveQueryFactory.findAllTeacher()
+        }.map { userDomainMapper.userEntityToDomain(it) }
+    }
+
     private suspend fun ReactiveQueryFactory.findAllByGradeAndClass(grade: Int?, classNum: Int?): List<UserEntity> {
         return this.listQuery {
             select(entity(UserEntity::class))
@@ -160,6 +167,14 @@ class UserRepositoryImpl(
             from(entity(UserEntity::class))
             where(not(col(UserEntity::grade).equal(0)))
             orderBy(col(UserEntity::classNum).asc(), col(UserEntity::num).asc())
+        }
+    }
+
+    private suspend fun ReactiveQueryFactory.findAllTeacher(): List<UserEntity> {
+        return this.listQuery {
+            select(entity(UserEntity::class))
+            from(entity(UserEntity::class))
+            where(col(UserEntity::role).equal(UserRole.SCH))
         }
     }
 }

@@ -190,10 +190,16 @@ class UserHandler(
         )
     }
 
-    suspend fun getAllUser(serverRequest: ServerRequest): ServerResponse {
+    suspend fun getAllUserHandler(serverRequest: ServerRequest): ServerResponse {
         val users = userApi.getAllUser()
         val userResponseDtos = users.map { it.toGetUserByAccountIdResponseDto() }
         val userListResponse = GetUserListResponse(userResponseDtos)
         return ServerResponse.ok().bodyValueAndAwait(userListResponse)
+    }
+
+    suspend fun getAllTeacherHandler(serverRequest: ServerRequest): ServerResponse {
+        val teachers = userApi.getAllTeacher()
+        val teacherResponse = teachers.map { it.toGetUserByAccountIdResponseDto() }
+        return ServerResponse.ok().bodyValueAndAwait(teacherResponse)
     }
 }

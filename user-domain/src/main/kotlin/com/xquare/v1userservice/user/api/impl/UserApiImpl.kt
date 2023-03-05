@@ -34,7 +34,7 @@ import com.xquare.v1userservice.user.verificationcode.VerificationCode
 import com.xquare.v1userservice.user.verificationcode.exceptions.VerificationCodeNotFoundException
 import com.xquare.v1userservice.user.verificationcode.spi.VerificationCodeSpi
 import java.time.LocalDateTime
-import java.util.UUID
+import java.util.*
 
 @DomainService
 class UserApiImpl(
@@ -238,5 +238,9 @@ class UserApiImpl(
 
     override suspend fun getAllUser(): List<User> {
         return userRepositorySpi.findAllUser()
+    }
+
+    override suspend fun getAllTeacher(): List<User> {
+        return userRepositorySpi.findAllTeacher()
     }
 }

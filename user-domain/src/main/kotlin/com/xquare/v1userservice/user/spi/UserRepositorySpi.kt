@@ -15,4 +15,5 @@ interface UserRepositorySpi {
     suspend fun findAllByIdIn(idList: List<UUID>): List<User>
     suspend fun findAllByGradeAndClass(grade: Int, classNum: Int?): List<User>
     suspend fun findAllUser(): List<User>
+    suspend fun findAllTeacher(): List<User>
 }

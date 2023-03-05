@@ -20,4 +20,5 @@ interface UserApi {
     suspend fun getUserPointInformation(userId: UUID): PointDomainResponse
     suspend fun getUserByGradeAndClass(grade: Int, classNum: Int?): List<User>
     suspend fun getAllUser(): List<User>
+    suspend fun getAllTeacher(): List<User>
 }
