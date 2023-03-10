@@ -158,7 +158,8 @@ class UserApiImpl(
         return TokenResponse(
             accessToken = accessToken,
             refreshToken = refreshToken.tokenValue,
-            expireAt = expireAt
+            expireAt = expireAt,
+            role = user.role
         )
     }
 
@@ -193,7 +194,8 @@ class UserApiImpl(
         return TokenResponse(
             accessToken = accessToken,
             refreshToken = refreshTokenDomain.tokenValue,
-            expireAt = expireAt
+            expireAt = expireAt,
+            role = user.role
         )
     }
 

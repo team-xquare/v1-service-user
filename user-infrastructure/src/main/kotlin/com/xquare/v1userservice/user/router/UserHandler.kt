@@ -8,6 +8,7 @@ import com.xquare.v1userservice.user.api.UserApi
 import com.xquare.v1userservice.user.api.dtos.CreatUserDomainRequest
 import com.xquare.v1userservice.user.api.dtos.PointDomainResponse
 import com.xquare.v1userservice.user.api.dtos.SignInDomainRequest
+import com.xquare.v1userservice.user.api.dtos.TokenResponse
 import com.xquare.v1userservice.user.api.dtos.UserDeviceTokenResponse
 import com.xquare.v1userservice.user.router.dto.CreateUserRequest
 import com.xquare.v1userservice.user.router.dto.GetTeacherInfoResponse
@@ -60,7 +61,7 @@ class UserHandler(
     suspend fun userSignInHandler(serverRequest: ServerRequest): ServerResponse {
         val signInRequest = serverRequest.getSignInRequestBody()
         val domainRequest = signInRequest.toDomainRequest()
-        val signInResponse = userApi.userSignIn(domainRequest)
+        val signInResponse: TokenResponse = userApi.userSignIn(domainRequest)
         return ServerResponse.ok().bodyValueAndAwait(signInResponse)
     }
 
