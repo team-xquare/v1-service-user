@@ -29,6 +29,7 @@ import com.xquare.v1userservice.user.spi.SaveUserBaseApplicationCompensator
 import com.xquare.v1userservice.user.spi.SaveUserBaseApplicationProcessor
 import com.xquare.v1userservice.user.spi.SaveUserBaseAuthorityCompensator
 import com.xquare.v1userservice.user.spi.SaveUserBaseAuthorityProcessor
+import com.xquare.v1userservice.user.spi.SaveUserTestAuthorityProcessor
 import com.xquare.v1userservice.user.spi.UserRepositorySpi
 import com.xquare.v1userservice.user.verificationcode.VerificationCode
 import com.xquare.v1userservice.user.verificationcode.exceptions.VerificationCodeNotFoundException
@@ -47,6 +48,7 @@ class UserApiImpl(
     private val createUserInPendingStateCompensator: CreateUserInPendingStateCompensator,
     private val saveUserBaseAuthorityCompensator: SaveUserBaseAuthorityCompensator,
     private val saveUserBaseApplicationProcessor: SaveUserBaseApplicationProcessor,
+    private val saveUserTestAuthorityProcessor: SaveUserTestAuthorityProcessor,
     private val saveUserBaseApplicationCompensator: SaveUserBaseApplicationCompensator,
     private val jwtTokenGeneratorSpi: JwtTokenGeneratorSpi,
     private val refreshTokenSpi: RefreshTokenSpi,
@@ -81,6 +83,9 @@ class UserApiImpl(
 
         updateUserCreatedStateStepProcessor.processStep(savedUser.id)
         pointSpi.saveUserPointStatus(savedUser.id)
+        if (isTest(savedUser)) {
+            saveUserTestAuthorityProcessor.processStep(savedUser.id)
+        }
 
         return savedUser
     }
@@ -245,4 +250,6 @@ class UserApiImpl(
     override suspend fun getAllTeacher(): List<User> {
         return userRepositorySpi.findAllTeacher()
     }
+
+    private fun isTest(user: User) = user.name == "테스트"
 }
