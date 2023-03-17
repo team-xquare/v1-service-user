@@ -188,7 +188,7 @@ class UserHandler(
         return GetUserGradeClassNumResponse(
             id = this.id,
             profileFileName = this.profileFileName,
-            num = "${this.grade}${this.classNum}${checkUserNumLessThanTen(this.num)}",
+            num = "${this.grade}${this.classNum}${this.num.toString().padStart(2, '0')}",
             name = this.name
         )
     }
@@ -218,7 +218,7 @@ class UserHandler(
         GetUserNameResponse(
             id = this.id,
             name = this.name,
-            num = "${this.grade}${this.classNum}${checkUserNumLessThanTen(this.num)}"
+            num = "${this.grade}${this.classNum}${this.num.toString().padStart(2, '0')}"
         )
 
     private fun User.toGetTeacherInfoResponseDto() =
@@ -226,12 +226,4 @@ class UserHandler(
             id = this.id,
             name = this.name,
         )
-
-
-    private fun checkUserNumLessThanTen(userNum: Int) =
-        if (userNum < 10) {
-            "0$userNum"
-        } else {
-            userNum.toString()
-        }
 }
