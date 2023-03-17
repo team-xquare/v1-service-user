@@ -171,7 +171,7 @@ class UserRepositoryImpl(
         return this.listQuery {
             select(entity(UserEntity::class))
             from(entity(UserEntity::class))
-            where(not(col(UserEntity::grade).equal(0)))
+            where(col(UserEntity::role).equal(UserRole.STU))
             orderBy(col(UserEntity::grade).asc(), col(UserEntity::classNum).asc(), col(UserEntity::num).asc())
         }
     }
