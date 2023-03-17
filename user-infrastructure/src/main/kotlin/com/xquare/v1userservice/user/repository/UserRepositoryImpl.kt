@@ -135,15 +135,21 @@ class UserRepositoryImpl(
         }.map { userDomainMapper.userEntityToDomain(it) }
     }
 
-    override suspend fun findAllUser(): List<User> {
+    override suspend fun findAllStudent(): List<User> {
         return reactiveQueryFactory.withFactory { _, reactiveQueryFactory ->
-            reactiveQueryFactory.findAll()
+            reactiveQueryFactory.findStudent()
         }.map { userDomainMapper.userEntityToDomain(it) }
     }
 
     override suspend fun findAllTeacher(): List<User> {
         return reactiveQueryFactory.withFactory { _, reactiveQueryFactory ->
             reactiveQueryFactory.findAllTeacher()
+        }.map { userDomainMapper.userEntityToDomain(it) }
+    }
+
+    override suspend fun findStudentByName(name: String): List<User> {
+        return reactiveQueryFactory.withFactory { _, reactiveQueryFactory ->
+            reactiveQueryFactory.findAllStudentByName(name)
         }.map { userDomainMapper.userEntityToDomain(it) }
     }
 
@@ -161,12 +167,12 @@ class UserRepositoryImpl(
         }
     }
 
-    private suspend fun ReactiveQueryFactory.findAll(): List<UserEntity> {
+    private suspend fun ReactiveQueryFactory.findStudent(): List<UserEntity> {
         return this.listQuery {
             select(entity(UserEntity::class))
             from(entity(UserEntity::class))
             where(not(col(UserEntity::grade).equal(0)))
-            orderBy(col(UserEntity::classNum).asc(), col(UserEntity::num).asc())
+            orderBy(col(UserEntity::grade).asc(), col(UserEntity::classNum).asc(), col(UserEntity::num).asc())
         }
     }
 
@@ -175,6 +181,20 @@ class UserRepositoryImpl(
             select(entity(UserEntity::class))
             from(entity(UserEntity::class))
             where(col(UserEntity::role).equal(UserRole.SCH))
+        }
+    }
+
+    private suspend fun ReactiveQueryFactory.findAllStudentByName(
+        name: String,
+    ): List<UserEntity> {
+        return this.listQuery {
+            select(entity(UserEntity::class))
+            from(entity(UserEntity::class))
+            where(
+                col(UserEntity::name).like("$name%")
+            )
+            where(not(col(UserEntity::grade).equal(0)))
+            orderBy(col(UserEntity::grade).asc(), col(UserEntity::classNum).asc(), col(UserEntity::num).asc())
         }
     }
 }

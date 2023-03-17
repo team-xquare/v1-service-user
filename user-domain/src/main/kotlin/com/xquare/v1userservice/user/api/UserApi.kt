@@ -19,6 +19,7 @@ interface UserApi {
     suspend fun updateProfileFileName(userId: UUID, profileFileName: String?)
     suspend fun getUserPointInformation(userId: UUID): PointDomainResponse
     suspend fun getUserByGradeAndClass(grade: Int, classNum: Int?): List<User>
-    suspend fun getAllUser(): List<User>
+    suspend fun getAllStudent(): List<User>
     suspend fun getAllTeacher(): List<User>
+    suspend fun getAllStudentByName(name: String): List<User>
 }
