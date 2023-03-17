@@ -243,12 +243,16 @@ class UserApiImpl(
         return userRepositorySpi.findAllByGradeAndClass(grade, classNum)
     }
 
-    override suspend fun getAllUser(): List<User> {
-        return userRepositorySpi.findAllUser()
+    override suspend fun getAllStudent(): List<User> {
+        return userRepositorySpi.findAllStudent()
     }
 
     override suspend fun getAllTeacher(): List<User> {
         return userRepositorySpi.findAllTeacher()
+    }
+
+    override suspend fun getAllStudentByName(name: String): List<User> {
+        return userRepositorySpi.findStudentByName(name)
     }
 
     private fun isTest(user: User) = user.name == "테스트"

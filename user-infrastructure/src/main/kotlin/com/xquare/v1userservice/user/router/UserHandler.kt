@@ -17,6 +17,7 @@ import com.xquare.v1userservice.user.router.dto.GetUserDeviceTokenListResponse
 import com.xquare.v1userservice.user.router.dto.GetUserGradeClassNumListResponse
 import com.xquare.v1userservice.user.router.dto.GetUserGradeClassNumResponse
 import com.xquare.v1userservice.user.router.dto.GetUserListResponse
+import com.xquare.v1userservice.user.router.dto.GetUserNameResponse
 import com.xquare.v1userservice.user.router.dto.GetUserPointResponse
 import com.xquare.v1userservice.user.router.dto.GetUserProfileResponse
 import com.xquare.v1userservice.user.router.dto.GetUserResponse
@@ -184,18 +185,16 @@ class UserHandler(
     }
 
     private fun User.toGetUserGradeAndClass(): GetUserGradeClassNumResponse {
-        val num = if (this.num <= 9) "0${this.num}" else this.num.toString()
-
         return GetUserGradeClassNumResponse(
             id = this.id,
             profileFileName = this.profileFileName,
-            num = "${this.grade}${this.classNum}$num",
+            num = "${this.grade}${this.classNum}${this.num.toString().padStart(2, '0')}",
             name = this.name
         )
     }
 
-    suspend fun getAllUserHandler(serverRequest: ServerRequest): ServerResponse {
-        val users = userApi.getAllUser()
+    suspend fun getAllStudentHandler(serverRequest: ServerRequest): ServerResponse {
+        val users = userApi.getAllStudent()
         val userResponseDtos = users.map { it.toGetUserByAccountIdResponseDto() }
         val userListResponse = GetUserListResponse(userResponseDtos)
         return ServerResponse.ok().bodyValueAndAwait(userListResponse)
@@ -207,6 +206,20 @@ class UserHandler(
         val teacherResponse = GetTeacherResponse(teacherInfoResponse)
         return ServerResponse.ok().bodyValueAndAwait(teacherResponse)
     }
+
+    suspend fun getAllStudentByNameHandler(serverRequest: ServerRequest): ServerResponse {
+        val name = serverRequest.queryParams().getFirst("name") ?: ""
+        val users = userApi.getAllStudentByName(name)
+        val userResponse = users.map { it.toGetUserNameResponseDto() }
+        return ServerResponse.ok().bodyValueAndAwait(userResponse)
+    }
+
+    private fun User.toGetUserNameResponseDto() =
+        GetUserNameResponse(
+            id = this.id,
+            name = this.name,
+            num = "${this.grade}${this.classNum}${this.num.toString().padStart(2, '0')}"
+        )
 
     private fun User.toGetTeacherInfoResponseDto() =
         GetTeacherInfoResponse(
