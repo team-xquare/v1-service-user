@@ -108,7 +108,7 @@ class UserApiImpl(
             ?.let { throw UserAlreadyExistsException("$accountId Already Exists") }
     }
 
-    private suspend fun checkIsUsed(isUsed: Boolean) {
+    private fun checkIsUsed(isUsed: Boolean) {
         if (isUsed) {
             throw UserAlreadyExistsException("User Is Used")
         }
