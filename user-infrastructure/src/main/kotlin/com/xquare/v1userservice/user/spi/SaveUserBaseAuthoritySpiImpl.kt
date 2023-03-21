@@ -29,7 +29,7 @@ class SaveUserBaseAuthoritySpiImpl(
                 it.scheme(scheme)
                     .host(authorityHost)
                     .path("/authorities/access-management/basic")
-                    .build()
+                    .build(saveUserBaseAuthorityRequest)
             }
             .accept(MediaType.APPLICATION_JSON)
             .bodyValue(saveUserBaseAuthorityRequest)

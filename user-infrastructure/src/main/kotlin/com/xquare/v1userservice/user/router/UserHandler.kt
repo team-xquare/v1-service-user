@@ -208,7 +208,7 @@ class UserHandler(
     }
 
     suspend fun getAllStudentByNameHandler(serverRequest: ServerRequest): ServerResponse {
-        val name = serverRequest.queryParams().getFirst("name") ?: ""
+        val name = serverRequest.queryParam("name").orElse("")
         val users = userApi.getAllStudentByName(name)
         val userResponse = users.map { it.toGetUserNameResponseDto() }
         return ServerResponse.ok().bodyValueAndAwait(userResponse)

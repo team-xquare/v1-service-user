@@ -153,6 +153,23 @@ class UserRepositoryImpl(
         }.map { userDomainMapper.userEntityToDomain(it) }
     }
 
+    private suspend fun ReactiveQueryFactory.findAllStudentByName(name: String): List<UserEntity> {
+        println(name)
+        return this.listQuery {
+            select(entity(UserEntity::class))
+            from(entity(UserEntity::class))
+            where(
+                col(UserEntity::name).like("$name%")
+            )
+            where(not(col(UserEntity::grade).equal(0)))
+            orderBy(
+                col(UserEntity::grade).asc(),
+                col(UserEntity::classNum).asc(),
+                col(UserEntity::num).asc()
+            )
+        }
+    }
+
     private suspend fun ReactiveQueryFactory.findAllByGradeAndClass(grade: Int?, classNum: Int?): List<UserEntity> {
         return this.listQuery {
             select(entity(UserEntity::class))
@@ -181,20 +198,6 @@ class UserRepositoryImpl(
             select(entity(UserEntity::class))
             from(entity(UserEntity::class))
             where(col(UserEntity::role).equal(UserRole.SCH))
-        }
-    }
-
-    private suspend fun ReactiveQueryFactory.findAllStudentByName(
-        name: String,
-    ): List<UserEntity> {
-        return this.listQuery {
-            select(entity(UserEntity::class))
-            from(entity(UserEntity::class))
-            where(
-                col(UserEntity::name).like("$name%")
-            )
-            where(not(col(UserEntity::grade).equal(0)))
-            orderBy(col(UserEntity::grade).asc(), col(UserEntity::classNum).asc(), col(UserEntity::num).asc())
         }
     }
 }
