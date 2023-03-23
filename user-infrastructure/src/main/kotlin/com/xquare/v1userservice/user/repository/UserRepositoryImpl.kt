@@ -154,7 +154,6 @@ class UserRepositoryImpl(
     }
 
     private suspend fun ReactiveQueryFactory.findAllStudentByName(name: String): List<UserEntity> {
-        println(name)
         return this.listQuery {
             select(entity(UserEntity::class))
             from(entity(UserEntity::class))
