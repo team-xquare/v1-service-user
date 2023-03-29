@@ -255,5 +255,9 @@ class UserApiImpl(
         return userRepositorySpi.findStudentByName(name)
     }
 
+    override suspend fun getAllUserByRole(role: String?): List<User> {
+        return userRepositorySpi.findAllByRole(role)
+    }
+
     private fun isTest(user: User) = user.name == "테스트"
 }

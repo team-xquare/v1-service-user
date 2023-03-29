@@ -17,4 +17,5 @@ interface UserRepositorySpi {
     suspend fun findAllStudent(): List<User>
     suspend fun findAllTeacher(): List<User>
     suspend fun findStudentByName(name: String): List<User>
+    suspend fun findAllByRole(role: String?): List<User>
 }
