@@ -238,8 +238,8 @@ class UserHandler(
         )
 
     private fun checkUserRole(role: String?) {
-        val checkUserRole = UserRole.values().none { it.name == role }
-        if (role != null && role != "" && checkUserRole) {
+        val isValidUserRole = UserRole.values().none { it.name == role }
+        if (role != null && role != "" && isValidUserRole) {
             throw BadRequestException("roleName is invalid")
         }
     }
