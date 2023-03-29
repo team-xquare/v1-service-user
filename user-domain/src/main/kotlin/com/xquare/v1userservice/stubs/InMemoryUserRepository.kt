@@ -66,4 +66,10 @@ class InMemoryUserRepository(
     override suspend fun findStudentByName(name: String): List<User> {
         return userMap.values.toList()
     }
+
+    override suspend fun findAllByRole(userRole: UserRole?): List<User> {
+        return userRole?.let { role ->
+            userMap.values.filter { it.role == role }
+        } ?: userMap.values.toList()
+    }
 }

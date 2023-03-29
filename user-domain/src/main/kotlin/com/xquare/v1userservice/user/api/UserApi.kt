@@ -22,4 +22,5 @@ interface UserApi {
     suspend fun getAllStudent(): List<User>
     suspend fun getAllTeacher(): List<User>
     suspend fun getAllStudentByName(name: String): List<User>
+    suspend fun getAllUserByRole(role: String?): List<User>
 }

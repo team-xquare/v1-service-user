@@ -2,6 +2,7 @@ package com.xquare.v1userservice.user.spi
 
 import com.xquare.v1userservice.annotations.Spi
 import com.xquare.v1userservice.user.User
+import com.xquare.v1userservice.user.UserRole
 import java.util.UUID
 
 @Spi
@@ -17,4 +18,5 @@ interface UserRepositorySpi {
     suspend fun findAllStudent(): List<User>
     suspend fun findAllTeacher(): List<User>
     suspend fun findStudentByName(name: String): List<User>
+    suspend fun findAllByRole(userRole: UserRole?): List<User>
 }

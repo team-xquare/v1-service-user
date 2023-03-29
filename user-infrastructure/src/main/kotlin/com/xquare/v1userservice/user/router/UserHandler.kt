@@ -3,6 +3,7 @@ package com.xquare.v1userservice.user.router
 import com.xquare.v1userservice.configuration.validate.BadRequestException
 import com.xquare.v1userservice.configuration.validate.RequestBodyValidator
 import com.xquare.v1userservice.user.User
+import com.xquare.v1userservice.user.UserRole
 import com.xquare.v1userservice.user.aop.RequestHeaderAspect
 import com.xquare.v1userservice.user.api.UserApi
 import com.xquare.v1userservice.user.api.dtos.CreatUserDomainRequest
@@ -214,6 +215,15 @@ class UserHandler(
         return ServerResponse.ok().bodyValueAndAwait(userResponse)
     }
 
+    suspend fun getUserByRoleHandler(serverRequest: ServerRequest): ServerResponse {
+        val role = serverRequest.queryParams().getFirst("roleName") ?: throw BadRequestException("roleName is required")
+        checkUserRole(role)
+        val users = userApi.getAllUserByRole(role)
+        val userResponseDtos = users.map { it.toGetUserByAccountIdResponseDto() }
+        val response = GetUserListResponse(userResponseDtos)
+        return ServerResponse.ok().bodyValueAndAwait(response)
+    }
+
     private fun User.toGetUserNameResponseDto() =
         GetUserNameResponse(
             id = this.id,
@@ -226,4 +236,11 @@ class UserHandler(
             id = this.id,
             name = this.name,
         )
+
+    private fun checkUserRole(role: String?) {
+        val isValidUserRole = UserRole.values().none { it.name == role }
+        if (role != null && role != "" && isValidUserRole) {
+            throw BadRequestException("roleName is invalid")
+        }
+    }
 }
