@@ -67,10 +67,9 @@ class InMemoryUserRepository(
         return userMap.values.toList()
     }
 
-    override suspend fun findAllByRole(role: String?): List<User> {
-        return if (role != null && role != "")
-            userMap.values.filter { it.role == UserRole.valueOf(role) }
-        else
-            userMap.values.toList()
+    override suspend fun findAllByRole(userRole: UserRole?): List<User> {
+        return userRole?.let { role ->
+            userMap.values.filter { it.role == role }
+        } ?: userMap.values.toList()
     }
 }

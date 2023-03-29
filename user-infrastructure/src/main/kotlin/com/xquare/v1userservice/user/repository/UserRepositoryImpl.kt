@@ -148,20 +148,19 @@ class UserRepositoryImpl(
     }
 
     override suspend fun findStudentByName(name: String): List<User> {
+
         return reactiveQueryFactory.withFactory { _, reactiveQueryFactory ->
             reactiveQueryFactory.findAllStudentByName(name)
         }.map { userDomainMapper.userEntityToDomain(it) }
     }
 
-    override suspend fun findAllByRole(role: String?): List<User> {
+    override suspend fun findAllByRole(userRole: UserRole?): List<User> {
         return reactiveQueryFactory.withFactory { _, reactiveQueryFactory ->
-            reactiveQueryFactory.findAllByRole(role)
+            reactiveQueryFactory.findAllByRole(userRole)
         }.map { userDomainMapper.userEntityToDomain(it) }
     }
 
-    private suspend fun ReactiveQueryFactory.findAllByRole(role: String?): List<UserEntity> {
-        val userRole = if (role == "" || role == null) null else UserRole.valueOf(role)
-
+    private suspend fun ReactiveQueryFactory.findAllByRole(userRole: UserRole?): List<UserEntity> {
         return this.listQuery {
             select(entity(UserEntity::class))
             from(entity(UserEntity::class))
