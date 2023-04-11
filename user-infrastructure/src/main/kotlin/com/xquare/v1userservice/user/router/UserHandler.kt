@@ -17,6 +17,7 @@ import com.xquare.v1userservice.user.router.dto.GetTeacherResponse
 import com.xquare.v1userservice.user.router.dto.GetUserDeviceTokenListResponse
 import com.xquare.v1userservice.user.router.dto.GetUserGradeClassNumListResponse
 import com.xquare.v1userservice.user.router.dto.GetUserGradeClassNumResponse
+import com.xquare.v1userservice.user.router.dto.GetUserInfoRequest
 import com.xquare.v1userservice.user.router.dto.GetUserListResponse
 import com.xquare.v1userservice.user.router.dto.GetUserNameResponse
 import com.xquare.v1userservice.user.router.dto.GetUserPointResponse
@@ -100,6 +101,17 @@ class UserHandler(
         val userListResponse = GetUserListResponse(userResponseDtos)
         return ServerResponse.ok().bodyValueAndAwait(userListResponse)
     }
+
+    suspend fun getUserByIdsToBodyHandler(serverRequest: ServerRequest): ServerResponse {
+        val userIds = serverRequest.getUserInfoRequestBody()
+        val users = userApi.getUsersByIdsIn(userIds.userIds)
+        val userResponseDtos = users.map { it.toGetUserByAccountIdResponseDto() }
+        val userListResponse = GetUserListResponse(userResponseDtos)
+        return ServerResponse.ok().bodyValueAndAwait(userListResponse)
+    }
+
+    private suspend fun ServerRequest.getUserInfoRequestBody() =
+        this.bodyToMono<GetUserInfoRequest>().awaitSingle()
 
     suspend fun getUserByAccountIdHandler(serverRequest: ServerRequest): ServerResponse {
         val accountId = serverRequest.pathVariable("accountId")
