@@ -21,7 +21,7 @@ class UserRouter {
             POST("/id", userHandler::getUserByIdsToBodyHandler)
             GET("/id", userHandler::getUserByIdsInHandler)
             GET("/account-id/{accountId}", userHandler::getUserByAccountIdHandler)
-            GET("/tokens/fcm", userHandler::getUserDeviceTokensHandler)
+            GET("/device-token", userHandler::getUserDeviceTokensHandler)
             GET("/simple", userHandler::getUserPointHandler)
             GET("/class", userHandler::getUserByGradeAndClassHandler)
             GET("/all", userHandler::getAllStudentHandler)
