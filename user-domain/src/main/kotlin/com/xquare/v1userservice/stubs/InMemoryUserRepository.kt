@@ -5,7 +5,7 @@ import com.xquare.v1userservice.user.User
 import com.xquare.v1userservice.user.UserRole
 import com.xquare.v1userservice.user.UserState
 import com.xquare.v1userservice.user.spi.UserRepositorySpi
-import java.util.*
+import java.util.UUID
 
 @Stub
 class InMemoryUserRepository(

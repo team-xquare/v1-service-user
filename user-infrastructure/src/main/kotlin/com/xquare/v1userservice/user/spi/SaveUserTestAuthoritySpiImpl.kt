@@ -8,7 +8,7 @@ import org.springframework.http.MediaType
 import org.springframework.stereotype.Repository
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.awaitBodilessEntity
-import java.util.*
+import java.util.UUID
 
 @Repository
 class SaveUserTestAuthoritySpiImpl(
