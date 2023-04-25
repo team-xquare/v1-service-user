@@ -27,9 +27,9 @@ class SecurityConfig {
             .csrf().disable()
             .cors().disable()
             .authorizeExchange()
-            .pathMatchers(POST, "/", "/login").permitAll()
-            .pathMatchers(PUT, "/login").permitAll()
-            .pathMatchers(PATCH, "/").hasAnyRole(STUDENT)
+            .pathMatchers(POST, "/users", "/users/login").permitAll()
+            .pathMatchers(PUT, "/users/login").permitAll()
+            .pathMatchers(PATCH, "/user").hasAnyRole(STUDENT)
             .anyExchange().hasAnyRole(SCHOOL, DOMITORY)
             .and().build()
     }
