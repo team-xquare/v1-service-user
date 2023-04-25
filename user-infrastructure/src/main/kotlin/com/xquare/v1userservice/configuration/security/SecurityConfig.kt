@@ -29,7 +29,7 @@ class SecurityConfig {
             .authorizeExchange()
             .pathMatchers(POST, "/users", "/users/login").permitAll()
             .pathMatchers(PUT, "/users/login").permitAll()
-            .pathMatchers(PATCH, "/user").hasAnyRole(STUDENT)
+            .pathMatchers(PATCH, "/users").hasAnyRole(STUDENT)
             .anyExchange().hasAnyRole(SCHOOL, DOMITORY)
             .and().build()
     }
