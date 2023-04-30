@@ -16,10 +16,6 @@ import org.springframework.security.web.server.SecurityWebFilterChain
 @EnableWebFluxSecurity
 class SecurityConfig {
 
-    private val STUDENT = "ROLE_" + UserRole.STU
-    private val SCHOOL = "ROLE_" + UserRole.SCH
-    private val DOMITORY = "ROLE_" + UserRole.DOR
-
     @Bean
     protected fun filterChain(http: ServerHttpSecurity): SecurityWebFilterChain {
         return http
