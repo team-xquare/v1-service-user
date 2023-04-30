@@ -1,10 +1,7 @@
 package com.xquare.v1userservice.configuration.security
 
-import com.xquare.v1userservice.user.UserRole
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.http.HttpMethod.GET
-import org.springframework.http.HttpMethod.PATCH
 import org.springframework.http.HttpMethod.POST
 import org.springframework.http.HttpMethod.PUT
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity
