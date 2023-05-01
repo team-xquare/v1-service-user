@@ -27,18 +27,14 @@ class SecurityConfig {
             .csrf().disable()
             .cors().disable()
             .authorizeExchange()
-            .pathMatchers(POST, "/users", "/users/login").permitAll()
+            .pathMatchers(POST, "/users", "/users/login", "/users/id").permitAll()
             .pathMatchers(PUT, "/users/login").permitAll()
             .pathMatchers(
                 GET,
-                "/users/teachers",
                 "/users/id",
                 "/users/class",
-                "/users/device-token",
-                "/users/exclude",
                 "/users/all",
-                "/users/search"
-            ).hasAnyRole(SCHOOL, DOMITORY)
+            ).permitAll()
             .anyExchange().authenticated()
             .and().build()
     }
