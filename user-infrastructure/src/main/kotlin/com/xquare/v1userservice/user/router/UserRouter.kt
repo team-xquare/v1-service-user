@@ -28,6 +28,7 @@ class UserRouter {
             GET("/teachers", userHandler::getAllTeacherHandler)
             GET("/search", userHandler::getAllStudentByNameHandler)
             GET("/role", userHandler::getUserByRoleHandler)
+            GET("/exclude", userHandler::getExcludeUserListHandler)
         }
     }
 }
