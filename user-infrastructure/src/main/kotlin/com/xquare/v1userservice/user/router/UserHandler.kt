@@ -7,6 +7,7 @@ import com.xquare.v1userservice.user.UserRole
 import com.xquare.v1userservice.user.aop.RequestHeaderAspect
 import com.xquare.v1userservice.user.api.UserApi
 import com.xquare.v1userservice.user.api.dtos.CreatUserDomainRequest
+import com.xquare.v1userservice.user.api.dtos.ExcludeUserIdListResponse
 import com.xquare.v1userservice.user.api.dtos.PointDomainResponse
 import com.xquare.v1userservice.user.api.dtos.SignInDomainRequest
 import com.xquare.v1userservice.user.api.dtos.TokenResponse
@@ -254,5 +255,12 @@ class UserHandler(
         if (role != null && role != "" && isValidUserRole) {
             throw BadRequestException("roleName is invalid")
         }
+    }
+
+    suspend fun getExcludeUserListHandler(serverRequest: ServerRequest): ServerResponse {
+        val excludeUserIds = serverRequest.queryParams()["users"]?.map { UUID.fromString(it) } ?: emptyList()
+        val users = userApi.getUsersByIdsIn(excludeUserIds)
+        val response = ExcludeUserIdListResponse(users.map { it.id })
+        return ServerResponse.ok().bodyValueAndAwait(response)
     }
 }

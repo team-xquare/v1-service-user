@@ -72,4 +72,8 @@ class InMemoryUserRepository(
             userMap.values.filter { it.role == role }
         } ?: userMap.values.toList()
     }
+
+    override suspend fun findAllByUserIdNotIn(userIdList: List<UUID>): List<UUID> {
+        return userMap.values.filter { !userIdList.contains(it.id) }.map { it.id }
+    }
 }

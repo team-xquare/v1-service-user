@@ -261,4 +261,8 @@ class UserApiImpl(
     }
 
     private fun isTest(user: User) = user.name == "테스트"
+
+    override suspend fun getExcludeUserIdList(userIdList: List<UUID>): List<UUID> {
+        return userRepositorySpi.findAllByUserIdNotIn(userIdList)
+    }
 }
