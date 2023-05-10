@@ -259,8 +259,8 @@ class UserHandler(
 
     suspend fun getExcludeUserListHandler(serverRequest: ServerRequest): ServerResponse {
         val excludeUserIds = serverRequest.queryParams()["users"]?.map { UUID.fromString(it) } ?: emptyList()
-        val users = userApi.getUsersByIdsIn(excludeUserIds)
-        val response = ExcludeUserIdListResponse(users.map { it.id })
+        val users = userApi.getExcludeUserIdList(excludeUserIds)
+        val response = ExcludeUserIdListResponse(users)
         return ServerResponse.ok().bodyValueAndAwait(response)
     }
 }
