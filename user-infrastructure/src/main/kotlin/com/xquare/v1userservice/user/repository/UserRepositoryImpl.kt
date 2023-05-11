@@ -225,17 +225,23 @@ class UserRepositoryImpl(
         }
     }
 
-    override suspend fun findAllByUserIdNotIn(userIdList: List<UUID>): List<UUID> {
+    override suspend fun findAllByUserIdNotIn(userIdList: List<UUID>?): List<UUID> {
         return reactiveQueryFactory.withFactory { _, reactiveQueryFactory ->
             reactiveQueryFactory.findAllByUserIdNotIn(userIdList)
         }
     }
 
-    private suspend fun ReactiveQueryFactory.findAllByUserIdNotIn(userIdList: List<UUID>): List<UUID> {
+    private suspend fun ReactiveQueryFactory.findAllByUserIdNotIn(userIdList: List<UUID>?): List<UUID> {
         return this.listQuery {
             select(col(UserEntity::id))
             from(entity(UserEntity::class))
-            where(not(col(UserEntity::id).`in`(userIdList)))
+            where(
+                and(
+                    userIdList?.let {
+                        not(col(UserEntity::id).`in`(userIdList))
+                    }
+                )
+            )
         }
     }
 }
