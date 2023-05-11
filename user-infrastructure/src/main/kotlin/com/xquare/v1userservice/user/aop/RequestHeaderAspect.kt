@@ -10,7 +10,7 @@ import java.util.UUID
 @Component
 class RequestHeaderAspect(
     @Value("\${security.value}")
-    private val secret: String
+    private val secret: String,
 ) {
 
     fun getUserId(serverRequest: ServerRequest): UUID {
