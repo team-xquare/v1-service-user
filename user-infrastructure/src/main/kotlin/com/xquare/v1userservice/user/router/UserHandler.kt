@@ -34,7 +34,7 @@ import org.springframework.web.reactive.function.server.bodyToMono
 import org.springframework.web.reactive.function.server.bodyValueAndAwait
 import org.springframework.web.reactive.function.server.buildAndAwait
 import java.net.URI
-import java.util.UUID
+import java.util.*
 
 @Component
 class UserHandler(
@@ -274,8 +274,10 @@ class UserHandler(
     }
 
     suspend fun getExcludeUserListHandler(serverRequest: ServerRequest): ServerResponse {
-        val excludeUserIds = serverRequest.queryParams()["users"]?.map { UUID.fromString(it) } ?: emptyList()
         val secret = requestHeaderAspect.getSecretValue(serverRequest)
+        val excludeUserIds = if (serverRequest.queryParam("users") == Optional.of("")) null
+            else serverRequest.queryParams()["users"]?.map { UUID.fromString(it) }
+
         val users = userApi.getExcludeUserIdList(excludeUserIds)
         val response = ExcludeUserIdListResponse(users)
 
