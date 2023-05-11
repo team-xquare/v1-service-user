@@ -302,7 +302,7 @@ class UserHandler(
     }
 
     private fun checkSecretValue(secretValue: String?) {
-        if((secretValue == null) || (secretValue != secret)) {
+        if ((secretValue == null) || (secretValue != secret)) {
             throw InvalidSecretValueException("Secret is invalid")
         }
     }
