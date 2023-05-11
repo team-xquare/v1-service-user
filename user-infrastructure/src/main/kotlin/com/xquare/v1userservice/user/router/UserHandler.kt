@@ -43,8 +43,6 @@ class UserHandler(
     private val userApi: UserApi,
     private val requestBodyValidator: RequestBodyValidator,
     private val requestHeaderAspect: RequestHeaderAspect,
-    @Value("\${secret.value}")
-    private val secret: String,
 ) {
     suspend fun saveUserHandler(serverRequest: ServerRequest): ServerResponse {
         val requestBody: CreateUserRequest = serverRequest.getCreateUserRequestBody()
@@ -93,34 +91,29 @@ class UserHandler(
 
     suspend fun getUserByIdHandler(serverRequest: ServerRequest): ServerResponse {
         val userId = serverRequest.pathVariable("userId")
-        val secret = serverRequest.headers().firstHeader("Request-Xquare-Secret")
+        val secret = requestHeaderAspect.getSecretValue(serverRequest)
         val user = userApi.getUserById(UUID.fromString(userId))
         val userResponseDto = user.toGetUserByAccountIdResponseDto()
 
-        checkSecretValue(secret)
         return ServerResponse.ok().bodyValueAndAwait(userResponseDto)
     }
 
     suspend fun getUserByIdsInHandler(serverRequest: ServerRequest): ServerResponse {
         val userIds = serverRequest.queryParams()["userId"]?.map { UUID.fromString(it) }
             ?: throw BadRequestException("userId is required")
-        val secretValue = serverRequest.headers().firstHeader("Request-Xquare-Secret")
+        val secret = requestHeaderAspect.getSecretValue(serverRequest)
         val users = userApi.getUsersByIdsIn(userIds)
         val userResponseDtos = users.map { it.toGetUserByAccountIdResponseDto() }
         val userListResponse = GetUserListResponse(userResponseDtos)
-
-        checkSecretValue(secretValue)
         return ServerResponse.ok().bodyValueAndAwait(userListResponse)
     }
 
     suspend fun getUserByIdsToBodyHandler(serverRequest: ServerRequest): ServerResponse {
         val userIds = serverRequest.getUserInfoRequestBody()
-        val secretValue = serverRequest.headers().firstHeader("Request-Xquare-Secret")
+        val secret = requestHeaderAspect.getSecretValue(serverRequest)
         val users = userApi.getUsersByIdsIn(userIds.userIds)
         val userResponseDtos = users.map { it.toGetUserByAccountIdResponseDto() }
         val userListResponse = GetUserListResponse(userResponseDtos)
-
-        checkSecretValue(secretValue)
         return ServerResponse.ok().bodyValueAndAwait(userListResponse)
     }
 
@@ -129,11 +122,9 @@ class UserHandler(
 
     suspend fun getUserByAccountIdHandler(serverRequest: ServerRequest): ServerResponse {
         val accountId = serverRequest.pathVariable("accountId")
-        val secretValue = serverRequest.headers().firstHeader("Request-Xquare-Secret")
+        val secret = requestHeaderAspect.getSecretValue(serverRequest)
         val user = userApi.getUserByAccountId(accountId)
         val userResponseDto = user.toGetUserByAccountIdResponseDto()
-
-        checkSecretValue(secretValue)
         return ServerResponse.ok().bodyValueAndAwait(userResponseDto)
     }
 
@@ -170,12 +161,10 @@ class UserHandler(
 
     suspend fun getUserDeviceTokensHandler(serverRequest: ServerRequest): ServerResponse {
         val userIds = serverRequest.queryParams()["users"]?.map { UUID.fromString(it) } ?: emptyList()
-        val secretValue = serverRequest.headers().firstHeader("Request-Xquare-Secret")
+        val secret = requestHeaderAspect.getSecretValue(serverRequest)
 
         val userDeviceTokenDomainResponse = userApi.getUserDeviceTokensByIdIn(userIds)
         val getUserDeviceTokenListResponse = userDeviceTokenDomainResponse.toGetUserDeviceTokenListResponse()
-
-        checkSecretValue(secretValue)
         return ServerResponse.ok().bodyValueAndAwait(getUserDeviceTokenListResponse)
     }
 
@@ -211,12 +200,11 @@ class UserHandler(
         val grade = serverRequest.queryParams().getFirst("grade")?.toIntOrNull()
             ?: throw BadRequestException("grade is required")
         val classNum = serverRequest.queryParams().getFirst("classNum")?.toIntOrNull()
-        val secret = serverRequest.headers().firstHeader("Request-Xquare-Secret")
+        val secret = requestHeaderAspect.getSecretValue(serverRequest)
         val users = userApi.getUserByGradeAndClass(grade, classNum)
         val userResponse = users.map { it.toGetUserGradeAndClass() }
         val userListResponse = GetUserGradeClassNumListResponse(userResponse)
 
-        checkSecretValue(secret)
         return ServerResponse.ok().bodyValueAndAwait(userListResponse)
     }
 
@@ -230,40 +218,36 @@ class UserHandler(
     }
 
     suspend fun getAllStudentHandler(serverRequest: ServerRequest): ServerResponse {
-        val secretValue = serverRequest.headers().firstHeader("Request-Xquare-Secret")
+        val secret = requestHeaderAspect.getSecretValue(serverRequest)
         val users = userApi.getAllStudent()
         val userResponseDtos = users.map { it.toGetUserByAccountIdResponseDto() }
         val userListResponse = GetUserListResponse(userResponseDtos)
 
-        checkSecretValue(secretValue)
         return ServerResponse.ok().bodyValueAndAwait(userListResponse)
     }
 
     suspend fun getAllTeacherHandler(serverRequest: ServerRequest): ServerResponse {
-        val secretValue = serverRequest.headers().firstHeader("Request-Xquare-Secret")
+        val secret = requestHeaderAspect.getSecretValue(serverRequest)
         val teachers = userApi.getAllTeacher()
         val teacherInfoResponse = teachers.map { it.toGetTeacherInfoResponseDto() }
         val teacherResponse = GetTeacherResponse(teacherInfoResponse)
 
-        checkSecretValue(secretValue)
         return ServerResponse.ok().bodyValueAndAwait(teacherResponse)
     }
 
     suspend fun getAllStudentByNameHandler(serverRequest: ServerRequest): ServerResponse {
         val name = serverRequest.queryParam("name").orElse("")
-        val secret = serverRequest.headers().firstHeader("Request-Xquare-Secret")
+        val secret = requestHeaderAspect.getSecretValue(serverRequest)
         val users = userApi.getAllStudentByName(name)
         val userResponse = users.map { it.toGetUserNameResponseDto() }
 
-        checkSecretValue(secret)
         return ServerResponse.ok().bodyValueAndAwait(userResponse)
     }
 
     suspend fun getUserByRoleHandler(serverRequest: ServerRequest): ServerResponse {
         val role = serverRequest.queryParams().getFirst("roleName") ?: throw BadRequestException("roleName is required")
-        val secretValue = serverRequest.headers().firstHeader("Request-Xquare-Secret")
+        val secret = requestHeaderAspect.getSecretValue(serverRequest)
         checkUserRole(role)
-        checkSecretValue(secretValue)
         val users = userApi.getAllUserByRole(role)
         val userResponseDtos = users.map { it.toGetUserByAccountIdResponseDto() }
         val response = GetUserListResponse(userResponseDtos)
@@ -293,17 +277,10 @@ class UserHandler(
 
     suspend fun getExcludeUserListHandler(serverRequest: ServerRequest): ServerResponse {
         val excludeUserIds = serverRequest.queryParams()["users"]?.map { UUID.fromString(it) } ?: emptyList()
-        val secretValue = serverRequest.headers().firstHeader("Request-Xquare-Secret")
+        val secret = requestHeaderAspect.getSecretValue(serverRequest)
         val users = userApi.getExcludeUserIdList(excludeUserIds)
         val response = ExcludeUserIdListResponse(users)
 
-        checkSecretValue(secretValue)
         return ServerResponse.ok().bodyValueAndAwait(response)
-    }
-
-    private fun checkSecretValue(secretValue: String?) {
-        if ((secretValue == null) || (secretValue != secret)) {
-            throw InvalidSecretValueException("Secret is invalid")
-        }
     }
 }
