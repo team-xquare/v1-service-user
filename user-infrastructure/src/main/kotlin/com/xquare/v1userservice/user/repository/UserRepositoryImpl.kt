@@ -232,8 +232,6 @@ class UserRepositoryImpl(
     }
 
     private suspend fun ReactiveQueryFactory.findAllByUserIdNotIn(userIdList: List<UUID>?): List<UUID> {
-        println(userIdList == null)
-
         return this.listQuery {
             select(col(UserEntity::id))
             from(entity(UserEntity::class))
