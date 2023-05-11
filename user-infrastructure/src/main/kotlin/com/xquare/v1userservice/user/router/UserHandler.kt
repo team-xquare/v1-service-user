@@ -44,7 +44,7 @@ class UserHandler(
     private val requestBodyValidator: RequestBodyValidator,
     private val requestHeaderAspect: RequestHeaderAspect,
     @Value("\${secret.value}")
-    private val secret: String
+    private val secret: String,
 ) {
     suspend fun saveUserHandler(serverRequest: ServerRequest): ServerResponse {
         val requestBody: CreateUserRequest = serverRequest.getCreateUserRequestBody()

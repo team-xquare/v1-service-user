@@ -4,4 +4,4 @@ import com.xquare.v1userservice.exceptions.BaseException
 
 class InvalidSecretValueException(
     message: String
-) :  BaseException(message, 401)
+) : BaseException(message, 401)
