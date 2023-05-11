@@ -12,7 +12,6 @@ import com.xquare.v1userservice.user.api.dtos.PointDomainResponse
 import com.xquare.v1userservice.user.api.dtos.SignInDomainRequest
 import com.xquare.v1userservice.user.api.dtos.TokenResponse
 import com.xquare.v1userservice.user.api.dtos.UserDeviceTokenResponse
-import com.xquare.v1userservice.user.exceptions.InvalidSecretValueException
 import com.xquare.v1userservice.user.router.dto.CreateUserRequest
 import com.xquare.v1userservice.user.router.dto.GetTeacherInfoResponse
 import com.xquare.v1userservice.user.router.dto.GetTeacherResponse
@@ -28,7 +27,6 @@ import com.xquare.v1userservice.user.router.dto.GetUserResponse
 import com.xquare.v1userservice.user.router.dto.SignInRequest
 import com.xquare.v1userservice.user.router.dto.UpdateProfileFileRequest
 import kotlinx.coroutines.reactor.awaitSingle
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
