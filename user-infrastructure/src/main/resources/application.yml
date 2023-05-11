@@ -26,3 +26,6 @@ management:
   endpoint:
     health:
       show-details: when_authorized
+
+secret:
+  value: ${SECRET_VALUE}
