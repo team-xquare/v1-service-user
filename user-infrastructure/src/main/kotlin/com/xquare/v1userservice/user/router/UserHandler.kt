@@ -1,6 +1,6 @@
 package com.xquare.v1userservice.user.router
 
-import com.xquare.v1userservice.configuration.extension.ifContentEmpty
+import com.xquare.v1userservice.configuration.extension.nullIfBlank
 import com.xquare.v1userservice.configuration.validate.BadRequestException
 import com.xquare.v1userservice.configuration.validate.RequestBodyValidator
 import com.xquare.v1userservice.user.User
@@ -259,8 +259,7 @@ class UserHandler(
     }
 
     suspend fun getExcludeUserListHandler(serverRequest: ServerRequest): ServerResponse {
-        val excludeUserIds = serverRequest.queryParams()["users"]?.ifContentEmpty()?.map { UUID.fromString(it) }
-
+        val excludeUserIds = serverRequest.queryParams()["users"]?.nullIfBlank()?.map { UUID.fromString(it) }
         val users = userApi.getExcludeUserIdList(excludeUserIds)
         val response = ExcludeUserIdListResponse(users)
         return ServerResponse.ok().bodyValueAndAwait(response)
