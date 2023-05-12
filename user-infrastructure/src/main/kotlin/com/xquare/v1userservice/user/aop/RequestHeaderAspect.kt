@@ -20,11 +20,10 @@ class RequestHeaderAspect(
         return UUID.fromString(userId)
     }
 
-    fun getSecretValue(serverRequest: ServerRequest): String {
+    fun getSecretValue(serverRequest: ServerRequest) {
         val secretValue = serverRequest.headers().firstHeader("Request-Xquare-Secret")
         if ((secretValue == null) || (secretValue != secret)) {
             throw InvalidSecretValueException("Secret is invalid")
         }
-        return secretValue.toString()
     }
 }
