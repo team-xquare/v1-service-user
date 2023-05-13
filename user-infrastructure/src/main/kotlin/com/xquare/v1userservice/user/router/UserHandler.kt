@@ -1,5 +1,6 @@
 package com.xquare.v1userservice.user.router
 
+import com.xquare.v1userservice.configuration.extension.nullIfBlank
 import com.xquare.v1userservice.configuration.validate.BadRequestException
 import com.xquare.v1userservice.configuration.validate.RequestBodyValidator
 import com.xquare.v1userservice.user.User
@@ -34,7 +35,7 @@ import org.springframework.web.reactive.function.server.bodyToMono
 import org.springframework.web.reactive.function.server.bodyValueAndAwait
 import org.springframework.web.reactive.function.server.buildAndAwait
 import java.net.URI
-import java.util.*
+import java.util.UUID
 
 @Component
 class UserHandler(
@@ -258,9 +259,7 @@ class UserHandler(
     }
 
     suspend fun getExcludeUserListHandler(serverRequest: ServerRequest): ServerResponse {
-        val excludeUserIds = if (serverRequest.queryParam("users") == Optional.of("")) null
-            else serverRequest.queryParams()["users"]?.map { UUID.fromString(it) }
-
+        val excludeUserIds = serverRequest.queryParams()["users"]?.nullIfBlank()?.map { UUID.fromString(it) }
         val users = userApi.getExcludeUserIdList(excludeUserIds)
         val response = ExcludeUserIdListResponse(users)
         return ServerResponse.ok().bodyValueAndAwait(response)
