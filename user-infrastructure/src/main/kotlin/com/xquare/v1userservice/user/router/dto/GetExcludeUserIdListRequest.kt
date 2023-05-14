@@ -6,5 +6,5 @@ import java.util.UUID
 data class GetExcludeUserIdListRequest(
     
     @field:Nullable
-    val userIds: List<UUID>
+    val userIds: List<UUID>,
 )
