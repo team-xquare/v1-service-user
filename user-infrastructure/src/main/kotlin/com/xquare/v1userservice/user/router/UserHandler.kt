@@ -14,6 +14,7 @@ import com.xquare.v1userservice.user.api.dtos.SignInDomainRequest
 import com.xquare.v1userservice.user.api.dtos.TokenResponse
 import com.xquare.v1userservice.user.api.dtos.UserDeviceTokenResponse
 import com.xquare.v1userservice.user.router.dto.CreateUserRequest
+import com.xquare.v1userservice.user.router.dto.GetExcludeUserIdListRequest
 import com.xquare.v1userservice.user.router.dto.GetTeacherInfoResponse
 import com.xquare.v1userservice.user.router.dto.GetTeacherResponse
 import com.xquare.v1userservice.user.router.dto.GetUserDeviceTokenListResponse
@@ -283,10 +284,13 @@ class UserHandler(
 
     suspend fun getExcludeUserListHandler(serverRequest: ServerRequest): ServerResponse {
         requestHeaderAspect.getSecretValue(serverRequest)
-        val excludeUserIds = serverRequest.queryParams()["users"]?.nullIfBlank()?.map { UUID.fromString(it) }
-        val users = userApi.getExcludeUserIdList(excludeUserIds)
+        val excludeUserIds = serverRequest.getExcludeUserIds()
+        val users = userApi.getExcludeUserIdList(excludeUserIds.userIds)
         val response = ExcludeUserIdListResponse(users)
 
         return ServerResponse.ok().bodyValueAndAwait(response)
     }
+
+    private suspend fun ServerRequest.getExcludeUserIds() =
+        this.bodyToMono<GetExcludeUserIdListRequest>().awaitSingle()
 }
