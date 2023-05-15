@@ -1,6 +1,5 @@
 package com.xquare.v1userservice.user.router
 
-import com.xquare.v1userservice.configuration.extension.nullIfBlank
 import com.xquare.v1userservice.configuration.validate.BadRequestException
 import com.xquare.v1userservice.configuration.validate.RequestBodyValidator
 import com.xquare.v1userservice.user.User
