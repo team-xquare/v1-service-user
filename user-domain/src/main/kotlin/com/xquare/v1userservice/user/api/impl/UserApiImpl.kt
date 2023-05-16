@@ -248,7 +248,7 @@ class UserApiImpl(
     }
 
     override suspend fun getAllTeacher(): List<User> {
-        return userRepositorySpi.findAllTeacher().sortedBy { it.name }
+        return userRepositorySpi.findAllTeacher()
     }
 
     override suspend fun getAllStudentByName(name: String): List<User> {

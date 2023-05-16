@@ -222,6 +222,7 @@ class UserRepositoryImpl(
             select(entity(UserEntity::class))
             from(entity(UserEntity::class))
             where(col(UserEntity::role).equal(UserRole.SCH))
+            orderBy(col(UserEntity::name).asc())
         }
     }
 
