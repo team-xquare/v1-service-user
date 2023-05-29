@@ -8,6 +8,7 @@ import com.nimbusds.jose.crypto.MACSigner
 import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.SignedJWT
 import com.xquare.v1userservice.jwt.properties.JwtProperties
+import com.xquare.v1userservice.user.TokenType
 import java.sql.Timestamp
 import java.time.LocalDateTime
 import org.springframework.stereotype.Component
@@ -16,8 +17,12 @@ import org.springframework.stereotype.Component
 class JwtToken(
     private val jwtProperties: JwtProperties
 ) : JwtTokenGenerator {
-    override fun generateToken(subject: String, params: Map<String, Any>): String {
-        val expiration = getAccessTokenExpiration()
+    override fun generateToken(subject: String, params: Map<String, Any>, tokenType: TokenType): String {
+        val expiration =    if(TokenType.ACCESS_TOKEN == tokenType) {
+            getAccessTokenExpiration()
+        } else {
+            getRefreshTokenExpiration()
+        }
         val signer: JWSSigner = MACSigner(jwtProperties.secretKey)
 
         val claimsSetBuilder = JWTClaimsSet.Builder()
@@ -42,6 +47,11 @@ class JwtToken(
 
     private fun getAccessTokenExpiration(): Timestamp {
         val expiration = LocalDateTime.now().plusHours(jwtProperties.getAccessTokenExpirationAsHour())
+        return Timestamp.valueOf(expiration)
+    }
+    
+    private fun getRefreshTokenExpiration(): Timestamp {
+        val expiration = LocalDateTime.now().plusHours(jwtProperties.getRefreshTokenExpirationAsHour())
         return Timestamp.valueOf(expiration)
     }
 }
