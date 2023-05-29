@@ -18,11 +18,7 @@ class JwtToken(
     private val jwtProperties: JwtProperties
 ) : JwtTokenGenerator {
     override fun generateToken(subject: String, params: Map<String, Any>, tokenType: TokenType): String {
-        val expiration =    if(TokenType.ACCESS_TOKEN == tokenType) {
-            getAccessTokenExpiration()
-        } else {
-            getRefreshTokenExpiration()
-        }
+        val expiration = getTokenExpiration(tokenType)
         val signer: JWSSigner = MACSigner(jwtProperties.secretKey)
 
         val claimsSetBuilder = JWTClaimsSet.Builder()
@@ -45,13 +41,13 @@ class JwtToken(
         return signedJWT.serialize()
     }
 
-    private fun getAccessTokenExpiration(): Timestamp {
-        val expiration = LocalDateTime.now().plusHours(jwtProperties.getAccessTokenExpirationAsHour())
-        return Timestamp.valueOf(expiration)
-    }
-    
-    private fun getRefreshTokenExpiration(): Timestamp {
-        val expiration = LocalDateTime.now().plusHours(jwtProperties.getRefreshTokenExpirationAsHour())
+
+    private fun getTokenExpiration(tokenType: TokenType): Timestamp {
+        val expiration = if(tokenType == TokenType.ACCESS_TOKEN) {
+            LocalDateTime.now().plusHours(jwtProperties.getAccessTokenExpirationAsHour())
+        } else {
+            LocalDateTime.now().plusHours(jwtProperties.getRefreshTokenExpirationAsHour())
+        }
         return Timestamp.valueOf(expiration)
     }
 }
