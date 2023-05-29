@@ -12,7 +12,7 @@ class JwtTokenGeneratorSpiImpl(
 ) : JwtTokenGeneratorSpi {
     override fun generateJwtToken(subject: String, tokenType: TokenType, params: MutableMap<String, Any>): String {
         params["type"] = tokenType.name
-        return jwtTokenGenerator.generateToken(subject, params)
+        return jwtTokenGenerator.generateToken(subject, params, tokenType)
     }
 
     override fun getAccessTokenExpirationAsHour(): Int {
