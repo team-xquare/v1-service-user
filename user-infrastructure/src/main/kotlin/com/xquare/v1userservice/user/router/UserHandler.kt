@@ -90,7 +90,7 @@ class UserHandler(
 
     suspend fun getUserByIdHandler(serverRequest: ServerRequest): ServerResponse {
         val userId = serverRequest.pathVariable("userId")
-        requestHeaderAspect.getSecretValue(serverRequest)
+        /*requestHeaderAspect.getSecretValue(serverRequest)*/
 
         val user = userApi.getUserById(UUID.fromString(userId))
         val userResponseDto = user.toGetUserByAccountIdResponseDto()
@@ -101,7 +101,7 @@ class UserHandler(
     suspend fun getUserByIdsInHandler(serverRequest: ServerRequest): ServerResponse {
         val userIds = serverRequest.queryParams()["userId"]?.map { UUID.fromString(it) }
             ?: throw BadRequestException("userId is required")
-        requestHeaderAspect.getSecretValue(serverRequest)
+        /*requestHeaderAspect.getSecretValue(serverRequest)*/
 
         val users = userApi.getUsersByIdsIn(userIds)
         val userResponseDtos = users.map { it.toGetUserByAccountIdResponseDto() }
@@ -111,7 +111,7 @@ class UserHandler(
 
     suspend fun getUserByIdsToBodyHandler(serverRequest: ServerRequest): ServerResponse {
         val userIds = serverRequest.getUserInfoRequestBody()
-        requestHeaderAspect.getSecretValue(serverRequest)
+        /*requestHeaderAspect.getSecretValue(serverRequest)*/
 
         val users = userApi.getUsersByIdsIn(userIds.userIds)
         val userResponseDtos = users.map { it.toGetUserByAccountIdResponseDto() }
@@ -124,7 +124,7 @@ class UserHandler(
 
     suspend fun getUserByAccountIdHandler(serverRequest: ServerRequest): ServerResponse {
         val accountId = serverRequest.pathVariable("accountId")
-        requestHeaderAspect.getSecretValue(serverRequest)
+        /*requestHeaderAspect.getSecretValue(serverRequest)*/
 
         val user = userApi.getUserByAccountId(accountId)
         val userResponseDto = user.toGetUserByAccountIdResponseDto()
@@ -164,7 +164,7 @@ class UserHandler(
 
     suspend fun getUserDeviceTokensHandler(serverRequest: ServerRequest): ServerResponse {
         val userIds = serverRequest.queryParams()["users"]?.map { UUID.fromString(it) } ?: emptyList()
-        requestHeaderAspect.getSecretValue(serverRequest)
+        /*requestHeaderAspect.getSecretValue(serverRequest)*/
 
         val userDeviceTokenDomainResponse = userApi.getUserDeviceTokensByIdIn(userIds)
         val getUserDeviceTokenListResponse = userDeviceTokenDomainResponse.toGetUserDeviceTokenListResponse()
@@ -203,7 +203,7 @@ class UserHandler(
         val grade = serverRequest.queryParams().getFirst("grade")?.toIntOrNull()
             ?: throw BadRequestException("grade is required")
         val classNum = serverRequest.queryParams().getFirst("classNum")?.toIntOrNull()
-        requestHeaderAspect.getSecretValue(serverRequest)
+        /*requestHeaderAspect.getSecretValue(serverRequest)*/
 
         val users = userApi.getUserByGradeAndClass(grade, classNum)
         val userResponse = users.map { it.toGetUserGradeAndClass() }
@@ -222,7 +222,7 @@ class UserHandler(
     }
 
     suspend fun getAllStudentHandler(serverRequest: ServerRequest): ServerResponse {
-        requestHeaderAspect.getSecretValue(serverRequest)
+        /*requestHeaderAspect.getSecretValue(serverRequest)*/
         val users = userApi.getAllStudent()
         val userResponseDtos = users.map { it.toGetUserByAccountIdResponseDto() }
         val userListResponse = GetUserListResponse(userResponseDtos)
@@ -231,7 +231,7 @@ class UserHandler(
     }
 
     suspend fun getAllTeacherHandler(serverRequest: ServerRequest): ServerResponse {
-        requestHeaderAspect.getSecretValue(serverRequest)
+        /*requestHeaderAspect.getSecretValue(serverRequest)*/
         val teachers = userApi.getAllTeacher()
         val teacherInfoResponse = teachers.map { it.toGetTeacherInfoResponseDto() }
         val teacherResponse = GetTeacherResponse(teacherInfoResponse)
@@ -241,7 +241,7 @@ class UserHandler(
 
     suspend fun getAllStudentByNameHandler(serverRequest: ServerRequest): ServerResponse {
         val name = serverRequest.queryParam("name").orElse("")
-        requestHeaderAspect.getSecretValue(serverRequest)
+        /*requestHeaderAspect.getSecretValue(serverRequest)*/
 
         val users = userApi.getAllStudentByName(name)
         val userResponse = users.map { it.toGetUserNameResponseDto() }
@@ -251,7 +251,7 @@ class UserHandler(
 
     suspend fun getUserByRoleHandler(serverRequest: ServerRequest): ServerResponse {
         val role = serverRequest.queryParams().getFirst("roleName") ?: throw BadRequestException("roleName is required")
-        requestHeaderAspect.getSecretValue(serverRequest)
+        /*requestHeaderAspect.getSecretValue(serverRequest)*/
         checkUserRole(role)
 
         val users = userApi.getAllUserByRole(role)
@@ -282,7 +282,7 @@ class UserHandler(
     }
 
     suspend fun getExcludeUserListHandler(serverRequest: ServerRequest): ServerResponse {
-        requestHeaderAspect.getSecretValue(serverRequest)
+        /*requestHeaderAspect.getSecretValue(serverRequest)*/
         val excludeUserIds = serverRequest.getExcludeUserIds()
         val users = userApi.getExcludeUserIdList(excludeUserIds.userIds)
         val response = ExcludeUserIdListResponse(users)
