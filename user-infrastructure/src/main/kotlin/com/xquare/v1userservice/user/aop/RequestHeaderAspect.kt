@@ -9,8 +9,8 @@ import java.util.UUID
 
 @Component
 class RequestHeaderAspect(
-    @Value("\${security.value}")
-    private val secret: String,
+    /*@Value("\${security.value}")
+    private val secret: String,*/
 ) {
 
     fun getUserId(serverRequest: ServerRequest): UUID {
@@ -20,10 +20,10 @@ class RequestHeaderAspect(
         return UUID.fromString(userId)
     }
 
-    fun getSecretValue(serverRequest: ServerRequest) {
+    /*fun getSecretValue(serverRequest: ServerRequest) {
         val secretValue = serverRequest.headers().firstHeader("Request-Xquare-Secret")
         if ((secretValue == null) || (secretValue != secret)) {
             throw InvalidSecretValueException("Secret is invalid")
         }
-    }
+    }*/
 }
