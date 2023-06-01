@@ -7,6 +7,7 @@ import com.xquare.v1userservice.user.UserRole
 import com.xquare.v1userservice.user.aop.RequestHeaderAspect
 import com.xquare.v1userservice.user.api.UserApi
 import com.xquare.v1userservice.user.api.dtos.CreatUserDomainRequest
+import com.xquare.v1userservice.user.api.dtos.ExcludeUserIdListRequest
 import com.xquare.v1userservice.user.api.dtos.ExcludeUserIdListResponse
 import com.xquare.v1userservice.user.api.dtos.PointDomainResponse
 import com.xquare.v1userservice.user.api.dtos.SignInDomainRequest
@@ -283,12 +284,12 @@ class UserHandler(
     suspend fun getExcludeUserListHandler(serverRequest: ServerRequest): ServerResponse {
         requestHeaderAspect.getSecretValue(serverRequest)
         val excludeUserIds = serverRequest.getExcludeUserIds()
-        val users = userApi.getExcludeUserIdList(excludeUserIds)
+        val users = userApi.getExcludeUserIdList(excludeUserIds.userIdList)
         val response = ExcludeUserIdListResponse(users)
 
         return ServerResponse.ok().bodyValueAndAwait(response)
     }
 
     private suspend fun ServerRequest.getExcludeUserIds() =
-        this.bodyToMono<List<UUID>>().awaitSingle()
+        this.bodyToMono<ExcludeUserIdListRequest>().awaitSingle()
 }
