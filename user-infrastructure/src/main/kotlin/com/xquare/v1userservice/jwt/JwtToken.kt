@@ -41,9 +41,8 @@ class JwtToken(
         return signedJWT.serialize()
     }
 
-
     private fun getTokenExpiration(tokenType: TokenType): Timestamp {
-        val expiration = if(tokenType == TokenType.ACCESS_TOKEN) {
+        val expiration = if (tokenType == TokenType.ACCESS_TOKEN) {
             LocalDateTime.now().plusHours(jwtProperties.getAccessTokenExpirationAsHour())
         } else {
             LocalDateTime.now().plusHours(jwtProperties.getRefreshTokenExpirationAsHour())
