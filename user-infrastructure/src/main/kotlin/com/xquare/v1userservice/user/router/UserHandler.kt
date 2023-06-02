@@ -1,5 +1,6 @@
 package com.xquare.v1userservice.user.router
 
+import com.xquare.v1userservice.configuration.extension.nullIfBlank
 import com.xquare.v1userservice.configuration.validate.BadRequestException
 import com.xquare.v1userservice.configuration.validate.RequestBodyValidator
 import com.xquare.v1userservice.user.User
@@ -7,13 +8,13 @@ import com.xquare.v1userservice.user.UserRole
 import com.xquare.v1userservice.user.aop.RequestHeaderAspect
 import com.xquare.v1userservice.user.api.UserApi
 import com.xquare.v1userservice.user.api.dtos.CreatUserDomainRequest
+import com.xquare.v1userservice.user.router.dto.GetExcludeUserIdListRequest
 import com.xquare.v1userservice.user.api.dtos.ExcludeUserIdListResponse
 import com.xquare.v1userservice.user.api.dtos.PointDomainResponse
 import com.xquare.v1userservice.user.api.dtos.SignInDomainRequest
 import com.xquare.v1userservice.user.api.dtos.TokenResponse
 import com.xquare.v1userservice.user.api.dtos.UserDeviceTokenResponse
 import com.xquare.v1userservice.user.router.dto.CreateUserRequest
-import com.xquare.v1userservice.user.router.dto.GetExcludeUserIdListRequest
 import com.xquare.v1userservice.user.router.dto.GetTeacherInfoResponse
 import com.xquare.v1userservice.user.router.dto.GetTeacherResponse
 import com.xquare.v1userservice.user.router.dto.GetUserDeviceTokenListResponse
@@ -283,8 +284,8 @@ class UserHandler(
 
     suspend fun getExcludeUserListHandler(serverRequest: ServerRequest): ServerResponse {
         requestHeaderAspect.getSecretValue(serverRequest)
-        val excludeUserIds = serverRequest.getExcludeUserIds()
-        val users = userApi.getExcludeUserIdList(excludeUserIds.userIds)
+        val excludeUserIds = serverRequest.getExcludeUserIds().userIdList?.nullIfBlank()?.map { UUID.fromString(it.toString()) }
+        val users = userApi.getExcludeUserIdList(excludeUserIds)
         val response = ExcludeUserIdListResponse(users)
 
         return ServerResponse.ok().bodyValueAndAwait(response)
