@@ -283,13 +283,8 @@ class UserHandler(
     }
 
     suspend fun getExcludeUserListHandler(serverRequest: ServerRequest): ServerResponse {
-<<<<<<< main
-        requestHeaderAspect.getSecretValue(serverRequest)
-        val excludeUserIds = serverRequest.getExcludeUserIds().userIdList.nullIfBlank()?.map { UUID.fromString(it.toString()) }
-=======
         /*requestHeaderAspect.getSecretValue(serverRequest)*/
-        val excludeUserIds = serverRequest.getExcludeUserIds().userIdList?.nullIfBlank()?.map { UUID.fromString(it.toString()) }
->>>>>>> ♻️ :: SecretValue 주석처리
+        val excludeUserIds = serverRequest.getExcludeUserIds().userIdList.nullIfBlank()?.map { UUID.fromString(it.toString()) }
         val users = userApi.getExcludeUserIdList(excludeUserIds)
         val response = ExcludeUserIdListResponse(users)
 
