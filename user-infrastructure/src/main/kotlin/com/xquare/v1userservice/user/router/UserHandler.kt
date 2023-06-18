@@ -29,6 +29,7 @@ import com.xquare.v1userservice.user.router.dto.GetUserResponse
 import com.xquare.v1userservice.user.router.dto.SignInRequest
 import com.xquare.v1userservice.user.router.dto.UpdateProfileFileRequest
 import kotlinx.coroutines.reactor.awaitSingle
+import kotlinx.coroutines.reactor.awaitSingleOrNull
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
@@ -284,7 +285,7 @@ class UserHandler(
 
     suspend fun getExcludeUserListHandler(serverRequest: ServerRequest): ServerResponse {
         requestHeaderAspect.getSecretValue(serverRequest)
-        val excludeUserIds = serverRequest.getExcludeUserIds().userIdList.nullIfBlank()?.map { UUID.fromString(it.toString()) }
+        val excludeUserIds = serverRequest.getExcludeUserIds()?.nullIfBlank()?.map { UUID.fromString(it.toString()) }
         val users = userApi.getExcludeUserIdList(excludeUserIds)
         val response = ExcludeUserIdListResponse(users)
 
@@ -292,5 +293,5 @@ class UserHandler(
     }
 
     private suspend fun ServerRequest.getExcludeUserIds() =
-        this.bodyToMono<GetExcludeUserIdListRequest>().awaitSingle()
+        this.bodyToMono<List<UUID>>().awaitSingleOrNull()
 }
