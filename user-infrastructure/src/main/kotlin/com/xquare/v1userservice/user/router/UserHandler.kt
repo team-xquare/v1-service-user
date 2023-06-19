@@ -8,7 +8,6 @@ import com.xquare.v1userservice.user.UserRole
 import com.xquare.v1userservice.user.aop.RequestHeaderAspect
 import com.xquare.v1userservice.user.api.UserApi
 import com.xquare.v1userservice.user.api.dtos.CreatUserDomainRequest
-import com.xquare.v1userservice.user.router.dto.GetExcludeUserIdListRequest
 import com.xquare.v1userservice.user.api.dtos.ExcludeUserIdListResponse
 import com.xquare.v1userservice.user.api.dtos.PointDomainResponse
 import com.xquare.v1userservice.user.api.dtos.SignInDomainRequest
