@@ -1,6 +1,5 @@
 package com.xquare.v1userservice.configuration.extension
 
-import com.xquare.v1userservice.user.router.dto.GetUserIdListRequest
 import java.util.UUID
 
 /**
