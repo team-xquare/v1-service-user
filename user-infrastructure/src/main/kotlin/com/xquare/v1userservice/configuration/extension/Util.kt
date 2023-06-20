@@ -9,4 +9,4 @@ import java.util.UUID
  * @return null if all the elements in the list are either null or blank. Otherwise, it returns the original list.
  */
 fun GetUserIdListRequest.nullIfBlank(): List<UUID>? =
-    if (this.userIdList.all { it.toString().isBlank()  }) null else this.userIdList
+    if (this.userIdList.all { it.toString().isBlank() }) null else this.userIdList
