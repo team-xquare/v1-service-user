@@ -1,5 +1,6 @@
 package com.xquare.v1userservice.configuration.extension
 
+import com.xquare.v1userservice.user.router.dto.GetUserIdListRequest
 import java.util.UUID
 
 /**
@@ -7,5 +8,5 @@ import java.util.UUID
  *
  * @return null if all the elements in the list are either null or blank. Otherwise, it returns the original list.
  */
-fun List<UUID?>.nullIfBlank(): List<UUID?>? =
-    if (this.all { it.toString().isNullOrBlank() }) null else this
+fun GetUserIdListRequest.nullIfBlank(): List<UUID>? =
+    if (this.userIdList.all { it.toString().isBlank()  }) null else this.userIdList

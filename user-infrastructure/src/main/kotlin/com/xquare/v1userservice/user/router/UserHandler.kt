@@ -14,6 +14,7 @@ import com.xquare.v1userservice.user.api.dtos.SignInDomainRequest
 import com.xquare.v1userservice.user.api.dtos.TokenResponse
 import com.xquare.v1userservice.user.api.dtos.UserDeviceTokenResponse
 import com.xquare.v1userservice.user.router.dto.CreateUserRequest
+import com.xquare.v1userservice.user.router.dto.GetUserIdListRequest
 import com.xquare.v1userservice.user.router.dto.GetTeacherInfoResponse
 import com.xquare.v1userservice.user.router.dto.GetTeacherResponse
 import com.xquare.v1userservice.user.router.dto.GetUserDeviceTokenListResponse
@@ -163,12 +164,12 @@ class UserHandler(
         )
 
     suspend fun getUserDeviceTokensHandler(serverRequest: ServerRequest): ServerResponse {
-        val userIds = serverRequest.queryParams()["users"]?.map { UUID.fromString(it) } ?: emptyList()
+        val userIds = serverRequest.getUserIdList().awaitSingle().userIdList
         requestHeaderAspect.getSecretValue(serverRequest)
 
         val userDeviceTokenDomainResponse = userApi.getUserDeviceTokensByIdIn(userIds)
         val getUserDeviceTokenListResponse = userDeviceTokenDomainResponse.toGetUserDeviceTokenListResponse()
-        return ServerResponse.ok().bodyValueAndAwait(getUserDeviceTokenListResponse)
+        return ServerResponse.ok().bodyValue(getUserDeviceTokenListResponse).awaitSingle()
     }
 
     private fun UserDeviceTokenResponse.toGetUserDeviceTokenListResponse() = GetUserDeviceTokenListResponse(
@@ -283,13 +284,13 @@ class UserHandler(
 
     suspend fun getExcludeUserListHandler(serverRequest: ServerRequest): ServerResponse {
         requestHeaderAspect.getSecretValue(serverRequest)
-        val excludeUserIds = serverRequest.getExcludeUserIds().nullIfBlank()?.map { UUID.fromString(it.toString()) }
+        val excludeUserIds = serverRequest.getUserIdList().awaitSingle().nullIfBlank()?.map { it }
         val users = userApi.getExcludeUserIdList(excludeUserIds)
         val response = ExcludeUserIdListResponse(users)
 
-        return ServerResponse.ok().bodyValueAndAwait(response)
+        return ServerResponse.ok().bodyValue(response).awaitSingle()
     }
 
-    private suspend fun ServerRequest.getExcludeUserIds() =
-        this.bodyToMono<List<UUID>>().awaitSingle()
+    private suspend fun ServerRequest.getUserIdList() =
+        this.bodyToMono<GetUserIdListRequest>()
 }

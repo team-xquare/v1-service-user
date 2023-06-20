@@ -21,14 +21,14 @@ class UserRouter {
             POST("/id", userHandler::getUserByIdsToBodyHandler)
             GET("/id", userHandler::getUserByIdsInHandler)
             GET("/account-id/{accountId}", userHandler::getUserByAccountIdHandler)
-            GET("/device-token", userHandler::getUserDeviceTokensHandler)
+            POST("/device-token", userHandler::getUserDeviceTokensHandler)
             GET("/simple", userHandler::getUserPointHandler)
             GET("/class", userHandler::getUserByGradeAndClassHandler)
             GET("/all", userHandler::getAllStudentHandler)
             GET("/teachers", userHandler::getAllTeacherHandler)
             GET("/search", userHandler::getAllStudentByNameHandler)
             GET("/role", userHandler::getUserByRoleHandler)
-            GET("/exclude", userHandler::getExcludeUserListHandler)
+            POST("/exclude", userHandler::getExcludeUserListHandler)
         }
     }
 }
