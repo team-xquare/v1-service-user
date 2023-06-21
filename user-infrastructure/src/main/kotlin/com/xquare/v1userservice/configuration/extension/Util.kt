@@ -7,5 +7,5 @@ import java.util.UUID
  *
  * @return null if all the elements in the list are either null or blank. Otherwise, it returns the original list.
  */
-fun List<UUID?>.nullIfBlank(): List<UUID?>? =
-    if (this.all { it.toString().isNotBlank() }) null else this
+fun List<UUID>.nullIfBlank(): List<UUID>? =
+    if (this.all { it.toString().isBlank() }) null else this
