@@ -165,7 +165,7 @@ class UserHandler(
 
     suspend fun getUserDeviceTokensHandler(serverRequest: ServerRequest): ServerResponse {
         val userIds = serverRequest.getUserIdList().awaitSingle().userIdList
-        requestHeaderAspect.getSecretValue(serverRequest)
+        /*requestHeaderAspect.getSecretValue(serverRequest)*/
 
         val userDeviceTokenDomainResponse = userApi.getUserDeviceTokensByIdIn(userIds)
         val getUserDeviceTokenListResponse = userDeviceTokenDomainResponse.toGetUserDeviceTokenListResponse()
@@ -284,7 +284,7 @@ class UserHandler(
 
     suspend fun getExcludeUserListHandler(serverRequest: ServerRequest): ServerResponse {
         /*requestHeaderAspect.getSecretValue(serverRequest)*/
-        val excludeUserIds = serverRequest.getExcludeUserIds().userIdList.nullIfBlank()?.map { UUID.fromString(it.toString()) }
+        val excludeUserIds = serverRequest.getUserIdList().awaitSingle().userIdList.nullIfBlank()?.map { UUID.fromString(it.toString()) }
         val users = userApi.getExcludeUserIdList(excludeUserIds)
         val response = ExcludeUserIdListResponse(users)
 
