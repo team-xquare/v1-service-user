@@ -10,6 +10,7 @@ import com.linecorp.kotlinjdsl.singleQueryOrNull
 import com.xquare.v1userservice.user.User
 import com.xquare.v1userservice.user.UserEntity
 import com.xquare.v1userservice.user.UserRole
+import com.xquare.v1userservice.user.UserRole.STU
 import com.xquare.v1userservice.user.UserState
 import com.xquare.v1userservice.user.mapper.UserDomainMapper
 import com.xquare.v1userservice.user.spi.UserRepositorySpi
@@ -201,7 +202,8 @@ class UserRepositoryImpl(
             where(
                 and(
                     grade?.let { col(UserEntity::grade).equal(grade) },
-                    classNum?.let { col(UserEntity::classNum).equal(classNum) }
+                    classNum?.let { col(UserEntity::classNum).equal(classNum) },
+                    col(UserEntity::role).equal(STU)
                 )
             )
             orderBy(col(UserEntity::classNum).asc(), col(UserEntity::num).asc())
