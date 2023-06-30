@@ -150,7 +150,7 @@ class UserApiImpl(
         val deviceTokenModifiedUser = if (signInDomainRequest.deviceToken != "mac") {
             userRepositorySpi.applyChanges(user.setDeviceToken(signInDomainRequest.deviceToken))
         } else {
-            userRepositorySpi.applyChanges(user)
+            user
         }
 
         checkPasswordMatches(deviceTokenModifiedUser, signInDomainRequest.password)
