@@ -147,13 +147,11 @@ class UserApiImpl(
         val user = userRepositorySpi.findByAccountIdAndStateWithCreated(signInDomainRequest.accountId)
             ?: throw UserNotFoundException(UserNotFoundException.USER_ID_NOT_FOUND)
 
-        val deviceTokenModifiedUser = if (signInDomainRequest.deviceToken != "mac") {
-            userRepositorySpi.applyChanges(user.setDeviceToken(signInDomainRequest.deviceToken))
-        } else {
-            user
-        }
+        checkPasswordMatches(user, signInDomainRequest.password)
 
-        checkPasswordMatches(deviceTokenModifiedUser, signInDomainRequest.password)
+        if (signInDomainRequest.deviceToken != "mac") {
+            userRepositorySpi.applyChanges(user.setDeviceToken(signInDomainRequest.deviceToken))
+        }
 
         val params = buildAccessTokenParams(user)
 
