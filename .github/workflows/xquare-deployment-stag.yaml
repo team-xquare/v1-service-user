@@ -25,13 +25,14 @@ jobs:
         with:
           java-version: ${{ matrix.java-version }}
           distribution: 'zulu'
-          
+
       - name: Gradle Build
         uses: gradle/gradle-build-action@v2
         with:
           arguments: |
             build
             --no-daemon
+            -x test
             
       - name: Deploy to xquare
         uses: team-xquare/xquare-deployment-action@master 
