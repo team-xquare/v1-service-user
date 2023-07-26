@@ -1,7 +1,7 @@
 package com.xquare.v1userservice.user.spi
 
 import com.xquare.v1userservice.user.exceptions.GitRequestFailedException
-import com.xquare.v1userservice.user.spi.dtos.GitResponse
+import com.xquare.v1userservice.user.spi.dtos.GitIsConnectedResponse
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Repository
@@ -34,7 +34,7 @@ class GitSpiImpl(
     }
 
     private suspend fun getGitFromResponse(clientResponse: WebClient.ResponseSpec): Boolean {
-        val gitResponse = clientResponse.awaitBody<GitResponse>().isConnected
+        val gitResponse = clientResponse.awaitBody<GitIsConnectedResponse>().isConnected
         return gitResponse
     }
 }
