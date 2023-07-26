@@ -28,6 +28,7 @@ import com.xquare.v1userservice.user.router.dto.GetUserProfileResponse
 import com.xquare.v1userservice.user.router.dto.GetUserResponse
 import com.xquare.v1userservice.user.router.dto.SignInRequest
 import com.xquare.v1userservice.user.router.dto.UpdateProfileFileRequest
+import com.xquare.v1userservice.user.spi.GitSpi
 import kotlinx.coroutines.reactor.awaitSingle
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest
@@ -43,6 +44,7 @@ class UserHandler(
     private val userApi: UserApi,
     private val requestBodyValidator: RequestBodyValidator,
     private val requestHeaderAspect: RequestHeaderAspect,
+    private val gitSpi: GitSpi,
 ) {
     suspend fun saveUserHandler(serverRequest: ServerRequest): ServerResponse {
         val requestBody: CreateUserRequest = serverRequest.getCreateUserRequestBody()
@@ -148,11 +150,11 @@ class UserHandler(
     suspend fun getUserProfileHandler(serverRequest: ServerRequest): ServerResponse {
         val userId = requestHeaderAspect.getUserId(serverRequest)
         val user = userApi.getUserById(userId)
-        val userProfileResponseDto = user.toGetUserProfileResponseDto()
+        val userProfileResponseDto = user.toGetUserProfileResponseDto(gitSpi.getIsGitConnected())
         return ServerResponse.ok().bodyValueAndAwait(userProfileResponseDto)
     }
 
-    private fun User.toGetUserProfileResponseDto() =
+    private fun User.toGetUserProfileResponseDto(isGitConnected: Boolean) =
         GetUserProfileResponse(
             accountId = this.accountId,
             name = this.name,
@@ -160,6 +162,7 @@ class UserHandler(
             grade = this.grade,
             classNum = this.classNum,
             num = this.num,
+            isGitConnected = isGitConnected,
             profileFileName = this.profileFileName
         )
 
