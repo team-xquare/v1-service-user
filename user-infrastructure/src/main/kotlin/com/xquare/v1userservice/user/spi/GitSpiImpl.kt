@@ -1,7 +1,6 @@
 package com.xquare.v1userservice.user.spi
 
-import com.xquare.v1userservice.user.exceptions.AuthorityRequestFailedException
-import com.xquare.v1userservice.user.spi.dtos.AuthorityListResponse
+import com.xquare.v1userservice.user.exceptions.GitRequestFailedException
 import com.xquare.v1userservice.user.spi.dtos.GitResponse
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
@@ -13,7 +12,7 @@ import java.util.*
 @Repository
 class GitSpiImpl(
     private val webClient: WebClient,
-    @Value("\${service.git.host}")
+    @Value("https://api.xquare.app")
     private val gitHost: String,
     @Value("\${service.scheme}")
     private val scheme: String
@@ -31,7 +30,7 @@ class GitSpiImpl(
                 .build()
         }.retrieve()
             .onStatus(HttpStatus::isError) {
-                throw AuthorityRequestFailedException("Request failed to get git", it.rawStatusCode())
+                throw GitRequestFailedException("Request failed to get git", it.rawStatusCode())
             }
     }
 
