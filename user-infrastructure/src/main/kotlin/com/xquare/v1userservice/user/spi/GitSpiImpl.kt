@@ -18,7 +18,7 @@ class GitSpiImpl(
 ) : GitSpi {
     override suspend fun getIsGitConnected(): Boolean {
         val clientResponse = sendGetGitRequest()
-        return getGitFromResponse(clientResponse)
+        return clientResponse.awaitBody<GitIsConnectedResponse>().isConnected
     }
 
     private suspend fun sendGetGitRequest(): WebClient.ResponseSpec {
@@ -31,10 +31,5 @@ class GitSpiImpl(
             .onStatus(HttpStatus::isError) {
                 throw GitRequestFailedException("Request failed to get git", it.rawStatusCode())
             }
-    }
-
-    private suspend fun getGitFromResponse(clientResponse: WebClient.ResponseSpec): Boolean {
-        val gitResponse = clientResponse.awaitBody<GitIsConnectedResponse>().isConnected
-        return gitResponse
     }
 }
