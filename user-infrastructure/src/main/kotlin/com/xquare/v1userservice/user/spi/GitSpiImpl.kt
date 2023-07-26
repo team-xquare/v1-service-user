@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Repository
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.awaitBody
-import java.util.*
 
 @Repository
 class GitSpiImpl(
