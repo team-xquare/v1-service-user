@@ -11,7 +11,7 @@ import org.springframework.web.reactive.function.client.awaitBody
 @Repository
 class GitSpiImpl(
     private val webClient: WebClient,
-    @Value("https://api.xquare.app")
+    @Value("\${service.git.host}")
     private val gitHost: String,
     @Value("\${service.scheme}")
     private val scheme: String
