@@ -33,7 +33,7 @@ class GitSpiImpl(
             }
     }
 
-    private suspend fun getGitFromResponse(clientResponse: WebClient.ResponseSpec): Boolean{
+    private suspend fun getGitFromResponse(clientResponse: WebClient.ResponseSpec): Boolean {
         val gitResponse = clientResponse.awaitBody<GitResponse>().isConnected
         return gitResponse
     }
