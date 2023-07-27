@@ -157,14 +157,16 @@ class UserApiImpl(
 
         val accessToken =
             jwtTokenGeneratorSpi.generateJwtToken(user.id.toString(), TokenType.ACCESS_TOKEN, params)
-        val expireAt = LocalDateTime.now().plusHours(jwtTokenGeneratorSpi.getAccessTokenExpirationAsHour().toLong())
+        val accessTokenExpireAt = LocalDateTime.now().plusHours(jwtTokenGeneratorSpi.getAccessTokenExpirationAsHour().toLong())
+        val refreshTokenExpireAt = LocalDateTime.now().plusHours(jwtTokenGeneratorSpi.getRefreshTokenExpirationAsHour().toLong())
 
         val refreshToken = saveNewRefreshToken(user, params)
 
         return TokenResponse(
             accessToken = accessToken,
+            accessTokenExpireAt = accessTokenExpireAt,
             refreshToken = refreshToken.tokenValue,
-            expireAt = expireAt,
+            refreshTokenExpireAt = refreshTokenExpireAt,
             role = user.role
         )
     }
@@ -195,12 +197,14 @@ class UserApiImpl(
         val refreshTokenDomain = saveNewRefreshToken(user, params)
         val accessToken = jwtTokenGeneratorSpi.generateJwtToken(user.id.toString(), TokenType.ACCESS_TOKEN, params)
 
-        val expireAt = LocalDateTime.now().plusHours(jwtTokenGeneratorSpi.getAccessTokenExpirationAsHour().toLong())
+        val accessTokenExpireAt = LocalDateTime.now().plusHours(jwtTokenGeneratorSpi.getAccessTokenExpirationAsHour().toLong())
+        val refreshTokenExpireAt = LocalDateTime.now().plusHours(jwtTokenGeneratorSpi.getRefreshTokenExpirationAsHour().toLong())
 
         return TokenResponse(
             accessToken = accessToken,
+            accessTokenExpireAt = accessTokenExpireAt,
             refreshToken = refreshTokenDomain.tokenValue,
-            expireAt = expireAt,
+            refreshTokenExpireAt = refreshTokenExpireAt,
             role = user.role
         )
     }

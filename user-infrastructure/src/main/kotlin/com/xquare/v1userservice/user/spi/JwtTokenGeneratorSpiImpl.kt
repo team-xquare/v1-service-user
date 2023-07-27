@@ -18,4 +18,8 @@ class JwtTokenGeneratorSpiImpl(
     override fun getAccessTokenExpirationAsHour(): Int {
         return jwtProperties.accessTokenProperties.expirationAsHour
     }
+
+    override fun getRefreshTokenExpirationAsHour(): Int {
+        return jwtProperties.refreshTokenProperties.expirationAsHour
+    }
 }
