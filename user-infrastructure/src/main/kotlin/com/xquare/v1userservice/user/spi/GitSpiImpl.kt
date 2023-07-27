@@ -25,7 +25,7 @@ class GitSpiImpl(
         return webClient.get().uri { uri ->
             uri.scheme(scheme)
                 .host(gitHost)
-                .path("/git/exist")
+                .path("/gits/exist")
                 .build()
         }.retrieve()
             .onStatus(HttpStatus::isError) {
