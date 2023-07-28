@@ -17,8 +17,8 @@ class GitSpiImpl(
     private val scheme: String
 ) : GitSpi {
     override suspend fun getIsGitConnected(): Boolean {
-        val clientResponse = sendGetGitRequest()
-        return clientResponse.awaitBody<GitIsConnectedResponse>().isConnected
+        val clientResponse = sendGetGitRequest().awaitBody<GitIsConnectedResponse>()
+        return clientResponse.isConnected
     }
 
     private suspend fun sendGetGitRequest(): WebClient.ResponseSpec {

@@ -15,7 +15,7 @@ data class GetUserProfileResponse(
 
     val num: Int,
 
-    val isGitConnected: Boolean,
+    val isConnected: Boolean,
 
     val profileFileName: String?,
 )

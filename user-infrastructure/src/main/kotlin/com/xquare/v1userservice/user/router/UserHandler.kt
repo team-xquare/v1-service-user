@@ -162,7 +162,7 @@ class UserHandler(
             grade = this.grade,
             classNum = this.classNum,
             num = this.num,
-            isGitConnected = isGitConnected,
+            isConnected = isGitConnected,
             profileFileName = this.profileFileName
         )
 
