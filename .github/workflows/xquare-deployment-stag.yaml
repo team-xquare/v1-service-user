@@ -14,7 +14,7 @@ jobs:
       matrix:
         java-version: [ 17 ]
     outputs:
-      version: ${{ steps.get_version.outputs.BRANCH_NAME }}
+      version: ${{ steps.get_version.outputs.BRANCH_NAME }} 
 
     steps:
       - name: Check Out The Repository
