@@ -1,7 +1,6 @@
 package com.xquare.v1userservice.user.aop
 
 import com.xquare.v1userservice.jwt.UnAuthorizedException
-import com.xquare.v1userservice.user.exceptions.InvalidSecretValueException
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest
