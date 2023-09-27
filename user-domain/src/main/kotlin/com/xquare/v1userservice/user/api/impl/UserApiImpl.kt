@@ -219,6 +219,13 @@ class UserApiImpl(
             }
     }
 
+    override suspend fun updateDeviceToken(userId: UUID) {
+        val user = userRepositorySpi.findByIdAndStateWithCreated(userId)
+            ?: throw UserNotFoundException(UserNotFoundException.USER_ID_NOT_FOUND)
+
+        user.setDeviceToken("")
+    }
+
     private suspend fun saveNewRefreshToken(user: User, params: MutableMap<String, Any>): RefreshToken {
         val newRefreshToken = jwtTokenGeneratorSpi.generateJwtToken(user.id.toString(), TokenType.REFRESH_TOKEN, params)
 
