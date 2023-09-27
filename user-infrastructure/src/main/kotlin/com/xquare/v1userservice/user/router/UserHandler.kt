@@ -133,7 +133,7 @@ class UserHandler(
             accountId = this.accountId,
             password = this.password,
             name = this.name,
-            profileFileName = this.profileFileName,
+            profileFileName = this.profileFileName?: "",
             classNum = this.classNum,
             grade = this.grade,
             num = this.num,
