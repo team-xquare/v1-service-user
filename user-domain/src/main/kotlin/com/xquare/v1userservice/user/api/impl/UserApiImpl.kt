@@ -123,8 +123,7 @@ class UserApiImpl(
     }
 
     override suspend fun updateProfileFileName(userId: UUID, profileFileName: String?) {
-        val user = userRepositorySpi.findByIdAndStateWithCreated(userId)
-            ?: throw UserNotFoundException(UserNotFoundException.USER_ID_NOT_FOUND)
+        val user = getUserById(userId)
         val updatedUser = user.updateProfileFileName(profileFileName)
         userRepositorySpi.applyChanges(updatedUser)
     }
@@ -188,8 +187,7 @@ class UserApiImpl(
 
         refreshTokenSpi.delete(refreshTokenEntity)
 
-        val user = userRepositorySpi.findByIdAndStateWithCreated(refreshTokenEntity.userId)
-            ?: throw UserNotFoundException(UserNotFoundException.USER_ID_NOT_FOUND)
+        val user = getUserById(refreshTokenEntity.userId)
         refreshTokenSpi.delete(refreshTokenEntity)
 
         val params = buildAccessTokenParams(user)
@@ -220,9 +218,7 @@ class UserApiImpl(
     }
 
     override suspend fun setEmptyDeviceToken(userId: UUID) {
-        val user = userRepositorySpi.findByIdAndStateWithCreated(userId)
-            ?: throw UserNotFoundException(UserNotFoundException.USER_ID_NOT_FOUND)
-
+        val user = getUserById(userId)
         user.setDeviceToken("")
     }
 
@@ -238,8 +234,7 @@ class UserApiImpl(
     }
 
     override suspend fun getUserPointInformation(userId: UUID): PointDomainResponse {
-        val user = userRepositorySpi.findByIdAndStateWithCreated(userId)
-            ?: throw UserNotFoundException(UserNotFoundException.USER_ID_NOT_FOUND)
+        val user = getUserById(userId)
 
         val userPoint = pointSpi.getUserPoint(userId)
 
