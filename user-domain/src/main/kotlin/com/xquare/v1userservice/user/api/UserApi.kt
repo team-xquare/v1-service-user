@@ -24,5 +24,5 @@ interface UserApi {
     suspend fun getAllStudentByName(name: String): List<User>
     suspend fun getAllUserByRole(role: String?): List<User>
     suspend fun getExcludeUserIdList(userIdList: List<UUID>?): List<UUID>
-    suspend fun updateDeviceToken(userId: UUID)
+    suspend fun setEmptyDeviceToken(userId: UUID)
 }

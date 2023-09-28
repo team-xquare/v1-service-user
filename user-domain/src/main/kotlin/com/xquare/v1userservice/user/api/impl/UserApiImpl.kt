@@ -219,7 +219,7 @@ class UserApiImpl(
             }
     }
 
-    override suspend fun updateDeviceToken(userId: UUID) {
+    override suspend fun setEmptyDeviceToken(userId: UUID) {
         val user = userRepositorySpi.findByIdAndStateWithCreated(userId)
             ?: throw UserNotFoundException(UserNotFoundException.USER_ID_NOT_FOUND)
 

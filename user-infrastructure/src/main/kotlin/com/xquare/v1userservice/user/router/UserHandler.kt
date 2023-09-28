@@ -254,7 +254,7 @@ class UserHandler(
 
     suspend fun logoutHandler(serverRequest: ServerRequest): ServerResponse {
         val userId = requestHeaderAspect.getUserId(serverRequest)
-        userApi.updateDeviceToken(userId)
+        userApi.setEmptyDeviceToken(userId)
 
         return ServerResponse.noContent().buildAndAwait()
     }
