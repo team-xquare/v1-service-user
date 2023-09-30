@@ -252,6 +252,13 @@ class UserHandler(
         return ServerResponse.ok().bodyValueAndAwait(response)
     }
 
+    suspend fun logoutHandler(serverRequest: ServerRequest): ServerResponse {
+        val userId = requestHeaderAspect.getUserId(serverRequest)
+        userApi.setEmptyDeviceToken(userId)
+
+        return ServerResponse.noContent().buildAndAwait()
+    }
+
     private fun User.toGetUserNameResponseDto() =
         GetUserNameResponse(
             id = this.id,

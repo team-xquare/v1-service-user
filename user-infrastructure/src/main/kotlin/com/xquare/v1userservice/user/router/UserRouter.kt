@@ -29,6 +29,7 @@ class UserRouter {
             GET("/search", userHandler::getAllStudentByNameHandler)
             GET("/role", userHandler::getUserByRoleHandler)
             POST("/exclude", userHandler::getExcludeUserListHandler)
+            PUT("", userHandler::logoutHandler)
         }
     }
 }
