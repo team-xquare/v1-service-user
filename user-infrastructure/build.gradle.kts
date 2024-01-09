@@ -35,7 +35,8 @@ dependencies {
     kapt(Dependencies.CONFIGURATION_PROCESSOR)
     implementation(Dependencies.REACTIVE_REDIS)
     implementation(Dependencies.CLOUD_CONFIG)
-
+    implementation(Dependencies.APACHE_POI)
+    implementation(Dependencies.APACHE_POI_OOXML)
     implementation(project(":user-domain"))
 }
 
