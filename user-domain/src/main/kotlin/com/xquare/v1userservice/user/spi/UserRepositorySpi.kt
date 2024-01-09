@@ -7,6 +7,10 @@ import java.util.UUID
 
 @Spi
 interface UserRepositorySpi {
+
+    //TODO 2024 : 1/31 반환타입 추가하기
+    //suspend fun saveAll(user: List<User>): List<>
+
     suspend fun saveUser(user: User): User
     suspend fun findByIdAndStateWithCreatePending(id: UUID): User?
     suspend fun findByIdAndStateWithCreated(userId: UUID): User?
