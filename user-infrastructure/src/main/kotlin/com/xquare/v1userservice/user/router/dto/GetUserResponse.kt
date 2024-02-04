@@ -1,5 +1,6 @@
 package com.xquare.v1userservice.user.router.dto
 
+import com.xquare.v1userservice.user.UserRole
 import java.time.LocalDate
 import java.util.UUID
 
@@ -20,5 +21,7 @@ data class GetUserResponse(
 
     val profileFileName: String?,
 
-    val password: String
+    val password: String,
+
+    val userRole: UserRole
 )

@@ -138,7 +138,8 @@ class UserHandler(
             grade = this.grade,
             num = this.num,
             birthDay = this.birthDay,
-            id = this.id
+            id = this.id,
+            userRole = this.role
         )
 
     suspend fun getUserProfileHandler(serverRequest: ServerRequest): ServerResponse {
