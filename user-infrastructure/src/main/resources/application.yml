@@ -15,8 +15,15 @@ spring:
     config:
       username: ${CLOUD_CONFIG_USERNAME}
       password: ${CLOUD_CONFIG_PASSWORD}
+
 server:
   shutdown: graceful
+  scheme: ${SCHEME}
+  host: ${HOST}
+  port: ${PORT}
+  database: ${DB_NAME}
+  username: ${USERNAME}
+  password: ${PASSWORD}
 
 management:
   endpoints:
@@ -26,3 +33,6 @@ management:
   endpoint:
     health:
       show-details: when_authorized
+
+excel:
+  url: ${EXCEL_URL}
