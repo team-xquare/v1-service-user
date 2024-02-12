@@ -5,7 +5,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients
 import org.springframework.cloud.openfeign.FeignAutoConfiguration
 import org.springframework.context.annotation.Configuration
 
-@EnableFeignClients
+@EnableFeignClients(basePackages = ["com.xquare.v1userservice"])
 @ImportAutoConfiguration(FeignAutoConfiguration::class)
 @Configuration
 class FeignConfig
