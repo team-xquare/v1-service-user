@@ -6,7 +6,6 @@ import org.springframework.cloud.openfeign.EnableFeignClients
 
 internal const val BASE_PACKAGE = "com.xquare.v1userservice"
 
-@EnableFeignClients
 @SpringBootApplication
 class V1UserServiceApplication
 
