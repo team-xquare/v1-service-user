@@ -59,4 +59,10 @@ object Dependencies {
 
     // cloud config
     const val CLOUD_CONFIG = "org.springframework.cloud:spring-cloud-config-client"
+
+    // spring web
+    const val SPRING_WEB = "org.springframework.boot:spring-boot-starter-web"
+
+    // feign client
+    const val FEIGN_CLIENT = "org.springframework.cloud:spring-cloud-starter-openfeign"
 }

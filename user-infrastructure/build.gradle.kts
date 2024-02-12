@@ -36,6 +36,8 @@ dependencies {
     implementation(Dependencies.REACTIVE_REDIS)
     implementation(Dependencies.CLOUD_CONFIG)
     implementation(project(":user-domain"))
+    implementation(Dependencies.SPRING_WEB)
+    implementation (Dependencies.FEIGN_CLIENT)
 }
 
 kapt {
